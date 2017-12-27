@@ -6,6 +6,14 @@ This is M-Droid, a drop-in replacement for the F-Droid client. It provides the s
 
 This project started because I hate the new F-Droid UI while still loving the actual software. And as I like React-Native, this is a good project for me.
 
+#### Table of Contents
+
+* [How it works?](#how-it-works)
+* [Contributing](#contributing)
+* [Compile & run](#compile--run)
+* [Donations](#donations)
+* [License](#license)
+
 ## How it works?
 
 Basically you add your repositories of choice (along with the F-Droid, F-Droid Archive & Guardian ones) then the client will send some GET requests to actually get the content of the `https://${repoBaseUrl}/index.xml` file who's contains the repo.
@@ -43,11 +51,17 @@ Anyway, if you consider support me, you can pay me a pack of Monster's cans for 
 
 I accept donations in form of Monero, Bitcoin, Etherum & IntenseCoin (in that order).
 
-1. Monero (XMR): `47XpVhUHahViCZHuZPc2Z6ivLraidX7AxbM8b2StdPcQGwjDGY14eqj9ippW7Pdrqj9d2y4xvwChzePQAqG1NvqQ775FKxg`
-2. Bitcoin (BTC/XBT): `18BqyV9mNbFLi5HNNnfUprnPJyJDFP59Xh`
-3. Etherum (ETH): `0x56E3273D42B40d47E122fF62108dEDC974A4206e`
-4. IntenseCoin (ITNS): `iz5F814eDfX7gbUucu17E5YUBGADYGLDRhMfKQjfXwv9S1UDPaJKcgEiUUWm9vDeJ7JVcPWo7kZRmTFtcVcssc1h28zguw8iE`
+```
+1. Monero (XMR): 47XpVhUHahViCZHuZPc2Z6ivLraidX7AxbM8b2StdPcQGwjDGY14eqj9ippW7Pdrqj9d2y4xvwChzePQAqG1NvqQ775FKxg
+2. Bitcoin (BTC/XBT): 18BqyV9mNbFLi5HNNnfUprnPJyJDFP59Xh
+3. Etherum (ETH): 0x56E3273D42B40d47E122fF62108dEDC974A4206e
+4. IntenseCoin (ITNS): iz5F814eDfX7gbUucu17E5YUBGADYGLDRhMfKQjfXwv9S1UDPaJKcgEiUUWm9vDeJ7JVcPWo7kZRmTFtcVcssc1h28zguw8iE
+```
 
 If you wish to support me, but doesn't have money for, you can still message me on Wire and give me some free hugs! :D
 
-* Wire handle: @skyzohkey
+* Wire handle: **@SkyzohKey**
+
+## License
+
+This project is licensed under [The MIT License](LICENSE).
