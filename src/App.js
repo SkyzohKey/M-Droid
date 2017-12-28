@@ -1,20 +1,24 @@
 // @flow
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { BackHandler, NativeModules } from 'react-native';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { BackHandler, NativeModules } from "react-native";
 
 // redux related (middlewares, integrations, etc).
-import { createStore, applyMiddleware } from 'redux';
-import thunk from 'redux-thunk';
-import { Provider as ReduxProvider, connect } from 'react-redux';
+import { createStore, applyMiddleware } from "redux";
+import thunk from "redux-thunk";
+import { Provider as ReduxProvider, connect } from "react-redux";
 
 // react-navigation stuff.
-import { NavigationActions, StackNavigator, addNavigationHelpers } from 'react-navigation';
+import {
+  NavigationActions,
+  StackNavigator,
+  addNavigationHelpers
+} from "react-navigation";
 
 // app specific imports.
-import { config } from './bootstrap/config';
-import { routes } from './bootstrap/routes';
-import { getRootReducer } from './reducers';
+import { config } from "./bootstrap/config";
+import { routes } from "./bootstrap/routes";
+import { getRootReducer } from "./reducers";
 
 const { UIManager } = NativeModules;
 
@@ -36,7 +40,10 @@ export class NavigationWrapper extends Component {
   }
 
   componentWillMount() {
-    this.handler = BackHandler.addEventListener('hardwareBackPress', this.onBackPress);
+    this.handler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      this.onBackPress
+    );
   }
 
   componentWillUnmount() {
@@ -79,12 +86,14 @@ export class App extends Component {
     this.store = createStore(
       getRootReducer(navigationReducer),
       {},
-      __DEV__ && IS_TESTING !== true // eslint-disable-line no-undef
+      /*__DEV__ && IS_TESTING !== true // eslint-disable-line no-undef
         ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__(
             // eslint-disable-line no-underscore-dangle
             applyMiddleware(...middlewares)
           )
-        : applyMiddleware(...middlewares)
+        :*/ applyMiddleware(
+        ...middlewares
+      )
     );
   }
 

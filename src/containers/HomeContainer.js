@@ -1,19 +1,22 @@
 // import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { testRepoService } from '../reducers/repositories/actions';
+import { fetchRepositories } from '../reducers/repositories/actions';
 import HomeScreen from '../components/HomeScreen';
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    repositories: state.repositories
+    reposByPubkey: state.repositories.reposByPubkey,
+    reposCount: state.repositories.reposCount,
+    reposFetched: state.repositories.reposFetched,
+    defaultRepositories: state.repositories.defaultRepositories
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
     onTestPress: () => {
-      dispatch(testRepoService());
+      dispatch(fetchRepositories());
     }
   };
 };

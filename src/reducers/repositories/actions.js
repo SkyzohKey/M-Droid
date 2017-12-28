@@ -2,10 +2,25 @@
 import { types } from './types';
 import * as repoService from '../../services/RepositoryService';
 
-export const testRepoService = () => {
-  return () => {
-    const index = repoService.getRepositoryIndex('https://grobox.de/fdroid/repo');
-    console.log(JSON.stringify(index));
+export const fetchRepositories = () => {
+  return (dispatch, getState) => {
+    const { defaultRepositories } = getState().repositories;
+    dispatch({ type: types.FETCH_REPOSITORIES_REQUEST, count: defaultRepositories.length });
+
+    // TODO: Loop over the repositories.
+    for (i = 0, l = defaultRepositories.length; i < l; i++) {
+      repoService
+        .getRepositoryAsync(defaultRepositories[i])
+        .then(response => {
+          // alert(defaultRepositories[i] + ':\n' + JSON.stringify(response));
+          dispatch({ type: types.SET_REPOSITORY_DATA, repository: response });
+        })
+        .catch(err => {
+          dispatch({ type: types.FETCH_REPOSITORIES_FAILURE, error: err });
+        });
+    }
+
+    dispatch({ type: types.ADD_REPOSITORY_SUCCESS });
   };
 };
 

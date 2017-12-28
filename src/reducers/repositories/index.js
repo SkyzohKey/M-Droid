@@ -1,4 +1,4 @@
-import types from './types';
+import { types } from './types';
 import { pubkeys } from './pubkeys';
 
 /**
@@ -6,18 +6,19 @@ import { pubkeys } from './pubkeys';
  */
 // eslint-disable-next-line valid-jsdoc
 const initialState = {
-  reposByPubkey: {
-    [pubkeys.fdroid]: {
-      url: 'https://f-droid.org/repo',
-      pubkey: pubkeys.fdroid,
-      icon: 'fdroid-icon.png',
-      name: 'F-Droid',
-      description:
-        'The official FDroid repository. Applications in this repository are built directly from the source code. (One, Firefox, is the official binary built by the Mozilla. This will ultimately be replaced by a source-built version.)', // eslint-disable-line
-      version: 19,
-      packages: []
-    }
-  }
+  fetchRepositoryRequest: false,
+  fetchRepositoryError: null,
+  defaultRepositories: [
+    'https://f-droid.org/repo', // Official F-Droid repo.
+    'https://f-droid.org/archive', // Official F-Droid archives.
+    'https://guardianproject.info/fdroid/repo', // The Guardian repo.
+    'https://guardianproject.info/fdroid/archive', // The Guardian archives.
+    'https://eutopia.cz/fdroid/repo', // Signal repo.
+    'https://grobox.de/fdroid/repo' // Grobox repo.
+  ],
+  reposCount: 0,
+  reposFetched: 0,
+  reposByPubkey: {}
 };
 
 /**
@@ -30,30 +31,31 @@ const initialState = {
 // eslint-disable-next-line no-unused-vars
 const repositoriesReducer = (state = initialState, action) => {
   switch (action.type) {
-    case types.SET_REPOSITORY_DATA:
-      const { pubkey, url, icon, name, description, version } = action.repository;
+    case types.FETCH_REPOSITORIES_REQUEST:
       return {
         ...state,
+        reposCount: action.count
+      };
+    case types.SET_REPOSITORY_DATA:
+      const { pubkey } = action.repository;
+      return {
+        ...state,
+        reposFetched: state.reposFetched + 1,
         reposByPubkey: {
-          ...state.repositories,
+          ...state.reposByPubkey,
           [pubkey]: {
-            url: url,
-            pubkey: pubkey,
-            icon: icon,
-            name: name,
-            description: description,
-            version: version,
-            packages: []
+            ...action.repository
           }
         }
       };
     case types.REMOVE_REPOSITORY:
-      const { pubkey } = action.repository;
       return {
         ...state,
-        reposByPubkey: state.reposByPubkey.filter(repo => repo.pubkey !== pubkey)
+        reposByPubkey: state.reposByPubkey.filter(repo => repo.pubkey !== action.pubkey)
       };
     default:
       return state;
   }
 };
+
+export default repositoriesReducer;
