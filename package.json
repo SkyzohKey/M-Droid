@@ -27,6 +27,9 @@
     "jest": "^22.0.4",
     "react-test-renderer": "^16.2.0"
   },
+  "resolutions": {
+    "uglify-es": "3.2.2"
+  },
   "jest": {
     "preset": "react-native",
     "globals": {
@@ -37,8 +40,6 @@
     "transform": {
       "^.+\\.js$": "babel-jest"
     },
-    "transformIgnorePatterns": [
-      "node_modules/(?!react-native|react-navigation)/"
-    ]
+    "transformIgnorePatterns": ["node_modules/(?!react-native|react-navigation)/"]
   }
 }

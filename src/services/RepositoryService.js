@@ -19,6 +19,14 @@ export const getRepositoryAsync = async baseUrl => {
       return null;
     }
 
+    if (parent.getElementsByTagName(nodeName)[0].childNodes[0] === undefined) {
+      return null;
+    }
+
+    if (parent.getElementsByTagName(nodeName)[0].childNodes[0].nodeValue === undefined) {
+      return null;
+    }
+
     // For safety.
     return parent.getElementsByTagName(nodeName)[0].childNodes[0].nodeValue;
   };
