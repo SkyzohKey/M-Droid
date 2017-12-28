@@ -41,12 +41,13 @@ export const getRepositoryAsync = async baseUrl => {
     const applications = doc.getElementsByTagName('application');
 
     const repoData = {
-      icon: repo.getAttribute('icon'),
-      name: repo.getAttribute('name'),
-      pubkey: repo.getAttribute('pubkey'),
-      timestamp: repo.getAttribute('timestamp'),
-      url: repo.getAttribute('url'),
-      version: repo.getAttribute('version'),
+      icon: repo.getAttribute('icon') || null,
+      name: repo.getAttribute('name') || null,
+      pubkey: repo.getAttribute('pubkey') || null,
+      timestamp: repo.getAttribute('timestamp') || null,
+      url: repo.getAttribute('url') || null,
+      version: repo.getAttribute('version') || null,
+      maxage: repo.getAttribute('maxage') || null,
       description: getNodeValue(repo, 'description'),
       applications: []
     };

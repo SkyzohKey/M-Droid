@@ -44,6 +44,7 @@ const repositoriesReducer = (state = initialState, action) => {
       };
     case types.SET_REPOSITORY_DATA:
       const { pubkey } = action.repository;
+
       return {
         ...state,
         reposFetched: state.reposFetched + 1,

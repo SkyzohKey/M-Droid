@@ -56,7 +56,9 @@ export default class HomeScreen extends Component {
               borderTopColor: 'rgba(0,0,0,.04)'
             }}
           >
-            <Text style={{ color: 'red', fontWeight: 'bold' }}>Fetching errors:</Text>
+            <Text style={{ color: 'red', fontWeight: 'bold' }}>
+              Fetch errors ({errors.length || 0})
+            </Text>
             {errors.map((error, index) => {
               return (
                 <Text key={index} style={{ color: 'red' }}>
