@@ -1,4 +1,4 @@
-# M-Droid
+# ![M-Droid logo](assets/images/icons/M-Droid@mdpi.png) M-Droid
 
 ### Unofficial Material Designed client for F-Droid!
 
