@@ -9,6 +9,7 @@ This project started because I hate the new F-Droid UI while still loving the ac
 #### Table of Contents
 
 * [How it works?](#how-it-works)
+* [Screenshots](#screenshots)
 * [Contributing](#contributing)
 * [Compile & run](#compile--run)
 * [Donations](#donations)
@@ -21,6 +22,12 @@ Basically you add your repositories of choice (along with the F-Droid, F-Droid A
 Then it parse that file by converting the XML to JSON format, for better code efficiency. Cache the parsed stuffs and display the informations in a great way for the user.
 
 That's Simple (c).
+
+## Screenshots
+
+The screenshots may not be up-to-date. This is currently an early stage for the project and I'll try to update screenshots as many as possible.
+
+![1st step: showing a list of repositories, and parsing them.](https://i.imgur.com/veU5SFF.png)
 
 ## Contributing
 
