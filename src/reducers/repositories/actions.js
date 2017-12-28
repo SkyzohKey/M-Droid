@@ -9,14 +9,21 @@ export const fetchRepositories = () => {
 
     // TODO: Loop over the repositories.
     for (i = 0, l = defaultRepositories.length; i < l; i++) {
+      const repo = defaultRepositories[i];
+      if (repo === undefined) {
+        continue;
+      }
+
       repoService
-        .getRepositoryAsync(defaultRepositories[i])
+        .getRepositoryAsync(repo)
         .then(response => {
-          // alert(defaultRepositories[i] + ':\n' + JSON.stringify(response));
           dispatch({ type: types.SET_REPOSITORY_DATA, repository: response });
         })
         .catch(err => {
-          dispatch({ type: types.FETCH_REPOSITORIES_FAILURE, error: err });
+          dispatch({
+            type: types.FETCH_REPOSITORIES_FAILURE,
+            error: repo + ': ' + err.message
+          });
         });
     }
 

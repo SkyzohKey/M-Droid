@@ -18,7 +18,8 @@ const initialState = {
   ],
   reposCount: 0,
   reposFetched: 0,
-  reposByPubkey: {}
+  reposByPubkey: {},
+  errors: []
 };
 
 /**
@@ -35,6 +36,11 @@ const repositoriesReducer = (state = initialState, action) => {
       return {
         ...state,
         reposCount: action.count
+      };
+    case types.FETCH_REPOSITORIES_FAILURE:
+      return {
+        ...state,
+        errors: [...state.errors, action.error]
       };
     case types.SET_REPOSITORY_DATA:
       const { pubkey } = action.repository;

@@ -12,6 +12,7 @@ export default class HomeScreen extends Component {
     defaultRepositories: PropTypes.array.isRequired,
     reposFetched: PropTypes.number.isRequired,
     reposCount: PropTypes.number.isRequired,
+    errors: PropTypes.array.isRequired,
     onTestPress: PropTypes.func.isRequired
   };
 
@@ -20,7 +21,7 @@ export default class HomeScreen extends Component {
   }
 
   render() {
-    const { reposByPubkey, reposFetched, reposCount, onTestPress } = this.props;
+    const { reposByPubkey, reposFetched, reposCount, errors, onTestPress } = this.props;
 
     return (
       <View style={{ flex: 1 }}>
@@ -47,6 +48,23 @@ export default class HomeScreen extends Component {
               </View>
             );
           })}
+          <View
+            style={{
+              marginTop: 8,
+              paddingTop: 8,
+              borderTopWidth: 1,
+              borderTopColor: 'rgba(0,0,0,.04)'
+            }}
+          >
+            <Text style={{ color: 'red', fontWeight: 'bold' }}>Fetching errors:</Text>
+            {errors.map((error, index) => {
+              return (
+                <Text key={index} style={{ color: 'red' }}>
+                  {error}
+                </Text>
+              );
+            })}
+          </View>
         </ScrollView>
       </View>
     );

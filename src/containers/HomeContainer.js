@@ -9,7 +9,8 @@ const mapStateToProps = (state, ownProps) => {
     reposByPubkey: state.repositories.reposByPubkey,
     reposCount: state.repositories.reposCount,
     reposFetched: state.repositories.reposFetched,
-    defaultRepositories: state.repositories.defaultRepositories
+    defaultRepositories: state.repositories.defaultRepositories,
+    errors: state.repositories.errors
   };
 };
 
