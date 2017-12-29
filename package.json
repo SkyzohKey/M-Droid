@@ -40,6 +40,8 @@
     "transform": {
       "^.+\\.js$": "babel-jest"
     },
-    "transformIgnorePatterns": ["node_modules/(?!react-native|react-navigation)/"]
+    "transformIgnorePatterns": [
+      "node_modules/(?!react-native|react-navigation)/"
+    ]
   }
 }

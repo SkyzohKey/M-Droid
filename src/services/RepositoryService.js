@@ -49,6 +49,7 @@ export const getRepositoryAsync = async baseUrl => {
     const applications = doc.getElementsByTagName('application');
 
     const repoData = {
+      id: uuidv4(),
       icon: repo.getAttribute('icon') || null,
       name: repo.getAttribute('name') || null,
       pubkey: repo.getAttribute('pubkey') || null,
@@ -73,6 +74,7 @@ export const getRepositoryAsync = async baseUrl => {
         description: getNodeValue(appNode, 'desc'),
         license: getNodeValue(appNode, 'license'), // SPDX format.
         provides: getNodeValue(appNode, 'provides'),
+        requirements: getNodeArray(appNode, 'requirements'),
         categories: getNodeArray(appNode, 'categories'),
         category: getNodeValue(appNode, 'category'),
         website: getNodeValue(appNode, 'web'),

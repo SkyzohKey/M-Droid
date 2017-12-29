@@ -35,7 +35,8 @@ const repositoriesReducer = (state = initialState, action) => {
     case types.FETCH_REPOSITORIES_REQUEST:
       return {
         ...state,
-        reposCount: action.count
+        reposCount: action.count,
+        reposFetched: 0
       };
     case types.FETCH_REPOSITORIES_FAILURE:
       return {
@@ -48,7 +49,7 @@ const repositoriesReducer = (state = initialState, action) => {
         reposFetched: state.reposFetched + 1,
         reposByPubkey: {
           ...state.reposByPubkey,
-          [action.repository.pubkey]: {
+          [action.repository.id]: {
             ...action.repository
           }
         }
@@ -56,7 +57,7 @@ const repositoriesReducer = (state = initialState, action) => {
     case types.REMOVE_REPOSITORY:
       return {
         ...state,
-        reposByPubkey: state.reposByPubkey.filter(repo => repo.pubkey !== action.pubkey)
+        reposByPubkey: state.reposByPubkey.filter(repo => repo.id !== action.id)
       };
     default:
       return state;
