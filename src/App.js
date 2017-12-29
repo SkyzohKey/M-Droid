@@ -1,28 +1,25 @@
 // @flow
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { BackHandler, NativeModules } from "react-native";
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { BackHandler, NativeModules } from 'react-native';
+import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly';
 
 // redux related (middlewares, integrations, etc).
-import { createStore, applyMiddleware } from "redux";
-import thunk from "redux-thunk";
-import { Provider as ReduxProvider, connect } from "react-redux";
+import { createStore, applyMiddleware } from 'redux';
+import thunk from 'redux-thunk';
+import { Provider as ReduxProvider, connect } from 'react-redux';
 
 // react-navigation stuff.
-import {
-  NavigationActions,
-  StackNavigator,
-  addNavigationHelpers
-} from "react-navigation";
+import { NavigationActions, DrawerNavigator, addNavigationHelpers } from 'react-navigation';
 
 // app specific imports.
-import { config } from "./bootstrap/config";
-import { routes } from "./bootstrap/routes";
-import { getRootReducer } from "./reducers";
+import { config } from './bootstrap/config';
+import { primaryRoutes } from './bootstrap/routes';
+import { getRootReducer } from './reducers';
 
 const { UIManager } = NativeModules;
 
-const Navigator = StackNavigator(routes);
+const Navigator = DrawerNavigator(primaryRoutes);
 const navigationReducer = (state, action) => {
   const newState = Navigator.router.getStateForAction(action, state);
   return newState || state;
@@ -40,10 +37,7 @@ export class NavigationWrapper extends Component {
   }
 
   componentWillMount() {
-    this.handler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      this.onBackPress
-    );
+    this.handler = BackHandler.addEventListener('hardwareBackPress', this.onBackPress);
   }
 
   componentWillUnmount() {
@@ -86,14 +80,7 @@ export class App extends Component {
     this.store = createStore(
       getRootReducer(navigationReducer),
       {},
-      /*__DEV__ && IS_TESTING !== true // eslint-disable-line no-undef
-        ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__(
-            // eslint-disable-line no-underscore-dangle
-            applyMiddleware(...middlewares)
-          )
-        :*/ applyMiddleware(
-        ...middlewares
-      )
+      composeWithDevTools(applyMiddleware(...middlewares))
     );
   }
 
@@ -109,6 +96,7 @@ export class App extends Component {
   render() {
     // TODO: Add PersistGate if needed.
     // TODO: Add StyleProvider from NativeBase.
+
     return (
       <ReduxProvider store={this.store}>
         <NavigationProvider />

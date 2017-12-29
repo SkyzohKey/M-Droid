@@ -49,7 +49,7 @@ const repositoriesReducer = (state = initialState, action) => {
         reposFetched: state.reposFetched + 1,
         reposByPubkey: {
           ...state.reposByPubkey,
-          [action.repository.id]: {
+          [action.repository.uuid]: {
             ...action.repository
           }
         }
@@ -57,7 +57,7 @@ const repositoriesReducer = (state = initialState, action) => {
     case types.REMOVE_REPOSITORY:
       return {
         ...state,
-        reposByPubkey: state.reposByPubkey.filter(repo => repo.id !== action.id)
+        reposByPubkey: state.reposByPubkey.filter(repo => repo.uuid !== action.uuid)
       };
     default:
       return state;
