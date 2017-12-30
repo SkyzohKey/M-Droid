@@ -1,3 +1,4 @@
+import { Buffer } from 'buffer/';
 import { DOMParser } from 'xmldom';
 import { AsyncStorage } from 'react-native';
 import RNFS from 'react-native-fs';
@@ -154,49 +155,52 @@ export const getRepositoryAsync = async baseUrl => {
   let repoCache = null;
 
   try {
-    console.log('getRepositoryAsync => ', baseUrl);
-    dataCache = await AsyncStorage.getItem('repo/' + baseUrl);
+    const repoUUID = Buffer.from(baseUrl).toString('base64');
+    console.tron.log('getRepositoryAsync => ', baseUrl);
+    dataCache = await AsyncStorage.getItem('repo/' + repoUUID);
     repoCache = dataCache !== null ? JSON.parse(dataCache) : null;
-    console.log('Fetch repo cache from AsyncStorage for', baseUrl);
-    console.log(repoCache, dataCache);
+    console.tron.log('Fetch repo cache from AsyncStorage for', baseUrl);
+    console.tron.log(repoCache, dataCache);
 
     const response = await fetch(baseUrl + '/index.xml');
-    console.log('Fetched index.xml for repo', baseUrl);
+    console.tron.log('Fetched index.xml for repo', baseUrl);
 
     const etag = response.headers.has('ETag') ? response.headers.get('ETag') : null;
 
     // Here we check our caching system.
-    console.log('Checking presence of ETag value for repo', baseUrl, etag);
-    if (repoCache && etag && etag === repoCache.etag) {
-      console.log('Found repository cache data', repoCache);
+    console.tron.log('Checking presence of ETag value for repo', baseUrl, etag);
+    if (repoCache && etag && repoCache.uuid) {
+      console.tron.log('Found repository cache data', repoCache);
       const fileExists = await RNFS.exists(getPathFromCache(repoCache.uuid));
       if (fileExists) {
-        console.log('ETag found for repo', baseUrl);
+        console.tron.log('ETag found for repo', baseUrl);
         const repoFile = await RNFS.readFile(getPathFromCache(repoCache.uuid), 'utf8');
         const repo = JSON.parse(repoFile);
-        console.log('Parsed repo found in cache', getPathFromCache(repoCache.uuid));
-        console.log('Using cached version of the repo');
+        console.tron.log('Parsed repo found in cache', getPathFromCache(repoCache.uuid));
+        console.tron.log('Using cached version of the repo');
         return repo;
       }
     }
 
-    console.log('Using downloaded version of the repo');
+    console.tron.log('Using downloaded version of the repo');
     const responseXml = await response.text();
     const doc = parser.parseFromString(responseXml);
-    const repoUUID = uuidv4() || Math.random();
     const repoData = parseRepoIndex(doc, repoUUID);
-    console.log('Repo parsed to JSON', repoData, etag);
+    console.tron.log('Repo parsed to JSON', repoData, etag);
 
     if (repoData) {
-      console.log('Writing data to cache', etag, repoData);
-      await AsyncStorage.setItem('repo/' + baseUrl, JSON.stringify({ etag: etag, uuid: repoUUID }));
+      console.tron.log('Writing data to cache', etag, repoData);
+      await AsyncStorage.setItem(
+        'repo/' + repoUUID,
+        JSON.stringify({ etag: etag, uuid: repoUUID })
+      );
       await RNFS.writeFile(getPathFromCache(repoUUID), JSON.stringify(repoData), 'utf8');
     }
 
     return repoData;
   } catch (e) {
-    console.log('getRepositoryAsync: ' + e.message);
-    console.log(e);
+    console.tron.log('getRepositoryAsync: ' + e.message);
+    console.tron.log(e);
     return null;
   }
 };

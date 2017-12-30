@@ -5,3 +5,5 @@ Reactotron.configure({ name: 'MDroid' }) // controls connection & communication 
   .useReactNative() // add all built-in react native plugins
   .use(reactotronRedux())
   .connect(); // let's connect!
+
+console.tron = Reactotron;
