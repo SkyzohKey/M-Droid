@@ -2,10 +2,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { BackHandler, NativeModules } from 'react-native';
+
+// Debuggers.
 import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly';
+import Reactotron from 'reactotron-react-native';
+import './bootstrap/reactotron';
 
 // redux related (middlewares, integrations, etc).
-import { createStore, applyMiddleware } from 'redux';
+import { applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import { Provider as ReduxProvider, connect } from 'react-redux';
 
@@ -77,7 +81,7 @@ export class App extends Component {
 
     const middlewares = [thunk];
 
-    this.store = createStore(
+    this.store = Reactotron.createStore(
       getRootReducer(navigationReducer),
       {},
       composeWithDevTools(applyMiddleware(...middlewares))

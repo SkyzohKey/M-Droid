@@ -27,6 +27,8 @@
     "eslint-plugin-react-native": "^3.2.0",
     "jest": "^22.0.4",
     "react-test-renderer": "^16.2.0",
+    "reactotron-react-native": "^1.14.0",
+    "reactotron-redux": "^1.13.0",
     "redux-devtools-extension": "^2.13.2"
   },
   "resolutions": {
