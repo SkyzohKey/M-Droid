@@ -1,14 +1,23 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { View, ScrollView, Text } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import AppCard from '../AppCard';
-
+import Touchable from '../Touchable';
 import styles from './styles';
 
 export default class AppsList extends Component {
   static propTypes = {
-    apps: PropTypes.array.isRequired
+    apps: PropTypes.array.isRequired,
+    maxCount: PropTypes.number,
+    index: PropTypes.number,
+    title: PropTypes.string.isRequired
+  };
+
+  static defaultProps = {
+    maxCount: 3,
+    index: 0
   };
 
   constructor(props) {
@@ -16,101 +25,39 @@ export default class AppsList extends Component {
   }
 
   render() {
-    const { apps } = this.props;
+    const { apps, maxCount, index, title } = this.props;
+    let subset;
+    if (maxCount !== 0) {
+      subset = apps.slice(index, maxCount);
+    }
 
     return (
       <ScrollView style={styles.container}>
         <View
-          style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            margin: 12
+          }}
         >
-          <Text style={{ marginBottom: 8, color: 'black', fontWeight: 'bold' }}>Featured Apps</Text>
-          <Text style={{ color: '#BABABA', fontSize: 12 }}>ALL &gt;</Text>
-        </View>
-        <ScrollView showsVerticalScrollIndicator={false} horizontal style={{ flex: 0 }}>
-          {apps.map((app, index) => {
-            if (app.name == null) {
-              return null;
-            }
-            return (
-              <AppCard
-                style={{ marginRight: 8 }}
-                key={index}
-                appName={app.name}
-                appIconPath={app.icon}
-                onPress={() => {
-                  alert(app.name + ' clicked!');
-                }}
-              />
-            );
-          })}
-        </ScrollView>
-        <View
-          style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}
-        >
-          <Text style={{ marginBottom: 8, marginTop: 8, color: 'black', fontWeight: 'bold' }}>
-            Featured Apps
-          </Text>
-          <Text style={{ color: '#BABABA', fontSize: 12 }}>ALL &gt;</Text>
-        </View>
-        <ScrollView showsVerticalScrollIndicator={false} horizontal style={{ flex: 0 }}>
-          {apps.map((app, index) => {
-            if (app.name == null) {
-              return null;
-            }
-            return (
-              <AppCard
-                style={{ marginRight: 8 }}
-                key={index}
-                appName={app.name}
-                appIconPath={app.icon}
-                onPress={() => {
-                  alert(app.name + ' clicked!');
-                }}
-              />
-            );
-          })}
-        </ScrollView>
-        <View
-          style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}
-        >
-          <Text style={{ marginBottom: 8, marginTop: 8, color: 'black', fontWeight: 'bold' }}>
-            Featured Apps
-          </Text>
-          <Text style={{ color: '#BABABA', fontSize: 12 }}>ALL &gt;</Text>
-        </View>
-        <ScrollView showsVerticalScrollIndicator={false} horizontal style={{ flex: 0 }}>
-          {apps.map((app, index) => {
-            if (app.name == null) {
-              return null;
-            }
-            return (
-              <AppCard
-                style={{ marginRight: 8 }}
-                key={index}
-                appName={app.name}
-                appIconPath={app.icon}
-                onPress={() => {
-                  alert(app.name + ' clicked!');
-                }}
-              />
-            );
-          })}
-        </ScrollView>
-        <View
-          style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}
-        >
-          <Text style={{ marginBottom: 8, marginTop: 8, color: 'black', fontWeight: 'bold' }}>
-            Featured Apps
-          </Text>
-          <Text style={{ color: '#BABABA', fontSize: 12 }}>ALL &gt;</Text>
+          <Text style={{ color: 'black', fontWeight: 'bold' }}>{title}</Text>
+          <Touchable onPress={() => alert('Show more ' + title + '.')}>
+            <Text style={{ color: '#BABABA', fontSize: 12 }}>
+              ALL <Icon name={'chevron-right'} color={'#BABABA'} />
+            </Text>
+          </Touchable>
         </View>
         <ScrollView
-          showsVerticalScrollIndicator={false}
+          pagingEnabled
+          showsHorizontalScrollIndicator={false}
           horizontal
-          style={{ flex: 0, marginBottom: 8 }}
+          style={{ flex: 0 }}
         >
-          {apps.map((app, index) => {
+          {subset.map((app, index) => {
+            // TODO: Handle the case were app does not have an icon.
             if (app.name == null) {
+              // Do not display apps without name...
               return null;
             }
             return (
@@ -118,6 +65,7 @@ export default class AppsList extends Component {
                 style={{ marginRight: 8 }}
                 key={index}
                 appName={app.name}
+                appSummary={app.summary}
                 appIconPath={app.icon}
                 onPress={() => {
                   alert(app.name + ' clicked!');

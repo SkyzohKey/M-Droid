@@ -18,6 +18,9 @@ const styles = {
     fontWeight: 'bold',
     color: 'black'
   },
+  appSummary: {
+    fontSize: 10
+  },
   appIcon: {
     width: 40,
     height: 40,
