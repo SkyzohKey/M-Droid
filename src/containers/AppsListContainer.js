@@ -2,20 +2,20 @@
 import { connect } from 'react-redux';
 
 import { fetchRepositories } from '../reducers/repositories/actions';
-import AppsTab from '../components/AppsTab';
+import AppsList from '../components/AppsList';
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    // appsByCategoryName: state.applications.appsByCategoryName
+    apps: state.applications.apps
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    fetchRepos: () => {
+    onTestPress: () => {
       dispatch(fetchRepositories());
     }
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(AppsTab);
+export default connect(mapStateToProps, mapDispatchToProps)(AppsList);

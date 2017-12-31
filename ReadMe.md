@@ -27,7 +27,7 @@ That's Simple (c).
 
 The screenshots may not be up-to-date. This is currently an early stage for the project and I'll try to update screenshots as many as possible.
 
-![1st step: showing a list of repositories, and parsing them.](https://i.imgur.com/veU5SFF.png)
+![2nd step: Prepare the UI!](https://i.imgur.com/nfYtIvO.png)
 
 ## Contributing
 

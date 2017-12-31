@@ -69,21 +69,24 @@ const getPathFromCache = uuid => {
  *
  * @param {Document} doc - The index.xml to be parsed.
  * @param {String} uuid - A unique identifier for this repo.
+ * @param {String} baseUrl - The repository's base URL.
  * @return {Object} returns the parsed repository.
  */
-const parseRepoIndex = (doc, uuid) => {
+const parseRepoIndex = (doc, uuid, baseUrl) => {
   const repo = doc.getElementsByTagName('repo')[0] || null;
   const applications = doc.getElementsByTagName('application');
   const repoData = {
-    uuid: uuid,
-    icon: repo.getAttribute('icon') || null,
-    name: repo.getAttribute('name') || null,
-    pubkey: repo.getAttribute('pubkey') || null,
-    timestamp: repo.getAttribute('timestamp') || null,
-    url: repo.getAttribute('url') || null,
-    version: repo.getAttribute('version') || null,
-    maxage: repo.getAttribute('maxage') || null,
-    description: getNodeValue(repo, 'description'),
+    meta: {
+      uuid: uuid,
+      icon: repo.getAttribute('icon') || null,
+      name: repo.getAttribute('name') || null,
+      pubkey: repo.getAttribute('pubkey') || null,
+      timestamp: repo.getAttribute('timestamp') || null,
+      url: repo.getAttribute('url') || null,
+      version: repo.getAttribute('version') || null,
+      maxage: repo.getAttribute('maxage') || null,
+      description: getNodeValue(repo, 'description')
+    },
     applications: []
   };
 
@@ -96,7 +99,7 @@ const parseRepoIndex = (doc, uuid) => {
       lastUpdated: getNodeValue(appNode, 'lastupdated'),
       name: getNodeValue(appNode, 'name'),
       summary: getNodeValue(appNode, 'summary'),
-      icon: getNodeValue(appNode, 'icon'),
+      icon: baseUrl + '/icons/' + getNodeValue(appNode, 'icon'),
       description: getNodeValue(appNode, 'desc'),
       license: getNodeValue(appNode, 'license'), // SPDX format.
       provides: getNodeValue(appNode, 'provides'),
@@ -123,8 +126,8 @@ const parseRepoIndex = (doc, uuid) => {
       const packageData = {
         version: getNodeValue(packageNode, 'version'),
         versionCode: getNodeValue(packageNode, 'versioncode'),
-        apkname: getNodeValue(packageNode, 'apkname'),
-        srcname: getNodeValue(packageNode, 'srcname'),
+        apkname: baseUrl + '/' + getNodeValue(packageNode, 'apkname'),
+        srcname: baseUrl + '/' + getNodeValue(packageNode, 'srcname'),
         hash: getNodeValue(packageNode, 'hash'),
         size: getNodeValue(packageNode, 'size'),
         sdkVersion: getNodeValue(packageNode, 'sdkver'),
@@ -156,16 +159,16 @@ export const getRepositoryAsync = async baseUrl => {
 
   try {
     const repoUUID = Buffer.from(baseUrl).toString('base64');
-    console.tron.log('getRepositoryAsync => ', baseUrl);
+    /* console.tron.log('getRepositoryAsync => ', baseUrl);
     dataCache = await AsyncStorage.getItem('repo/' + repoUUID);
     repoCache = dataCache !== null ? JSON.parse(dataCache) : null;
     console.tron.log('Fetch repo cache from AsyncStorage for', baseUrl);
-    console.tron.log(repoCache, dataCache);
+    console.tron.log(repoCache, dataCache);*/
 
     const response = await fetch(baseUrl + '/index.xml');
     console.tron.log('Fetched index.xml for repo', baseUrl);
 
-    const etag = response.headers.has('ETag') ? response.headers.get('ETag') : null;
+    /* const etag = response.headers.has('ETag') ? response.headers.get('ETag') : null;
 
     // Here we check our caching system.
     console.tron.log('Checking presence of ETag value for repo', baseUrl, etag);
@@ -182,22 +185,23 @@ export const getRepositoryAsync = async baseUrl => {
       }
     }
 
-    console.tron.log('Using downloaded version of the repo');
+    console.tron.log('Using downloaded version of the repo');*/
     const responseXml = await response.text();
     const doc = parser.parseFromString(responseXml);
-    const repoData = parseRepoIndex(doc, repoUUID);
-    console.tron.log('Repo parsed to JSON', repoData, etag);
+    const repoData = parseRepoIndex(doc, repoUUID, baseUrl);
+    // console.tron.log('Repo parsed to JSON', repoData, etag);
 
-    if (repoData) {
+    /* if (repoData) {
       console.tron.log('Writing data to cache', etag, repoData);
+      await AsyncStorage.removeItem('repo/' + repoUUI);
       await AsyncStorage.setItem(
         'repo/' + repoUUID,
         JSON.stringify({ etag: etag, uuid: repoUUID })
       );
       await RNFS.writeFile(getPathFromCache(repoUUID), JSON.stringify(repoData), 'utf8');
-    }
+    }*/
 
-    return repoData;
+    return { meta: repoData.meta, applications: repoData.applications };
   } catch (e) {
     console.tron.log('getRepositoryAsync: ' + e.message);
     console.tron.log(e);

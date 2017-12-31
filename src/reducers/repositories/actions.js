@@ -1,5 +1,6 @@
 // @flow
 import { types } from './types';
+import { types as appTypes } from '../applications/types';
 import * as repoService from '../../services/RepositoryService';
 
 /**
@@ -26,7 +27,11 @@ export const fetchRepositories = () => {
           .then(response => {
             if (response) {
               console.log('Processed', repo, response);
-              dispatch({ type: types.SET_REPOSITORY_DATA, repository: response });
+              dispatch({ type: types.SET_REPOSITORY_DATA, repository: response.meta });
+              dispatch({
+                type: appTypes.SET_APPLICATIONS_DATA,
+                applications: response.applications
+              });
             }
           })
           .catch(err => {
