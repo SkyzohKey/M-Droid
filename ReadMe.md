@@ -1,4 +1,4 @@
-# ![M-Droid logo](assets/images/logos/logo-light.png)
+# ![M-Droid logo](src/assets/images/logos/logo-light.png)
 
 ### Unofficial Material Designed client for F-Droid!
 

@@ -1,74 +1,88 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { Button, View, ScrollView, Text } from 'react-native';
+import { View, Text, Image } from 'react-native';
+import { TabNavigator } from 'react-navigation';
 
-export default class HomeScreen extends Component {
-  static navigationOptions = {
-    title: 'M-Droid'
-  };
+import MenuButton from '../../components/MenuButton';
+import AppsTab from '../../containers/AppsTabContainer';
+import EntertainmentTab from '../../containers/EntertainmentTabContainer';
 
-  static propTypes = {
-    reposByPubkey: PropTypes.object.isRequired,
-    defaultRepositories: PropTypes.array.isRequired,
-    reposFetched: PropTypes.number.isRequired,
-    reposCount: PropTypes.number.isRequired,
-    errors: PropTypes.array.isRequired,
-    onTestPress: PropTypes.func.isRequired
-  };
+import sharedStyles from '../../bootstrap/sharedStyles';
+
+export const HomeTabs = TabNavigator(
+  {
+    Apps: { screen: AppsTab, path: 'home/apps' },
+    Entertainment: { screen: EntertainmentTab, path: 'home/entertainment' }
+  },
+  {
+    tabBarPosition: 'top',
+    tabBarOptions: {
+      // inactiveBackgroundColor: MaterialColors.indigo.shade_500,
+      // inactiveTintColor: MaterialColors.indigo.shade_500,
+      showIcon: false,
+      showLabel: true,
+      inactiveTintColor: sharedStyles.TAB_INACTIVE_COLOR,
+      activeTintColor: sharedStyles.TAB_ACTIVE_COLOR,
+      labelStyle: {
+        fontSize: 12,
+        fontWeight: 'bold'
+      },
+      tabStyle: {
+        padding: 8
+      },
+      style: {
+        padding: 0,
+        backgroundColor: 'white'
+      },
+      indicatorStyle: {
+        backgroundColor: '#e91e63',
+        height: 3
+      },
+      iconStyle: {
+        padding: 0,
+        height: 50
+      }
+    }
+  }
+);
+
+class HomeScreen extends Component {
+  static navigationOptions = ({ navigation, screenProps }) => ({
+    title: 'Accueil',
+    headerTintColor: sharedStyles.HEADER_COLOR,
+    headerStyle: {
+      backgroundColor: 'white',
+      elevation: 0 // remove shadow on Android
+    },
+    header: (
+      <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: 'white' }}>
+        <MenuButton
+          navigation={navigation}
+          iconName={'menu'}
+          color={sharedStyles.HEADER_COLOR}
+          onPress={() => navigation.navigate('DrawerOpen')}
+        />
+        <Image
+          source={require('../../assets/images/wordmarks/wordmark-muted.png')}
+          style={{ flex: 1, resizeMode: 'contain', height: 40, width: 150 }}
+        />
+        <MenuButton
+          navigation={navigation}
+          iconName={'search'}
+          color={sharedStyles.HEADER_COLOR}
+          onPress={() => navigation.navigate('AddContact')}
+        />
+      </View>
+    )
+  });
 
   constructor(props) {
     super(props);
   }
 
   render() {
-    const { reposByPubkey, reposFetched, reposCount, errors, onTestPress } = this.props;
-
-    return (
-      <View style={{ flex: 1 }}>
-        <Button
-          style={{ margin: 8 }}
-          title="Fetch these motha fucka repos!"
-          onPress={() => onTestPress()}
-        />
-        <View style={{ padding: 8 }}>
-          <Text>
-            Fetched {reposFetched} repos over {reposCount}.
-          </Text>
-        </View>
-        <ScrollView style={{ flex: 1, padding: 16, backgroundColor: 'white' }}>
-          {Object.keys(reposByPubkey).map((pubkey, index) => {
-            const repo = reposByPubkey[pubkey];
-            return (
-              <View key={index} style={{ marginVertical: 8 }}>
-                <Text style={{ fontWeight: 'bold', fontSize: 16 }}>
-                  {repo.name}{' '}
-                  <Text style={{ fontSize: 10 }}>({repo.applications.length} apps)</Text>
-                </Text>
-                <Text style={{ fontSize: 12 }}>{repo.description}</Text>
-              </View>
-            );
-          })}
-          <View
-            style={{
-              marginTop: 8,
-              paddingTop: 8,
-              borderTopWidth: 1,
-              borderTopColor: 'rgba(0,0,0,.04)'
-            }}
-          >
-            <Text style={{ color: 'red', fontWeight: 'bold' }}>
-              Fetch errors ({errors.length || 0})
-            </Text>
-            {errors.map((error, index) => {
-              return (
-                <Text key={index} style={{ color: 'red' }}>
-                  {error}
-                </Text>
-              );
-            })}
-          </View>
-        </ScrollView>
-      </View>
-    );
+    return <HomeTabs {...this.props} />;
   }
 }
+
+HomeScreen.router = HomeTabs.router;
+export default HomeScreen;

@@ -1,8 +1,31 @@
 // @flow
+import React from 'react';
+import { DrawerNavigator, StackNavigator } from 'react-navigation';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-// TODO: DEFINE ROUTES HERE!
-import Home from '../containers/HomeContainer';
+import HomeScreen from '../components/HomeScreen';
+import MenuButton from '../components/MenuButton';
 
-export const primaryRoutes = {
-  Home: { screen: Home }
-};
+import sharedStyles from './sharedStyles';
+
+export const AppRoutes = StackNavigator(
+  {
+    Home: { screen: HomeScreen, path: 'home' }
+  },
+  {
+    navigationOptions: ({ navigation }) => ({
+      headerLeft: (
+        <MenuButton
+          navigation={navigation}
+          iconName={'menu'}
+          color={sharedStyles.HEADER_COLOR}
+          onPress={() => navigation.navigate('DrawerOpen')}
+        />
+      )
+    })
+  }
+);
+
+export const primaryRoutes = DrawerNavigator({
+  App: { screen: AppRoutes }
+});

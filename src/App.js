@@ -23,7 +23,7 @@ import { getRootReducer } from './reducers';
 
 const { UIManager } = NativeModules;
 
-const Navigator = DrawerNavigator(primaryRoutes);
+const Navigator = primaryRoutes;
 const navigationReducer = (state, action) => {
   const newState = Navigator.router.getStateForAction(action, state);
   return newState || state;
