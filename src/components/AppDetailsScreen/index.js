@@ -58,47 +58,51 @@ export default class AppDetailsScreen extends Component {
         </View>
         <View
           style={{
-            padding: 16,
-            backgroundColor: 'white',
-            elevation: 2
+            marginTop: -40,
+            zIndex: 2000,
+            overflow: 'visible'
           }}
         >
-          <View style={{ marginTop: -40, zIndex: 2000 }}>
-            <Image
-              source={{ uri: app.icon }}
-              style={{ width: 46, height: 46, resizeMode: 'contain' }}
-            />
-          </View>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignItems: 'flex-start'
-            }}
-          >
-            <View style={{ flexDirection: 'column', flex: 0.7 }}>
-              <Text style={{ fontWeight: 'bold', fontSize: 16 }}>{app.name}</Text>
-              <Text style={{ fontStyle: 'italic', fontSize: 11 }}>{app.summary}</Text>
-            </View>
-            <View style={{ flexDirection: 'column', flex: 0.3 }}>
-              <Button
-                style={{ flex: 0.3 }}
-                title="Install"
-                color={sharedStyles.ACCENT_COLOR}
-                onPress={() => alert('Not yet implemented.')}
+          <View style={{ padding: 16, elevation: 2 }}>
+            <View style={{ overflow: 'visible' }}>
+              <Image
+                source={{ uri: app.icon }}
+                style={{ width: 42, height: 42, resizeMode: 'contain', overflow: 'visible' }}
               />
-              {app.marketVersion !== null && (
-                <Text style={{ fontSize: 12, color: '#BABABA', marginTop: 8, textAlign: 'right' }}>
-                  Version: {app.marketVersion}
+            </View>
+            <View
+              style={{
+                backgroundColor: 'white',
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'flex-start'
+              }}
+            >
+              <View style={{ flexDirection: 'column', flex: 0.7 }}>
+                <Text style={{ fontWeight: 'bold', fontSize: 16, color: '#505050' }}>
+                  {app.name}
                 </Text>
-              )}
+                <Text style={{ fontSize: 11 }}>{app.summary}</Text>
+              </View>
+              <View style={{ flexDirection: 'column', flex: 0.3 }}>
+                <Button
+                  style={{ flex: 0.3 }}
+                  title="Install"
+                  color={sharedStyles.ACCENT_COLOR}
+                  onPress={() => alert('Not yet implemented.')}
+                />
+              </View>
             </View>
           </View>
         </View>
         <View style={{ padding: 16, backgroundColor: '#fafafa' }}>
+          <Text style={{ fontWeight: 'bold', color: '#696969' }}>{app.summary}</Text>
           <HTMLView
             value={app.description}
-            stylesheet={{ a: { fontWeight: 'bold', color: sharedStyles.ACCENT_COLOR } }}
+            stylesheet={{
+              p: { color: '#696969' },
+              a: { fontWeight: 'bold', color: sharedStyles.ACCENT_COLOR }
+            }}
           />
         </View>
       </ScrollView>
