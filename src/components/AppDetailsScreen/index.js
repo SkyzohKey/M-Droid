@@ -55,9 +55,11 @@ export default class AppDetailsScreen extends Component {
     const collapseDescription =
       this.state.descriptionExpanded === false
         ? {
-            height: 155
+            height: app.screenshots ? 155 : 'auto'
           }
-        : null;
+        : {
+            height: 'auto'
+          };
 
     return (
       <ScrollView style={styles.container}>
@@ -122,23 +124,25 @@ export default class AppDetailsScreen extends Component {
           </View>
         </View>
         <View style={[{ padding: 16, backgroundColor: '#fafafa' }, collapseDescription]}>
-          <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
-            <Touchable
-              onPress={() => this.toggleDescription()}
-              style={{
-                paddingHorizontal: 8,
-                paddingVertical: 6
-              }}
-            >
-              <Text style={{ color: '#BABABA', fontSize: 12, fontWeight: 'bold' }}>
-                {this.state.descriptionExpanded ? 'LESS' : 'MORE'}{' '}
-                <Icon
-                  name={this.state.descriptionExpanded ? 'chevron-up' : 'chevron-down'}
-                  color={'#BABABA'}
-                />
-              </Text>
-            </Touchable>
-          </View>
+          {app.screenshots !== undefined && (
+            <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
+              <Touchable
+                onPress={() => this.toggleDescription()}
+                style={{
+                  paddingHorizontal: 8,
+                  paddingVertical: 6
+                }}
+              >
+                <Text style={{ color: '#BABABA', fontSize: 12, fontWeight: 'bold' }}>
+                  {this.state.descriptionExpanded ? 'LESS' : 'MORE'}{' '}
+                  <Icon
+                    name={this.state.descriptionExpanded ? 'chevron-up' : 'chevron-down'}
+                    color={'#BABABA'}
+                  />
+                </Text>
+              </Touchable>
+            </View>
+          )}
           <Text style={{ fontWeight: 'bold', color: '#696969' }}>{app.summary}</Text>
           <HTMLView
             value={app.description}
