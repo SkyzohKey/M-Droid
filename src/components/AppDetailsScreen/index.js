@@ -148,11 +148,13 @@ export default class AppDetailsScreen extends Component {
             }}
           />
         </View>
-        <View
-          style={{ marginTop: 16, height: 200, alignItems: 'center', justifyContent: 'center' }}
-        >
-          <Text style={{ fontSize: 24, fontWeight: 'bold' }}>Screenshots of {app.name}</Text>
-        </View>
+        {app.screenshots && (
+          <View
+            style={{ marginTop: 16, height: 200, alignItems: 'center', justifyContent: 'center' }}
+          >
+            <Text style={{ fontSize: 24, fontWeight: 'bold' }}>Screenshots of {app.name}</Text>
+          </View>
+        )}
         <View style={{ padding: 16, backgroundColor: '#fafafa' }}>
           <Text style={{ fontWeight: 'bold', marginBottom: 8 }}>DEVELOPER</Text>
           {app.license && (
