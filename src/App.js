@@ -41,7 +41,7 @@ export class NavigationWrapper extends Component {
   }
 
   componentWillMount() {
-    this.handler = BackHandler.addEventListener('hardwareBackPress', this.onBackPress);
+    this.handler = BackHandler.addEventListener('hardwareBackPress', () => this.onBackPress());
   }
 
   componentWillUnmount() {
@@ -62,11 +62,40 @@ export class NavigationWrapper extends Component {
 
   onBackPress = () => {
     const { dispatch, navigation } = this.props;
-    if (navigation.index === 0) {
+    if (this.isDrawerOpen(navigation)) {
+      this.closeDrawer();
+      return true;
+    }
+
+    if (this.shouldCloseApp(navigation)) {
       return false;
     }
 
     dispatch(NavigationActions.back());
+    return true;
+  };
+
+  isDrawerOpen = navigation => {
+    return navigation.routes[0].index === 1;
+  };
+
+  closeDrawer = () => {
+    this.props.dispatch(
+      NavigationActions.navigate({
+        routeName: 'DrawerClose'
+      })
+    );
+  };
+
+  shouldCloseApp = navigation => {
+    if (navigation.index > 0) {
+      return false;
+    }
+
+    if (navigation.routes) {
+      return navigation.routes.every(this.shouldCloseApp);
+    }
+
     return true;
   };
 }
