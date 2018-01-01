@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, Image, Button, Dimensions, ScrollView, Linking } from 'react-native';
 import HTMLView from 'react-native-htmlview';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import FIcon from 'react-native-vector-icons/Foundation';
 
 import MenuButton from '../MenuButton';
 import Touchable from '../Touchable';
@@ -153,15 +154,164 @@ export default class AppDetailsScreen extends Component {
           <Text style={{ fontSize: 24, fontWeight: 'bold' }}>Screenshots of {app.name}</Text>
         </View>
         <View style={{ padding: 16, backgroundColor: '#fafafa' }}>
-          <Text>License: {app.license}</Text>
-          <Text>Website: {app.website}</Text>
-          <Text>Source: {app.source}</Text>
-          <Text>Issues Tracker: {app.tracker}</Text>
-          <Text>Changelog: {app.changelog}</Text>
-          <Text>Flattr: {app.flattr}</Text>
-          <Text>Bitcoin: {app.bitcoin}</Text>
-          <Text>Litecoin: {app.litecoin}</Text>
-          <Text>Liberapay: {app.liberapay}</Text>
+          <Text style={{ fontWeight: 'bold', marginBottom: 8 }}>DEVELOPER</Text>
+          {app.license && (
+            <Touchable onPress={() => alert('License: ' + app.license)}>
+              <View
+                style={{
+                  paddingVertical: 4,
+                  paddingHorizontal: 8,
+                  flexDirection: 'row',
+                  alignItems: 'center'
+                }}
+              >
+                <Icon name={'copyright'} size={20} color={'#aaa'} />
+                <Text style={{ marginLeft: 8, color: '#aaa', fontWeight: 'bold' }}>
+                  {app.license}
+                </Text>
+              </View>
+            </Touchable>
+          )}
+          {app.website && (
+            <Touchable onPress={() => Linking.openURL(app.website)}>
+              <View
+                style={{
+                  paddingVertical: 4,
+                  paddingHorizontal: 8,
+                  flexDirection: 'row',
+                  alignItems: 'center'
+                }}
+              >
+                <Icon name={'web'} size={20} color={'#aaa'} />
+                <Text style={{ marginLeft: 8, color: '#aaa', fontWeight: 'bold' }}>
+                  Visit website
+                </Text>
+              </View>
+            </Touchable>
+          )}
+          {app.authorEmail && (
+            <Touchable onPress={() => Linking.openURL('mailto:' + app.authorEmail)}>
+              <View
+                style={{
+                  paddingVertical: 4,
+                  paddingHorizontal: 8,
+                  flexDirection: 'row',
+                  alignItems: 'center'
+                }}
+              >
+                <Icon name={'email'} size={20} color={'#aaa'} />
+                <Text style={{ marginLeft: 8, color: '#aaa', fontWeight: 'bold' }}>
+                  Send an email
+                </Text>
+              </View>
+            </Touchable>
+          )}
+          {app.tracker && (
+            <Touchable onPress={() => Linking.openURL(app.tracker)}>
+              <View
+                style={{
+                  paddingVertical: 4,
+                  paddingHorizontal: 8,
+                  flexDirection: 'row',
+                  alignItems: 'center'
+                }}
+              >
+                <Icon name={'bug'} size={20} color={'#aaa'} />
+                <Text style={{ marginLeft: 8, color: '#aaa', fontWeight: 'bold' }}>
+                  Report an issue
+                </Text>
+              </View>
+            </Touchable>
+          )}
+          {app.changelog && (
+            <Touchable onPress={() => Linking.openURL(app.changelog)}>
+              <View
+                style={{
+                  paddingVertical: 4,
+                  paddingHorizontal: 8,
+                  flexDirection: 'row',
+                  alignItems: 'center'
+                }}
+              >
+                <Icon name={'note-text'} size={20} color={'#aaa'} />
+                <Text style={{ marginLeft: 8, color: '#aaa', fontWeight: 'bold' }}>
+                  Changelog & release notes
+                </Text>
+              </View>
+            </Touchable>
+          )}
+          {(app.flattr || app.bitcoin || app.litecoin || app.liberapay) && (
+            <View>
+              <View style={{ marginVertical: 8, height: 1.5, backgroundColor: '#ddd' }} />
+              <Text style={{ fontWeight: 'bold', marginBottom: 8 }}>DONATE</Text>
+            </View>
+          )}
+          {app.flattr && (
+            <Touchable onPress={() => Linking.openURL('https://flattr.com/thing/' + app.flattr)}>
+              <View
+                style={{
+                  paddingVertical: 4,
+                  paddingHorizontal: 8,
+                  flexDirection: 'row',
+                  alignItems: 'center'
+                }}
+              >
+                <Icon name={'flattr'} size={20} color={'#aaa'} />
+                <Text style={{ marginLeft: 8, color: '#aaa', fontWeight: 'bold' }}>Flattr</Text>
+              </View>
+            </Touchable>
+          )}
+          {app.bitcoin && (
+            <Touchable
+              onPress={() => Linking.openURL('https://blockchain.info/address/' + app.bitcoin)}
+            >
+              <View
+                style={{
+                  paddingVertical: 4,
+                  paddingHorizontal: 8,
+                  flexDirection: 'row',
+                  alignItems: 'center'
+                }}
+              >
+                <FIcon style={{ marginLeft: 3 }} name={'bitcoin-circle'} size={20} color={'#aaa'} />
+                <Text style={{ marginLeft: 8, color: '#aaa', fontWeight: 'bold' }}>Bitcoin</Text>
+              </View>
+            </Touchable>
+          )}
+          {app.litecoin && (
+            <Touchable
+              onPress={() =>
+                Linking.openURL('http://explorer.litecoin.net/address/' + app.litecoin)
+              }
+            >
+              <View
+                style={{
+                  paddingVertical: 4,
+                  paddingHorizontal: 8,
+                  flexDirection: 'row',
+                  alignItems: 'center'
+                }}
+              >
+                <Icon name={'coin'} size={20} color={'#aaa'} />
+                <Text style={{ marginLeft: 8, color: '#aaa', fontWeight: 'bold' }}>Litecoin</Text>
+              </View>
+            </Touchable>
+          )}
+          {app.liberapay && (
+            <Touchable onPress={() => alert('Liberapay: ' + app.liberapay)}>
+              <View
+                style={{
+                  paddingVertical: 4,
+                  paddingHorizontal: 8,
+                  flexDirection: 'row',
+                  alignItems: 'center'
+                }}
+              >
+                <Icon name={'cash'} size={20} color={'#aaa'} />
+                <Text style={{ marginLeft: 8, color: '#aaa', fontWeight: 'bold' }}>Liberapay</Text>
+              </View>
+            </Touchable>
+          )}
         </View>
       </ScrollView>
     );
