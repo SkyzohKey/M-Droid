@@ -16,12 +16,7 @@ const mapDispatchToProps = dispatch => {
       dispatch({
         type: 'Navigation/NAVIGATE',
         routeName: 'AppDetails',
-        params: { app: app },
-        action: {
-          type: 'Navigation/NAVIGATE',
-          routeName: 'AppDetails',
-          params: { app: app }
-        }
+        params: { app: app }
       });
     }
   };
