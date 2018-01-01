@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ScrollView, Text } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import PropTypes from 'prop-types';
 
 import AppsListContainer from '../../containers/AppsListContainer';
@@ -25,11 +25,13 @@ export default class AppsTab extends Component {
 
   render() {
     return (
-      <ScrollView style={styles.container}>
-        <AppsListContainer maxCount={6} title={'Featured apps'} />
-        <AppsListContainer maxCount={10} index={5} title={'Popular apps'} />
-        <AppsListContainer maxCount={-3} index={9} title={'New apps'} />
-      </ScrollView>
+      <View style={{ flex: 1 }}>
+        <ScrollView style={styles.container}>
+          <AppsListContainer maxCount={6} title={'Featured apps'} />
+          <AppsListContainer maxCount={10} index={5} title={'Popular apps'} />
+          <AppsListContainer maxCount={-3} index={9} title={'New apps'} />
+        </ScrollView>
+      </View>
     );
   }
 }

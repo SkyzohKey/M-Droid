@@ -21,33 +21,30 @@ export const fetchRepositories = () => {
         continue;
       }
 
-      try {
-        repoService
-          .getRepositoryAsync(repo)
-          .then(response => {
-            if (response) {
-              console.log('Processed', repo, response);
-              dispatch({ type: types.SET_REPOSITORY_DATA, repository: response.meta });
-              dispatch({
-                type: appTypes.SET_APPLICATIONS_DATA,
-                applications: response.applications
-              });
-            }
-          })
-          .catch(err => {
-            console.log('Errored at repo', repo, err);
+      repoService
+        .getRepositoryAsync(repo)
+        .then(response => {
+          if (response.success) {
+            console.log('Processed', repo, response);
+            dispatch({ type: types.SET_REPOSITORY_DATA, repository: response.meta });
+            dispatch({
+              type: appTypes.SET_APPLICATIONS_DATA,
+              applications: response.applications
+            });
+          } else {
             dispatch({
               type: types.FETCH_REPOSITORIES_FAILURE,
-              error: repo + ': ' + err.message
+              error: response.error
             });
+          }
+        })
+        .catch(err => {
+          console.log('Errored at repo', repo, err);
+          dispatch({
+            type: types.FETCH_REPOSITORIES_FAILURE,
+            error: repo + ': ' + err.message
           });
-      } catch (err) {
-        console.log('Errored at repo', repo, err);
-        dispatch({
-          type: types.FETCH_REPOSITORIES_FAILURE,
-          error: repo + ': ' + err.message
         });
-      }
     }
 
     dispatch({ type: types.FETCH_REPOSITORIES_SUCCESS });

@@ -1,7 +1,5 @@
 import { Buffer } from 'buffer/';
 import { DOMParser } from 'xmldom';
-import { AsyncStorage } from 'react-native';
-import RNFS from 'react-native-fs';
 
 /**
  * The RepositoryService allows to query ONE repository for packages, metadata, etc.
@@ -11,68 +9,78 @@ import RNFS from 'react-native-fs';
 const parser = new DOMParser();
 
 /**
+ * Check if value is defined for a node, and if that node exists in the parent node.
+ *
+ * @since 0.1.1
+ * @param {Element} parent - Parent's node.
+ * @param {String} childName - The child to check.
+ * @return {Boolean} true if the node exists and as a value inside itself.
+ */
+const nodeHasValue = (parent, childName) => {
+  if (
+    parent.getElementsByTagName(childName)[0] === undefined ||
+    parent.getElementsByTagName(childName)[0].childNodes[0] === undefined ||
+    parent.getElementsByTagName(childName)[0].childNodes[0].nodeValue === undefined
+  ) {
+    return false;
+  }
+
+  return true;
+};
+
+/**
  * Get a node value from it's parent node.
  *
+ * @since 0.1.0
  * @param {Element} parent - The parent node from which to find the specified node.
- * @param {String} nodeName - Node's tagname
- * @return {String} returns the node's value.
+ * @param {String} childName - Node's tagname
+ * @return {String|null} returns the node's value or null if the node do not has value.
  */
-const getNodeValue = (parent, nodeName) => {
-  if (parent.getElementsByTagName(nodeName)[0] === undefined) {
-    return null;
-  }
-
-  if (parent.getElementsByTagName(nodeName)[0].childNodes[0] === undefined) {
-    return null;
-  }
-
-  if (parent.getElementsByTagName(nodeName)[0].childNodes[0].nodeValue === undefined) {
+const getNodeValue = (parent, childName) => {
+  if (!nodeHasValue(parent, childName)) {
     return null;
   }
 
   // For safety.
-  return parent.getElementsByTagName(nodeName)[0].childNodes[0].nodeValue;
+  const nodeAsString = String(parent.getElementsByTagName(childName)[0].childNodes[0].nodeValue);
+  return nodeAsString;
 };
 
 /**
  * Get a node values as an array from it's parent node.
- * F-Droid has array-like fields where values are separated by a comma.
+ * F-Droid supports serialized arrays where values are separated by a comma.
  * This method find the node then split on comma and returns an array.
  *
+ * @since 0.1.0
  * @param {Element} parent - The parent node from which to find the specified node.
- * @param {String} nodeName - Node's tagname
- * @return {Array} returns the node's values as an array.
+ * @param {String} childName - Node's tagname
+ * @return {Array} returns the node's values deserialized as a Javascript array.
  */
-const getNodeArray = (parent, nodeName) => {
-  if (parent.getElementsByTagName(nodeName)[0] === undefined) {
+const getNodeArray = (parent, childName) => {
+  if (!nodeHasValue(parent, childName)) {
     return null;
   }
 
-  const nodeValue = String(parent.getElementsByTagName(nodeName)[0].childNodes[0].nodeValue);
-  const nodeArray = nodeValue.split(',');
-  return nodeArray;
-};
-
-/**
- * Get a path to a cached repo JSON for a given uuid.
- *
- * @param {String} uuid - An UUID, used as the filename for cached data.
- * @return {String} returns the path to file.
- */
-const getPathFromCache = uuid => {
-  return RNFS.CachesDirectoryPath + '/' + uuid + '.json';
+  const nodeAsArray = String(
+    parent.getElementsByTagName(childName)[0].childNodes[0].nodeValue
+  ).split(',');
+  return nodeAsArray;
 };
 
 /**
  * Parse a given index.xml and extracts values from it to make it
  * processable by the app.
  *
+ * @deprecated This method has been deprectated in version 0.1.1
+ * in favor of #parseRepoIndexV1 as of F-droid 1.0.0
+ *
+ * @since 0.1.0
  * @param {Document} doc - The index.xml to be parsed.
  * @param {String} uuid - A unique identifier for this repo.
  * @param {String} baseUrl - The repository's base URL.
- * @return {Object} returns the parsed repository.
+ * @return {Object} returns the parsed repository as an Object.
  */
-const parseRepoIndex = (doc, uuid, baseUrl) => {
+const parseOldRepoIndex = (doc, uuid, baseUrl) => {
   const repo = doc.getElementsByTagName('repo')[0] || null;
   const applications = doc.getElementsByTagName('application');
   const repoData = {
@@ -116,6 +124,7 @@ const parseRepoIndex = (doc, uuid, baseUrl) => {
       authorEmail: getNodeValue(appNode, 'email'),
       donate: getNodeValue(appNode, 'donate'),
       bitcoin: getNodeValue(appNode, 'bitcoin'),
+      litecoin: getNodeValue(appNode, 'litecoin'),
       flattr: getNodeValue(appNode, 'flattr'),
       liberapay: getNodeValue(appNode, 'liberapay'),
       marketVersion: getNodeValue(appNode, 'marketversion'),
@@ -150,63 +159,46 @@ const parseRepoIndex = (doc, uuid, baseUrl) => {
 };
 
 /**
- * Get a repository index.xml file in async mode.
+ * Parse a given index-v1.jar and extracts index.json from it.
+ * The process that index.json file in order to make it compliant
+ * with the internal Redux state structure.
  *
+ * @since 0.1.1
+ * @param {String} json - The index.json to be processes.
+ * @param {String} uuid - A unique identifier for this repo.
+ * @param {String} baseUrl - The repository's base URL.
+ * @return {Object} returns the processed repository as an Object.
+ */
+const parseRepoIndexV1 = (json, uuid, baseUrl) => {
+  // TODO: Unzip the .jar file and get index.json content.
+  // TODO: Parse the json file to make it compliant (ie. same fields) with index.xml
+  // TODO: return the data.
+  // Unless that is done, proxy to the old method.
+};
+
+/**
+ * Parse and return a repository for the given baseUrl asynchronously.
+ *
+ * @since 0.1.0
  * @param {String} baseUrl - The repository base url.
- * @return {String} returns the parsed index as JSON.
+ * @return {Object} returns a Repository object, or an Error object.
  */
 export const getRepositoryAsync = async baseUrl => {
-  let dataCache = null;
-  let repoCache = null;
-
   try {
+    /**
+     * TODO: Check if `${baseUrl}/index-v1.jar exists.
+     *        - If exists, unzip it and parse the index-v1.json file inside.
+     *        - Else, download the old index.xml and parse it using parseOldRepoIndex.
+     */
+
     const repoUUID = Buffer.from(baseUrl).toString('base64');
-    /* console.tron.log('getRepositoryAsync => ', baseUrl);
-    dataCache = await AsyncStorage.getItem('repo/' + repoUUID);
-    repoCache = dataCache !== null ? JSON.parse(dataCache) : null;
-    console.tron.log('Fetch repo cache from AsyncStorage for', baseUrl);
-    console.tron.log(repoCache, dataCache);*/
-
     const response = await fetch(baseUrl + '/index.xml');
-    console.tron.log('Fetched index.xml for repo', baseUrl);
-
-    /* const etag = response.headers.has('ETag') ? response.headers.get('ETag') : null;
-
-    // Here we check our caching system.
-    console.tron.log('Checking presence of ETag value for repo', baseUrl, etag);
-    if (repoCache && etag && repoCache.uuid) {
-      console.tron.log('Found repository cache data', repoCache);
-      const fileExists = await RNFS.exists(getPathFromCache(repoCache.uuid));
-      if (fileExists) {
-        console.tron.log('ETag found for repo', baseUrl);
-        const repoFile = await RNFS.readFile(getPathFromCache(repoCache.uuid), 'utf8');
-        const repo = JSON.parse(repoFile);
-        console.tron.log('Parsed repo found in cache', getPathFromCache(repoCache.uuid));
-        console.tron.log('Using cached version of the repo');
-        return repo;
-      }
-    }
-
-    console.tron.log('Using downloaded version of the repo');*/
     const responseXml = await response.text();
     const doc = parser.parseFromString(responseXml);
-    const repoData = parseRepoIndex(doc, repoUUID, baseUrl);
-    // console.tron.log('Repo parsed to JSON', repoData, etag);
+    const repoData = parseOldRepoIndex(doc, repoUUID, baseUrl);
 
-    /* if (repoData) {
-      console.tron.log('Writing data to cache', etag, repoData);
-      await AsyncStorage.removeItem('repo/' + repoUUI);
-      await AsyncStorage.setItem(
-        'repo/' + repoUUID,
-        JSON.stringify({ etag: etag, uuid: repoUUID })
-      );
-      await RNFS.writeFile(getPathFromCache(repoUUID), JSON.stringify(repoData), 'utf8');
-    }*/
-
-    return { meta: repoData.meta, applications: repoData.applications };
+    return { success: true, meta: repoData.meta, applications: repoData.applications };
   } catch (e) {
-    console.tron.log('getRepositoryAsync: ' + e.message);
-    console.tron.log(e);
-    return null;
+    return { success: false, error: e.message };
   }
 };

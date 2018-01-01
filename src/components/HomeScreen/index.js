@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Image } from 'react-native';
+import { View, Image, StatusBar } from 'react-native';
 import { TabNavigator } from 'react-navigation';
 
 import MenuButton from '../../components/MenuButton';
@@ -80,7 +80,12 @@ class HomeScreen extends Component {
   }
 
   render() {
-    return <HomeTabs {...this.props} />;
+    return (
+      <View style={{ flex: 1 }}>
+        <StatusBar barStyle="dark-content" backgroundColor="white" />
+        <HomeTabs {...this.props} />
+      </View>
+    );
   }
 }
 
