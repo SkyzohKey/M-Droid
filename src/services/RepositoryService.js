@@ -93,13 +93,15 @@ const parseRepoIndex = (doc, uuid, baseUrl) => {
   for (let i = 0, l = applications.length; i < l; i++) {
     const appNode = applications[i];
     const appPackages = appNode.getElementsByTagName('package');
+    const appId = appNode.getAttribute('id') || getNodeValue(appNode, 'id');
     const appData = {
-      id: appNode.getAttribute('id') || getNodeValue(appNode, 'id'),
+      id: appId,
       added: getNodeValue(appNode, 'added'),
       lastUpdated: getNodeValue(appNode, 'lastupdated'),
       name: getNodeValue(appNode, 'name'),
       summary: getNodeValue(appNode, 'summary'),
       icon: baseUrl + '/icons/' + getNodeValue(appNode, 'icon'),
+      featureGraphic: baseUrl + '/' + appId + '/en-US/featureGraphic.png',
       description: getNodeValue(appNode, 'desc'),
       license: getNodeValue(appNode, 'license'), // SPDX format.
       provides: getNodeValue(appNode, 'provides'),
@@ -116,8 +118,8 @@ const parseRepoIndex = (doc, uuid, baseUrl) => {
       bitcoin: getNodeValue(appNode, 'bitcoin'),
       flattr: getNodeValue(appNode, 'flattr'),
       liberapay: getNodeValue(appNode, 'liberapay'),
-      marketversion: getNodeValue(appNode, 'marketversion'),
-      marketvercode: getNodeValue(appNode, 'marketvercode'),
+      marketVersion: getNodeValue(appNode, 'marketversion'),
+      marketVersionCode: getNodeValue(appNode, 'marketvercode'),
       packages: []
     };
 

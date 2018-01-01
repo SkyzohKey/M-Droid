@@ -14,7 +14,12 @@ const initialState = {
     'https://guardianproject.info/fdroid/repo', // The Guardian repo.
     'https://guardianproject.info/fdroid/archive', // The Guardian archives.
     'https://eutopia.cz/fdroid/repo', // Signal repo.
-    'https://grobox.de/fdroid/repo' // Grobox repo.
+    'https://grobox.de/fdroid/repo', // Grobox repo.
+    'https://microg.org/fdroid/repo', // MicroG repo.
+    'https://briarproject.org/fdroid/repo',
+    'http://fdroid.krombel.de/repo',
+    'https://f-droid.i2p.io/repo',
+    'https://fdroid.copperhead.co/repo'
   ],
   reposCount: 0,
   reposFetched: 0,

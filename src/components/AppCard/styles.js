@@ -3,7 +3,7 @@ import sharedStyles from '../../bootstrap/sharedStyles';
 const styles = {
   container: {
     marginRight: 8,
-    elevation: 2
+    elevation: 3
   },
   card: {
     elevation: 2,

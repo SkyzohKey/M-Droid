@@ -28,6 +28,7 @@ That's Simple (c).
 The screenshots may not be up-to-date. This is currently an early stage for the project and I'll try to update screenshots as many as possible.
 
 ![2nd step: Prepare the UI!](https://i.imgur.com/vKmqXL0.png)
+![3rd step: Display apps informations!](https://i.imgur.com/5CQnthq.png)
 
 ## Contributing
 

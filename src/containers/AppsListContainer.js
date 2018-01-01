@@ -1,7 +1,7 @@
 // import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { NavigationActions } from 'react-navigation';
 
-import { fetchRepositories } from '../reducers/repositories/actions';
 import AppsList from '../components/AppsList';
 
 const mapStateToProps = (state, ownProps) => {
@@ -12,8 +12,17 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onTestPress: () => {
-      dispatch(fetchRepositories());
+    openDetails: app => {
+      dispatch({
+        type: 'Navigation/NAVIGATE',
+        routeName: 'AppDetails',
+        params: { app: app },
+        action: {
+          type: 'Navigation/NAVIGATE',
+          routeName: 'AppDetails',
+          params: { app: app }
+        }
+      });
     }
   };
 };

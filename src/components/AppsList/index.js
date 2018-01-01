@@ -7,12 +7,13 @@ import AppCard from '../AppCard';
 import Touchable from '../Touchable';
 import styles from './styles';
 
-export default class AppsList extends Component {
+class AppsList extends Component {
   static propTypes = {
     apps: PropTypes.array.isRequired,
     maxCount: PropTypes.number,
     index: PropTypes.number,
-    title: PropTypes.string.isRequired
+    title: PropTypes.string.isRequired,
+    openDetails: PropTypes.func.isRequired
   };
 
   static defaultProps = {
@@ -42,7 +43,10 @@ export default class AppsList extends Component {
           }}
         >
           <Text style={{ color: 'black', fontWeight: 'bold' }}>{title}</Text>
-          <Touchable onPress={() => alert('Show more ' + title + '.')}>
+          <Touchable
+            onPress={() => alert('Show more ' + title + '.')}
+            style={{ paddingHorizontal: 8, paddingVertical: 6 }}
+          >
             <Text style={{ color: '#BABABA', fontSize: 12 }}>
               ALL <Icon name={'chevron-right'} color={'#BABABA'} />
             </Text>
@@ -68,7 +72,7 @@ export default class AppsList extends Component {
                 appSummary={app.summary}
                 appIconPath={app.icon}
                 onPress={() => {
-                  alert(app.name + ' clicked!');
+                  this.props.openDetails(app);
                 }}
               />
             );
@@ -78,3 +82,5 @@ export default class AppsList extends Component {
     );
   }
 }
+
+export default AppsList;

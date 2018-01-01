@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image } from 'react-native';
+import { View, Image } from 'react-native';
 import { TabNavigator } from 'react-navigation';
 
 import MenuButton from '../../components/MenuButton';
@@ -34,7 +34,7 @@ export const HomeTabs = TabNavigator(
         backgroundColor: 'white'
       },
       indicatorStyle: {
-        backgroundColor: '#e91e63',
+        backgroundColor: sharedStyles.ACCENT_COLOR,
         height: 3
       },
       iconStyle: {
@@ -47,7 +47,7 @@ export const HomeTabs = TabNavigator(
 
 class HomeScreen extends Component {
   static navigationOptions = ({ navigation, screenProps }) => ({
-    title: 'Accueil',
+    title: 'Home',
     headerTintColor: sharedStyles.HEADER_COLOR,
     headerStyle: {
       backgroundColor: 'white',

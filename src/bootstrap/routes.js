@@ -1,16 +1,17 @@
 // @flow
 import React from 'react';
 import { DrawerNavigator, StackNavigator } from 'react-navigation';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import HomeScreen from '../components/HomeScreen';
+import AppDetailsScreen from '../containers/AppDetailsContainer';
 import MenuButton from '../components/MenuButton';
 
 import sharedStyles from './sharedStyles';
 
 export const AppRoutes = StackNavigator(
   {
-    Home: { screen: HomeScreen, path: 'home' }
+    Home: { screen: HomeScreen, path: 'home' },
+    AppDetails: { screen: AppDetailsScreen, path: 'app/:id/:name/:summary/:icon' }
   },
   {
     navigationOptions: ({ navigation }) => ({
