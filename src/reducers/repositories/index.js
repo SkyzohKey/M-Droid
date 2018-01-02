@@ -56,7 +56,7 @@ const repositoriesReducer = (state = initialState, action) => {
     case types.SET_REPOSITORY_DATA:
       return {
         ...state,
-        fetchComplete: state.reposFetched - 1 >= state.reposCount,
+        fetchComplete: state.reposFetched === state.reposCount,
         reposFetched: state.reposFetched + 1,
         reposByPubkey: {
           ...state.reposByPubkey,

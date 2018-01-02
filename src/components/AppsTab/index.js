@@ -26,7 +26,7 @@ export default class AppsTab extends Component {
   }
 
   render() {
-    const { apps, fetchComplete } = this.props;
+    const { apps, reposFetched, reposCount } = this.props;
     const newsApps = apps.filter(app => app.featureGraphic !== null).slice(0, 5);
 
     // TODO: Find a better way to do that.
@@ -50,7 +50,7 @@ export default class AppsTab extends Component {
 
     return (
       <View style={{ flex: 1 }}>
-        {fetchComplete ? (
+        {reposFetched === reposCount ? (
           <ScrollView>
             <NewAppsSlider apps={newsApps} />
             <View style={styles.container}>
