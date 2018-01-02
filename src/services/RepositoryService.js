@@ -1,4 +1,3 @@
-import { Buffer } from 'buffer/';
 import { DOMParser } from 'xmldom';
 import RNFetchBlob from 'react-native-fetch-blob';
 const android = RNFetchBlob.android;
@@ -190,6 +189,27 @@ const parseRepoIndexV1 = (json, uuid, baseUrl) => {
   // Unless that is done, proxy to the old method.
 };
 
+export const getCacheForParsedRepo = baseUrl => {
+  const hash = RNFetchBlob.base64.encode(baseUrl).replace('=', '');
+  const filePath = RNFetchBlob.fs.dirs.CacheDir + '/' + hash;
+  console.log('File path: ', filePath);
+  return RNFetchBlob.fs.exists(filePath).then(exists => {
+    if (exists) {
+      return RNFetchBlob.fs.readFile(filePath, 'utf8').then(data => {
+        return JSON.parse(data);
+      });
+    }
+    return Promise.reject();
+  });
+};
+
+export const cacheParsedRepo = (baseUrl, repoData) => {
+  const hash = RNFetchBlob.base64.encode(baseUrl).replace('=', '');
+  const data = JSON.stringify(repoData);
+  const filePath = RNFetchBlob.fs.dirs.CacheDir + '/' + hash;
+  return RNFetchBlob.fs.writeFile(filePath, data, 'utf8');
+};
+
 /**
  * Parse and return a repository for the given baseUrl asynchronously.
  *
@@ -198,25 +218,35 @@ const parseRepoIndexV1 = (json, uuid, baseUrl) => {
  * @return {Object} returns a Repository object, or an Error object.
  */
 export const getRepositoryAsync = async baseUrl => {
-  try {
-    /**
-     * TODO: Check if `${baseUrl}/index-v1.jar exists.
-     *        - If exists, unzip it and parse the index-v1.json file inside.
-     *        - Else, download the old index.xml and parse it using parseOldRepoIndex.
-     */
+  /**
+   * TODO: Check if `${baseUrl}/index-v1.jar exists.
+   *        - If exists, unzip it and parse the index-v1.json file inside.
+   *        - Else, download the old index.xml and parse it using parseOldRepoIndex.
+   */
+  return await getCacheForParsedRepo(baseUrl)
+    .then(repoData => {
+      console.log('Fetched repoData from cache for ' + baseUrl);
+      console.log(repoData);
+      return { success: true, meta: repoData.meta, applications: repoData.applications };
+    })
+    .catch(async () => {
+      const repoUUID = RNFetchBlob.base64.encode(baseUrl).replace('=', '');
+      // const response = await fetch(baseUrl + '/index.xml');
+      const task = RNFetchBlob.config({ fileCache: true });
+      const response = await task.fetch('GET', baseUrl + '/index.xml');
+      const responseXml = await response.text();
+      const doc = parser.parseFromString(responseXml);
+      const repoData = parseOldRepoIndex(doc, repoUUID, baseUrl);
+      console.log('Downloaded repoData from the repository at ' + baseUrl);
 
-    const repoUUID = Buffer.from(baseUrl).toString('base64');
-    // const response = await fetch(baseUrl + '/index.xml');
-    const task = RNFetchBlob.config({ fileCache: true });
-    const response = await task.fetch('GET', baseUrl + '/index.xml');
-    const responseXml = await response.text();
-    const doc = parser.parseFromString(responseXml);
-    const repoData = parseOldRepoIndex(doc, repoUUID, baseUrl);
-
-    return { success: true, meta: repoData.meta, applications: repoData.applications };
-  } catch (e) {
-    return { success: false, error: e.message };
-  }
+      if (repoData !== null) {
+        cacheParsedRepo(baseUrl, repoData);
+        console.log('Cached repoData for ' + baseUrl);
+        console.log(repoData);
+        return { success: true, meta: repoData.meta, applications: repoData.applications };
+      }
+      return { success: false, error: 'Unknown error, cannot fetch repository ' + baseUrl };
+    });
 };
 
 export const downloadApp = async (appName, apkName, apkUrl) => {
@@ -225,7 +255,7 @@ export const downloadApp = async (appName, apkName, apkUrl) => {
       addAndroidDownloads: {
         useDownloadManager: true,
         path: RNFetchBlob.fs.dirs.DownloadDir + apkName,
-        title: 'MDroid',
+        title: apkName,
         description: 'Downloading & installing « ' + appName + ' ».',
         mime: 'application/vnd.android.package-archive',
         mediaScannable: true,
@@ -235,7 +265,7 @@ export const downloadApp = async (appName, apkName, apkUrl) => {
       .fetch('GET', apkUrl)
       .then(res => {
         android.actionViewIntent(
-          RNFetchBlob.fs.dirs.DownloadDir + apkName,
+          RNFetchBlob.fs.dirs.DownloadDir + '/' + apkName,
           'application/vnd.android.package-archive'
         );
       });
