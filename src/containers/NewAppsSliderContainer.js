@@ -2,7 +2,7 @@
 import { connect } from 'react-redux';
 import { NavigationActions } from 'react-navigation';
 
-import AppsList from '../components/AppsList';
+import NewAppsSlider from '../components/NewAppsSlider';
 
 const mapStateToProps = (state, ownProps) => {
   return {
@@ -22,4 +22,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(AppsList);
+export default connect(mapStateToProps, mapDispatchToProps)(NewAppsSlider);

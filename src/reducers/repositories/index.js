@@ -9,7 +9,7 @@ const initialState = {
   fetchRepositoryRequest: false,
   fetchRepositoryError: null,
   defaultRepositories: [
-    // 'https://f-droid.org/repo', // Official F-Droid repo.
+    'https://f-droid.org/repo', // Official F-Droid repo.
     // 'https://f-droid.org/archive', // Official F-Droid archives.
     'https://guardianproject.info/fdroid/repo', // The Guardian repo.
     'https://guardianproject.info/fdroid/archive', // The Guardian archives.

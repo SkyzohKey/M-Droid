@@ -66,6 +66,8 @@ export default class AppDetailsScreen extends Component {
             height: 'auto'
           };
 
+    const licenseUrl = false;
+
     return (
       <ScrollView style={styles.container} onLayout={() => this.onLayout()}>
         <View
@@ -171,7 +173,13 @@ export default class AppDetailsScreen extends Component {
         <View style={{ padding: 16, backgroundColor: '#fafafa' }}>
           <Text style={{ fontWeight: 'bold', marginBottom: 8 }}>DEVELOPER</Text>
           {app.license && (
-            <Touchable onPress={() => alert('License: ' + app.license)}>
+            <Touchable
+              onPress={() => {
+                if (licenseUrl !== false) {
+                  Linking.openURL(licenseUrl);
+                }
+              }}
+            >
               <View
                 style={{
                   paddingVertical: 8,

@@ -7,6 +7,7 @@ import AppsTab from '../components/AppsTab';
 const mapStateToProps = (state, ownProps) => {
   return {
     // appsByCategoryName: state.applications.appsByCategoryName
+    apps: state.applications.apps
   };
 };
 

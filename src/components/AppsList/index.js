@@ -6,6 +6,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import AppCard from '../AppCard';
 import Touchable from '../Touchable';
 import styles from './styles';
+import sharedStyles from '../../bootstrap/sharedStyles';
 
 class AppsList extends Component {
   static propTypes = {
@@ -13,12 +14,16 @@ class AppsList extends Component {
     maxCount: PropTypes.number,
     index: PropTypes.number,
     title: PropTypes.string.isRequired,
+    icon: PropTypes.string,
+    color: PropTypes.string,
     openDetails: PropTypes.func.isRequired
   };
 
   static defaultProps = {
     maxCount: 3,
-    index: 0
+    index: 0,
+    icon: 'star',
+    color: sharedStyles.ACCENT_COLOR
   };
 
   constructor(props) {
@@ -26,7 +31,11 @@ class AppsList extends Component {
   }
 
   render() {
-    const { apps, maxCount, index, title } = this.props;
+    const { apps, maxCount, index, title, icon, color } = this.props;
+    if (apps === null || apps === [] || apps.length === 0) {
+      return null;
+    }
+
     let subset;
     if (maxCount !== 0) {
       subset = apps.slice(index, maxCount);
@@ -42,7 +51,12 @@ class AppsList extends Component {
             margin: 12
           }}
         >
-          <Text style={{ color: 'black', fontWeight: 'bold' }}>{title}</Text>
+          <View
+            style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start' }}
+          >
+            <Icon name={icon} size={20} color={color} />
+            <Text style={{ marginLeft: 8, color: 'black', fontWeight: 'bold' }}>{title}</Text>
+          </View>
           <Touchable
             onPress={() => alert('Show more ' + title + '.')}
             style={{ paddingHorizontal: 8, paddingVertical: 6 }}
