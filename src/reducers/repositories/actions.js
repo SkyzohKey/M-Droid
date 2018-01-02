@@ -11,7 +11,7 @@ import * as repoService from '../../services/RepositoryService';
  */
 export const fetchRepositories = () => {
   return (dispatch, getState) => {
-    const { defaultRepositories } = getState().repositories;
+    const { defaultRepositories, reposFetched, reposCount } = getState().repositories;
     dispatch({ type: types.FETCH_REPOSITORIES_REQUEST, count: defaultRepositories.length });
 
     // TODO: Loop over the repositories.
@@ -46,8 +46,6 @@ export const fetchRepositories = () => {
           });
         });
     }
-
-    dispatch({ type: types.FETCH_REPOSITORIES_SUCCESS });
   };
 };
 

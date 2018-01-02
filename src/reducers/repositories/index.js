@@ -18,12 +18,12 @@ const initialState = {
     'https://microg.org/fdroid/repo', // MicroG repo.
     'https://briarproject.org/fdroid/repo',
     'http://fdroid.krombel.de/repo',
-    'https://f-droid.i2p.io/repo',
     'https://fdroid.copperhead.co/repo'
   ],
   reposCount: 0,
   reposFetched: 0,
   reposByPubkey: {},
+  fetchComplete: false,
   errors: []
 };
 
@@ -43,6 +43,11 @@ const repositoriesReducer = (state = initialState, action) => {
         reposCount: action.count,
         reposFetched: 0
       };
+    case types.FETCH_REPOSITORIES_SUCCESS:
+      return {
+        ...state,
+        fetchComplete: true
+      };
     case types.FETCH_REPOSITORIES_FAILURE:
       return {
         ...state,
@@ -51,6 +56,7 @@ const repositoriesReducer = (state = initialState, action) => {
     case types.SET_REPOSITORY_DATA:
       return {
         ...state,
+        fetchComplete: state.reposFetched - 1 >= state.reposCount,
         reposFetched: state.reposFetched + 1,
         reposByPubkey: {
           ...state.reposByPubkey,

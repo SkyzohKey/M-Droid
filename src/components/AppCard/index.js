@@ -15,6 +15,12 @@ export default class AppCard extends Component {
     onPress: PropTypes.func.isRequired
   };
 
+  static defaultProps = {
+    appName: '',
+    appSummary: '',
+    appIconPath: ''
+  };
+
   constructor(props) {
     super(props);
 

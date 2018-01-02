@@ -63,7 +63,9 @@ export default class AppDetailsScreen extends Component {
   }
 
   installApp(app) {
-    downloadApp(app.name, app.packages[0].apkName, app.packages[0].apkUrl);
+    if (app.packages && app.packages[0]) {
+      downloadApp(app.name, app.packages[0].apkName, app.packages[0].apkUrl);
+    }
     this.setState({ askForInstall: false });
   }
 
@@ -411,24 +413,27 @@ export default class AppDetailsScreen extends Component {
                   The application request the following permissions:
                 </Text>
                 <ScrollView style={{ flex: 1 }}>
-                  {app.packages[0].permissions.map((permission, index) => {
-                    return (
-                      <View
-                        key={index}
-                        style={{
-                          paddingVertical: 8,
-                          paddingHorizontal: 8,
-                          flexDirection: 'row',
-                          alignItems: 'center'
-                        }}
-                      >
-                        <Icon name={'cash'} size={20} color={'#aaa'} />
-                        <Text style={{ marginLeft: 8, color: '#666', fontWeight: 'bold' }}>
-                          {permission}
-                        </Text>
-                      </View>
-                    );
-                  })}
+                  {app.packages &&
+                    app.packages[0] &&
+                    app.packages[0].permissions &&
+                    app.packages[0].permissions.map((permission, index) => {
+                      return (
+                        <View
+                          key={index}
+                          style={{
+                            paddingVertical: 8,
+                            paddingHorizontal: 8,
+                            flexDirection: 'row',
+                            alignItems: 'center'
+                          }}
+                        >
+                          <Icon name={'cash'} size={20} color={'#aaa'} />
+                          <Text style={{ marginLeft: 8, color: '#666', fontWeight: 'bold' }}>
+                            {permission}
+                          </Text>
+                        </View>
+                      );
+                    })}
                 </ScrollView>
                 <View
                   style={{

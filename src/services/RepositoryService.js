@@ -111,7 +111,7 @@ const parseOldRepoIndex = (doc, uuid, baseUrl) => {
       name: getNodeValue(appNode, 'name'),
       summary: getNodeValue(appNode, 'summary'),
       icon: baseUrl + '/icons/' + getNodeValue(appNode, 'icon'),
-      featureGraphic: baseUrl + '/' + appId + '/en-US/featureGraphic.png',
+      featureGraphic: null,
       description: getNodeValue(appNode, 'desc'),
       license: getNodeValue(appNode, 'license'), // SPDX format.
       provides: getNodeValue(appNode, 'provides'),
@@ -133,6 +133,16 @@ const parseOldRepoIndex = (doc, uuid, baseUrl) => {
       marketVersionCode: getNodeValue(appNode, 'marketvercode'),
       packages: []
     };
+
+    // Test for the featureGraphics.
+    const featureGraphicPath = baseUrl + '/' + appId + '/en-US/featureGraphic.png';
+    RNFetchBlob.fetch('GET', featureGraphicPath)
+      .then(res => {
+        if (res.info().status === 200) {
+          appData.featureGraphic = featureGraphicPath;
+        }
+      })
+      .catch(err => console.log(err));
 
     for (let j = 0, k = appPackages.length; j < k; j++) {
       const packageNode = appPackages[j];
