@@ -5,6 +5,7 @@ import { CachedImage } from 'react-native-cached-image';
 
 import Touchable from '../Touchable';
 import styles from './styles';
+import sharedStyles from '../../bootstrap/sharedStyles';
 
 export default class AppCard extends Component {
   static propTypes = {
@@ -34,9 +35,11 @@ export default class AppCard extends Component {
           <View style={styles.card}>
             <View style={styles.iconWrapper}>
               <CachedImage
+                fadeDuration={0}
                 source={{ uri: appIconPath }}
                 fallbackSource={require('../../assets/images/default-icon.png')}
                 style={[styles.appIcon, { resizeMode: 'contain' }]}
+                activityIndicatorProps={{ size: 'large', color: sharedStyles.ACCENT_COLOR }}
               />
             </View>
             <Text numberOfLines={1} style={styles.appName}>

@@ -74,8 +74,10 @@ export default class AppDetailsScreen extends Component {
           }}
         >
           <CachedImage
+            fadeDuration={0}
             source={{ uri: app.featureGraphic }}
             fallbackSource={require('../../assets/images/feature-graphic-default.jpg')}
+            activityIndicatorProps={{ size: 'large', color: sharedStyles.ACCENT_COLOR }}
             style={{
               height: 180,
               width: this.state.width,
@@ -93,8 +95,10 @@ export default class AppDetailsScreen extends Component {
           <View style={{ padding: 16 }}>
             <View style={{ overflow: 'visible' }}>
               <CachedImage
+                fadeDuration={0}
                 source={{ uri: app.icon }}
                 fallbackSource={require('../../assets/images/default-icon.png')}
+                activityIndicatorProps={{ size: 'large', color: sharedStyles.ACCENT_COLOR }}
                 style={{
                   width: 46,
                   height: 46,
