@@ -24,8 +24,10 @@ const styles = {
   appIcon: {
     width: 40,
     height: 40,
-    resizeMode: 'contain',
-    margin: 8
+    margin: 0
+  },
+  iconWrapper: {
+    marginBottom: 8
   }
 };
 

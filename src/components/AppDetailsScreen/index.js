@@ -1,15 +1,14 @@
 import React, { Component } from 'react';
-import { View, Text, Image, Button, Dimensions, ScrollView, Linking } from 'react-native';
+import { View, Text, Button, Dimensions, ScrollView, Linking } from 'react-native';
 import HTMLView from 'react-native-htmlview';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import FIcon from 'react-native-vector-icons/Foundation';
+import { CachedImage } from 'react-native-cached-image';
 
 import MenuButton from '../MenuButton';
 import Touchable from '../Touchable';
 import sharedStyles from '../../bootstrap/sharedStyles';
 import styles from './styles';
-
-const { width, height } = Dimensions.get('window');
 
 export default class AppDetailsScreen extends Component {
   static navigationOptions = ({ navigation, screenProps }) => ({
@@ -39,8 +38,11 @@ export default class AppDetailsScreen extends Component {
   constructor(props) {
     super(props);
 
+    const { width, height } = Dimensions.get('window');
     this.state = {
-      descriptionExpanded: false
+      descriptionExpanded: false,
+      width,
+      height
     };
   }
 
@@ -48,7 +50,10 @@ export default class AppDetailsScreen extends Component {
     this.setState({ descriptionExpanded: !this.state.descriptionExpanded });
   }
 
-  onFeatureGraphicError() {}
+  onLayout() {
+    const { width, height } = Dimensions.get('window');
+    this.setState({ width, height });
+  }
 
   render() {
     const { app } = this.props.navigation.state.params;
@@ -62,18 +67,18 @@ export default class AppDetailsScreen extends Component {
           };
 
     return (
-      <ScrollView style={styles.container}>
+      <ScrollView style={styles.container} onLayout={() => this.onLayout()}>
         <View
           style={{
-            width: width
+            width: this.state.width
           }}
         >
-          <Image
-            defaultSource={require('../../assets/images/feature-graphic.png')}
+          <CachedImage
             source={{ uri: app.featureGraphic }}
+            fallbackSource={require('../../assets/images/feature-graphic-default.jpg')}
             style={{
               height: 180,
-              width: width,
+              width: this.state.width,
               resizeMode: 'stretch'
             }}
           />
@@ -87,7 +92,7 @@ export default class AppDetailsScreen extends Component {
         >
           <View style={{ padding: 16 }}>
             <View style={{ overflow: 'visible' }}>
-              <Image
+              <CachedImage
                 source={{ uri: app.icon }}
                 style={{
                   width: 46,
@@ -95,7 +100,6 @@ export default class AppDetailsScreen extends Component {
                   resizeMode: 'contain',
                   overflow: 'visible'
                 }}
-                onError={() => this.onFeatureGraphicError()}
               />
             </View>
             <View
@@ -165,14 +169,14 @@ export default class AppDetailsScreen extends Component {
             <Touchable onPress={() => alert('License: ' + app.license)}>
               <View
                 style={{
-                  paddingVertical: 4,
+                  paddingVertical: 8,
                   paddingHorizontal: 8,
                   flexDirection: 'row',
                   alignItems: 'center'
                 }}
               >
                 <Icon name={'copyright'} size={20} color={'#aaa'} />
-                <Text style={{ marginLeft: 8, color: '#aaa', fontWeight: 'bold' }}>
+                <Text style={{ marginLeft: 8, color: '#666', fontWeight: 'bold' }}>
                   {app.license}
                 </Text>
               </View>
@@ -182,14 +186,14 @@ export default class AppDetailsScreen extends Component {
             <Touchable onPress={() => Linking.openURL(app.website)}>
               <View
                 style={{
-                  paddingVertical: 4,
+                  paddingVertical: 8,
                   paddingHorizontal: 8,
                   flexDirection: 'row',
                   alignItems: 'center'
                 }}
               >
                 <Icon name={'web'} size={20} color={'#aaa'} />
-                <Text style={{ marginLeft: 8, color: '#aaa', fontWeight: 'bold' }}>
+                <Text style={{ marginLeft: 8, color: '#666', fontWeight: 'bold' }}>
                   Visit website
                 </Text>
               </View>
@@ -199,14 +203,14 @@ export default class AppDetailsScreen extends Component {
             <Touchable onPress={() => Linking.openURL('mailto:' + app.authorEmail)}>
               <View
                 style={{
-                  paddingVertical: 4,
+                  paddingVertical: 8,
                   paddingHorizontal: 8,
                   flexDirection: 'row',
                   alignItems: 'center'
                 }}
               >
                 <Icon name={'email'} size={20} color={'#aaa'} />
-                <Text style={{ marginLeft: 8, color: '#aaa', fontWeight: 'bold' }}>
+                <Text style={{ marginLeft: 8, color: '#666', fontWeight: 'bold' }}>
                   Send an email
                 </Text>
               </View>
@@ -216,14 +220,14 @@ export default class AppDetailsScreen extends Component {
             <Touchable onPress={() => Linking.openURL(app.tracker)}>
               <View
                 style={{
-                  paddingVertical: 4,
+                  paddingVertical: 8,
                   paddingHorizontal: 8,
                   flexDirection: 'row',
                   alignItems: 'center'
                 }}
               >
                 <Icon name={'bug'} size={20} color={'#aaa'} />
-                <Text style={{ marginLeft: 8, color: '#aaa', fontWeight: 'bold' }}>
+                <Text style={{ marginLeft: 8, color: '#666', fontWeight: 'bold' }}>
                   Report an issue
                 </Text>
               </View>
@@ -233,14 +237,14 @@ export default class AppDetailsScreen extends Component {
             <Touchable onPress={() => Linking.openURL(app.changelog)}>
               <View
                 style={{
-                  paddingVertical: 4,
+                  paddingVertical: 8,
                   paddingHorizontal: 8,
                   flexDirection: 'row',
                   alignItems: 'center'
                 }}
               >
                 <Icon name={'note-text'} size={20} color={'#aaa'} />
-                <Text style={{ marginLeft: 8, color: '#aaa', fontWeight: 'bold' }}>
+                <Text style={{ marginLeft: 8, color: '#666', fontWeight: 'bold' }}>
                   Changelog & release notes
                 </Text>
               </View>
@@ -256,14 +260,14 @@ export default class AppDetailsScreen extends Component {
             <Touchable onPress={() => Linking.openURL('https://flattr.com/thing/' + app.flattr)}>
               <View
                 style={{
-                  paddingVertical: 4,
+                  paddingVertical: 8,
                   paddingHorizontal: 8,
                   flexDirection: 'row',
                   alignItems: 'center'
                 }}
               >
                 <Icon name={'flattr'} size={20} color={'#aaa'} />
-                <Text style={{ marginLeft: 8, color: '#aaa', fontWeight: 'bold' }}>Flattr</Text>
+                <Text style={{ marginLeft: 8, color: '#666', fontWeight: 'bold' }}>Flattr</Text>
               </View>
             </Touchable>
           )}
@@ -273,14 +277,14 @@ export default class AppDetailsScreen extends Component {
             >
               <View
                 style={{
-                  paddingVertical: 4,
+                  paddingVertical: 8,
                   paddingHorizontal: 8,
                   flexDirection: 'row',
                   alignItems: 'center'
                 }}
               >
                 <FIcon style={{ marginLeft: 3 }} name={'bitcoin-circle'} size={20} color={'#aaa'} />
-                <Text style={{ marginLeft: 8, color: '#aaa', fontWeight: 'bold' }}>Bitcoin</Text>
+                <Text style={{ marginLeft: 8, color: '#666', fontWeight: 'bold' }}>Bitcoin</Text>
               </View>
             </Touchable>
           )}
@@ -292,14 +296,14 @@ export default class AppDetailsScreen extends Component {
             >
               <View
                 style={{
-                  paddingVertical: 4,
+                  paddingVertical: 8,
                   paddingHorizontal: 8,
                   flexDirection: 'row',
                   alignItems: 'center'
                 }}
               >
                 <Icon name={'coin'} size={20} color={'#aaa'} />
-                <Text style={{ marginLeft: 8, color: '#aaa', fontWeight: 'bold' }}>Litecoin</Text>
+                <Text style={{ marginLeft: 8, color: '#666', fontWeight: 'bold' }}>Litecoin</Text>
               </View>
             </Touchable>
           )}
@@ -307,14 +311,14 @@ export default class AppDetailsScreen extends Component {
             <Touchable onPress={() => alert('Liberapay: ' + app.liberapay)}>
               <View
                 style={{
-                  paddingVertical: 4,
+                  paddingVertical: 8,
                   paddingHorizontal: 8,
                   flexDirection: 'row',
                   alignItems: 'center'
                 }}
               >
                 <Icon name={'cash'} size={20} color={'#aaa'} />
-                <Text style={{ marginLeft: 8, color: '#aaa', fontWeight: 'bold' }}>Liberapay</Text>
+                <Text style={{ marginLeft: 8, color: '#666', fontWeight: 'bold' }}>Liberapay</Text>
               </View>
             </Touchable>
           )}

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, Image, Dimensions } from 'react-native';
+import { View, Text, Dimensions } from 'react-native';
+import { CachedImage } from 'react-native-cached-image';
 
 import Touchable from '../Touchable';
 import styles from './styles';
@@ -31,7 +32,12 @@ export default class AppCard extends Component {
       <View style={[styles.container, containerWidth]} onLayout={() => this.onLayout()}>
         <Touchable onPress={onPress}>
           <View style={styles.card}>
-            <Image source={{ uri: appIconPath }} style={styles.appIcon} />
+            <View style={styles.iconWrapper}>
+              <CachedImage
+                source={{ uri: appIconPath }}
+                style={[styles.appIcon, { resizeMode: 'contain' }]}
+              />
+            </View>
             <Text numberOfLines={1} style={styles.appName}>
               {appName}
             </Text>
