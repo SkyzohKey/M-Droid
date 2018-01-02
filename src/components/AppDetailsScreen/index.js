@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Button, Dimensions, ScrollView, Linking } from 'react-native';
+import { View, Text, Button, Dimensions, ScrollView, Linking, Modal, Image } from 'react-native';
 import HTMLView from 'react-native-htmlview';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import FIcon from 'react-native-vector-icons/Foundation';
@@ -9,6 +9,8 @@ import MenuButton from '../MenuButton';
 import Touchable from '../Touchable';
 import sharedStyles from '../../bootstrap/sharedStyles';
 import styles from './styles';
+
+import { downloadApp } from '../../services/RepositoryService';
 
 export default class AppDetailsScreen extends Component {
   static navigationOptions = ({ navigation, screenProps }) => ({
@@ -41,6 +43,7 @@ export default class AppDetailsScreen extends Component {
     const { width, height } = Dimensions.get('window');
     this.state = {
       descriptionExpanded: false,
+      askForInstall: false,
       width,
       height
     };
@@ -53,6 +56,15 @@ export default class AppDetailsScreen extends Component {
   onLayout() {
     const { width, height } = Dimensions.get('window');
     this.setState({ width, height });
+  }
+
+  askForDownload() {
+    this.setState({ askForInstall: true });
+  }
+
+  installApp(app) {
+    downloadApp(app.name, app.packages[0].apkname);
+    this.setState({ askForInstall: false });
   }
 
   render() {
@@ -69,274 +81,375 @@ export default class AppDetailsScreen extends Component {
     const licenseUrl = false;
 
     return (
-      <ScrollView style={styles.container} onLayout={() => this.onLayout()}>
-        <View
-          style={{
-            width: this.state.width
-          }}
-        >
-          <CachedImage
-            fadeDuration={0}
-            source={{ uri: app.featureGraphic }}
-            fallbackSource={require('../../assets/images/feature-graphic-default.jpg')}
-            activityIndicatorProps={{ size: 'large', color: sharedStyles.ACCENT_COLOR }}
+      <View style={{ flex: 1 }}>
+        <ScrollView style={styles.container} onLayout={() => this.onLayout()}>
+          <View
             style={{
-              height: 180,
-              width: this.state.width,
-              resizeMode: 'stretch'
+              width: this.state.width
             }}
-          />
-        </View>
-        <View
-          style={{
-            marginTop: -40,
-            zIndex: 2000,
-            overflow: 'visible'
-          }}
-        >
-          <View style={{ padding: 16 }}>
-            <View style={{ overflow: 'visible' }}>
-              <CachedImage
-                fadeDuration={0}
-                source={{ uri: app.icon }}
-                fallbackSource={require('../../assets/images/default-icon.png')}
-                activityIndicatorProps={{ size: 'large', color: sharedStyles.ACCENT_COLOR }}
+          >
+            <CachedImage
+              fadeDuration={0}
+              source={{ uri: app.featureGraphic }}
+              fallbackSource={require('../../assets/images/feature-graphic-default.jpg')}
+              activityIndicatorProps={{ size: 'large', color: sharedStyles.ACCENT_COLOR }}
+              style={{
+                height: 180,
+                width: this.state.width,
+                resizeMode: 'stretch'
+              }}
+            />
+          </View>
+          <View
+            style={{
+              marginTop: -40,
+              zIndex: 2000,
+              overflow: 'visible'
+            }}
+          >
+            <View style={{ padding: 16 }}>
+              <View style={{ overflow: 'visible' }}>
+                <CachedImage
+                  fadeDuration={0}
+                  source={{ uri: app.icon }}
+                  fallbackSource={require('../../assets/images/default-icon.png')}
+                  activityIndicatorProps={{ size: 'large', color: sharedStyles.ACCENT_COLOR }}
+                  style={{
+                    width: 46,
+                    height: 46,
+                    resizeMode: 'contain',
+                    overflow: 'visible'
+                  }}
+                />
+              </View>
+              <View
                 style={{
-                  width: 46,
-                  height: 46,
-                  resizeMode: 'contain',
-                  overflow: 'visible'
+                  backgroundColor: 'white',
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'flex-start'
                 }}
-              />
+              >
+                <View style={{ flexDirection: 'column', flex: 0.7 }}>
+                  <Text style={{ fontWeight: 'bold', fontSize: 16, color: '#505050' }}>
+                    {app.name}
+                  </Text>
+                  <Text style={{ fontSize: 11 }}>{app.author}</Text>
+                </View>
+                <View style={{ flexDirection: 'column', flex: 0.3 }}>
+                  <Button
+                    style={{ flex: 0.3 }}
+                    title="Install"
+                    color={sharedStyles.ACCENT_COLOR}
+                    onPress={() => this.askForDownload(app)}
+                  />
+                </View>
+              </View>
             </View>
+          </View>
+          <View style={[{ padding: 16, backgroundColor: '#fafafa' }, collapseDescription]}>
+            {app.screenshots !== undefined && (
+              <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
+                <Touchable
+                  onPress={() => this.toggleDescription()}
+                  style={{
+                    paddingHorizontal: 8,
+                    paddingVertical: 6
+                  }}
+                >
+                  <Text style={{ color: '#BABABA', fontSize: 12, fontWeight: 'bold' }}>
+                    {this.state.descriptionExpanded ? 'LESS' : 'MORE'}{' '}
+                    <Icon
+                      name={this.state.descriptionExpanded ? 'chevron-up' : 'chevron-down'}
+                      color={'#BABABA'}
+                    />
+                  </Text>
+                </Touchable>
+              </View>
+            )}
+            <Text style={{ fontWeight: 'bold', color: '#696969' }}>{app.summary}</Text>
+            <HTMLView
+              value={app.description}
+              stylesheet={{
+                p: { color: '#696969' },
+                a: { fontWeight: 'bold', color: sharedStyles.ACCENT_COLOR }
+              }}
+            />
+          </View>
+          {app.screenshots && (
+            <View
+              style={{ marginTop: 16, height: 200, alignItems: 'center', justifyContent: 'center' }}
+            >
+              <Text style={{ fontSize: 24, fontWeight: 'bold' }}>Screenshots of {app.name}</Text>
+            </View>
+          )}
+          <View style={{ padding: 16, backgroundColor: '#fafafa' }}>
+            <Text style={{ fontWeight: 'bold', marginBottom: 8 }}>DEVELOPER</Text>
+            {app.license && (
+              <Touchable
+                onPress={() => {
+                  if (licenseUrl !== false) {
+                    Linking.openURL(licenseUrl);
+                  }
+                }}
+              >
+                <View
+                  style={{
+                    paddingVertical: 8,
+                    paddingHorizontal: 8,
+                    flexDirection: 'row',
+                    alignItems: 'center'
+                  }}
+                >
+                  <Icon name={'copyright'} size={20} color={'#aaa'} />
+                  <Text style={{ marginLeft: 8, color: '#666', fontWeight: 'bold' }}>
+                    {app.license}
+                  </Text>
+                </View>
+              </Touchable>
+            )}
+            {app.website && (
+              <Touchable onPress={() => Linking.openURL(app.website)}>
+                <View
+                  style={{
+                    paddingVertical: 8,
+                    paddingHorizontal: 8,
+                    flexDirection: 'row',
+                    alignItems: 'center'
+                  }}
+                >
+                  <Icon name={'web'} size={20} color={'#aaa'} />
+                  <Text style={{ marginLeft: 8, color: '#666', fontWeight: 'bold' }}>
+                    Visit website
+                  </Text>
+                </View>
+              </Touchable>
+            )}
+            {app.authorEmail && (
+              <Touchable onPress={() => Linking.openURL('mailto:' + app.authorEmail)}>
+                <View
+                  style={{
+                    paddingVertical: 8,
+                    paddingHorizontal: 8,
+                    flexDirection: 'row',
+                    alignItems: 'center'
+                  }}
+                >
+                  <Icon name={'email'} size={20} color={'#aaa'} />
+                  <Text style={{ marginLeft: 8, color: '#666', fontWeight: 'bold' }}>
+                    Send an email
+                  </Text>
+                </View>
+              </Touchable>
+            )}
+            {app.tracker && (
+              <Touchable onPress={() => Linking.openURL(app.tracker)}>
+                <View
+                  style={{
+                    paddingVertical: 8,
+                    paddingHorizontal: 8,
+                    flexDirection: 'row',
+                    alignItems: 'center'
+                  }}
+                >
+                  <Icon name={'bug'} size={20} color={'#aaa'} />
+                  <Text style={{ marginLeft: 8, color: '#666', fontWeight: 'bold' }}>
+                    Report an issue
+                  </Text>
+                </View>
+              </Touchable>
+            )}
+            {app.changelog && (
+              <Touchable onPress={() => Linking.openURL(app.changelog)}>
+                <View
+                  style={{
+                    paddingVertical: 8,
+                    paddingHorizontal: 8,
+                    flexDirection: 'row',
+                    alignItems: 'center'
+                  }}
+                >
+                  <Icon name={'note-text'} size={20} color={'#aaa'} />
+                  <Text style={{ marginLeft: 8, color: '#666', fontWeight: 'bold' }}>
+                    Changelog & release notes
+                  </Text>
+                </View>
+              </Touchable>
+            )}
+            {(app.flattr || app.bitcoin || app.litecoin || app.liberapay) && (
+              <View>
+                <View style={{ marginVertical: 8, height: 1.5, backgroundColor: '#ddd' }} />
+                <Text style={{ fontWeight: 'bold', marginBottom: 8 }}>DONATE</Text>
+              </View>
+            )}
+            {app.flattr && (
+              <Touchable onPress={() => Linking.openURL('https://flattr.com/thing/' + app.flattr)}>
+                <View
+                  style={{
+                    paddingVertical: 8,
+                    paddingHorizontal: 8,
+                    flexDirection: 'row',
+                    alignItems: 'center'
+                  }}
+                >
+                  <Icon name={'flattr'} size={20} color={'#aaa'} />
+                  <Text style={{ marginLeft: 8, color: '#666', fontWeight: 'bold' }}>Flattr</Text>
+                </View>
+              </Touchable>
+            )}
+            {app.bitcoin && (
+              <Touchable
+                onPress={() => Linking.openURL('https://blockchain.info/address/' + app.bitcoin)}
+              >
+                <View
+                  style={{
+                    paddingVertical: 8,
+                    paddingHorizontal: 8,
+                    flexDirection: 'row',
+                    alignItems: 'center'
+                  }}
+                >
+                  <FIcon
+                    style={{ marginLeft: 3 }}
+                    name={'bitcoin-circle'}
+                    size={20}
+                    color={'#aaa'}
+                  />
+                  <Text style={{ marginLeft: 8, color: '#666', fontWeight: 'bold' }}>Bitcoin</Text>
+                </View>
+              </Touchable>
+            )}
+            {app.litecoin && (
+              <Touchable
+                onPress={() =>
+                  Linking.openURL('http://explorer.litecoin.net/address/' + app.litecoin)
+                }
+              >
+                <View
+                  style={{
+                    paddingVertical: 8,
+                    paddingHorizontal: 8,
+                    flexDirection: 'row',
+                    alignItems: 'center'
+                  }}
+                >
+                  <Icon name={'coin'} size={20} color={'#aaa'} />
+                  <Text style={{ marginLeft: 8, color: '#666', fontWeight: 'bold' }}>Litecoin</Text>
+                </View>
+              </Touchable>
+            )}
+            {app.liberapay && (
+              <Touchable onPress={() => alert('Liberapay: ' + app.liberapay)}>
+                <View
+                  style={{
+                    paddingVertical: 8,
+                    paddingHorizontal: 8,
+                    flexDirection: 'row',
+                    alignItems: 'center'
+                  }}
+                >
+                  <Icon name={'cash'} size={20} color={'#aaa'} />
+                  <Text style={{ marginLeft: 8, color: '#666', fontWeight: 'bold' }}>
+                    Liberapay
+                  </Text>
+                </View>
+              </Touchable>
+            )}
+          </View>
+        </ScrollView>
+        <Modal
+          animationType={'fade'}
+          presentationStyle={'formSheet'}
+          transparent={true}
+          visible={!!this.state.askForInstall}
+          onRequestClose={() => this.setState({ askForInstall: false })}
+        >
+          <View
+            style={{
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: 'rgba(0,0,0,.4)'
+            }}
+          >
             <View
               style={{
                 backgroundColor: 'white',
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                alignItems: 'flex-start'
+                elevation: 6,
+                padding: 16,
+                height: 400,
+                width: this.state.width - 32 // 16px * 2
               }}
             >
-              <View style={{ flexDirection: 'column', flex: 0.7 }}>
-                <Text style={{ fontWeight: 'bold', fontSize: 16, color: '#505050' }}>
-                  {app.name}
-                </Text>
-                <Text style={{ fontSize: 11 }}>{app.author}</Text>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'flex-start',
+                  marginBottom: 8
+                }}
+              >
+                <CachedImage
+                  fadeDuration={0}
+                  source={{ uri: app.icon }}
+                  fallbackSource={require('../../assets/images/default-icon.png')}
+                  activityIndicatorProps={{ size: 'large', color: sharedStyles.ACCENT_COLOR }}
+                  style={{
+                    width: 46,
+                    height: 46,
+                    resizeMode: 'contain',
+                    overflow: 'visible'
+                  }}
+                />
+                <Text style={{ marginLeft: 16, fontSize: 20, fontWeight: '200' }}>{app.name}</Text>
               </View>
-              <View style={{ flexDirection: 'column', flex: 0.3 }}>
+              <Text style={{ fontSize: 12 }}>
+                The application request the following permissions:
+              </Text>
+              <ScrollView style={{ flex: 1 }}>
+                {app.packages[0].permissions.map((permission, index) => {
+                  return (
+                    <View
+                      key={index}
+                      style={{
+                        paddingVertical: 8,
+                        paddingHorizontal: 8,
+                        flexDirection: 'row',
+                        alignItems: 'center'
+                      }}
+                    >
+                      <Icon name={'cash'} size={20} color={'#aaa'} />
+                      <Text style={{ marginLeft: 8, color: '#666', fontWeight: 'bold' }}>
+                        {permission}
+                      </Text>
+                    </View>
+                  );
+                })}
+              </ScrollView>
+              <View
+                style={{
+                  marginTop: 16,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'space-between'
+                }}
+              >
+                <Image
+                  source={require('../../assets/images/wordmarks/wordmark-muted.png')}
+                  style={{ height: 30, width: 100 }}
+                  fadeDuration={0}
+                />
                 <Button
                   style={{ flex: 0.3 }}
-                  title="Install"
+                  title="Accept"
                   color={sharedStyles.ACCENT_COLOR}
-                  onPress={() => Linking.openURL(app.packages[0].apkname)}
+                  onPress={() => this.installApp(app)}
                 />
               </View>
             </View>
           </View>
-        </View>
-        <View style={[{ padding: 16, backgroundColor: '#fafafa' }, collapseDescription]}>
-          {app.screenshots !== undefined && (
-            <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
-              <Touchable
-                onPress={() => this.toggleDescription()}
-                style={{
-                  paddingHorizontal: 8,
-                  paddingVertical: 6
-                }}
-              >
-                <Text style={{ color: '#BABABA', fontSize: 12, fontWeight: 'bold' }}>
-                  {this.state.descriptionExpanded ? 'LESS' : 'MORE'}{' '}
-                  <Icon
-                    name={this.state.descriptionExpanded ? 'chevron-up' : 'chevron-down'}
-                    color={'#BABABA'}
-                  />
-                </Text>
-              </Touchable>
-            </View>
-          )}
-          <Text style={{ fontWeight: 'bold', color: '#696969' }}>{app.summary}</Text>
-          <HTMLView
-            value={app.description}
-            stylesheet={{
-              p: { color: '#696969' },
-              a: { fontWeight: 'bold', color: sharedStyles.ACCENT_COLOR }
-            }}
-          />
-        </View>
-        {app.screenshots && (
-          <View
-            style={{ marginTop: 16, height: 200, alignItems: 'center', justifyContent: 'center' }}
-          >
-            <Text style={{ fontSize: 24, fontWeight: 'bold' }}>Screenshots of {app.name}</Text>
-          </View>
-        )}
-        <View style={{ padding: 16, backgroundColor: '#fafafa' }}>
-          <Text style={{ fontWeight: 'bold', marginBottom: 8 }}>DEVELOPER</Text>
-          {app.license && (
-            <Touchable
-              onPress={() => {
-                if (licenseUrl !== false) {
-                  Linking.openURL(licenseUrl);
-                }
-              }}
-            >
-              <View
-                style={{
-                  paddingVertical: 8,
-                  paddingHorizontal: 8,
-                  flexDirection: 'row',
-                  alignItems: 'center'
-                }}
-              >
-                <Icon name={'copyright'} size={20} color={'#aaa'} />
-                <Text style={{ marginLeft: 8, color: '#666', fontWeight: 'bold' }}>
-                  {app.license}
-                </Text>
-              </View>
-            </Touchable>
-          )}
-          {app.website && (
-            <Touchable onPress={() => Linking.openURL(app.website)}>
-              <View
-                style={{
-                  paddingVertical: 8,
-                  paddingHorizontal: 8,
-                  flexDirection: 'row',
-                  alignItems: 'center'
-                }}
-              >
-                <Icon name={'web'} size={20} color={'#aaa'} />
-                <Text style={{ marginLeft: 8, color: '#666', fontWeight: 'bold' }}>
-                  Visit website
-                </Text>
-              </View>
-            </Touchable>
-          )}
-          {app.authorEmail && (
-            <Touchable onPress={() => Linking.openURL('mailto:' + app.authorEmail)}>
-              <View
-                style={{
-                  paddingVertical: 8,
-                  paddingHorizontal: 8,
-                  flexDirection: 'row',
-                  alignItems: 'center'
-                }}
-              >
-                <Icon name={'email'} size={20} color={'#aaa'} />
-                <Text style={{ marginLeft: 8, color: '#666', fontWeight: 'bold' }}>
-                  Send an email
-                </Text>
-              </View>
-            </Touchable>
-          )}
-          {app.tracker && (
-            <Touchable onPress={() => Linking.openURL(app.tracker)}>
-              <View
-                style={{
-                  paddingVertical: 8,
-                  paddingHorizontal: 8,
-                  flexDirection: 'row',
-                  alignItems: 'center'
-                }}
-              >
-                <Icon name={'bug'} size={20} color={'#aaa'} />
-                <Text style={{ marginLeft: 8, color: '#666', fontWeight: 'bold' }}>
-                  Report an issue
-                </Text>
-              </View>
-            </Touchable>
-          )}
-          {app.changelog && (
-            <Touchable onPress={() => Linking.openURL(app.changelog)}>
-              <View
-                style={{
-                  paddingVertical: 8,
-                  paddingHorizontal: 8,
-                  flexDirection: 'row',
-                  alignItems: 'center'
-                }}
-              >
-                <Icon name={'note-text'} size={20} color={'#aaa'} />
-                <Text style={{ marginLeft: 8, color: '#666', fontWeight: 'bold' }}>
-                  Changelog & release notes
-                </Text>
-              </View>
-            </Touchable>
-          )}
-          {(app.flattr || app.bitcoin || app.litecoin || app.liberapay) && (
-            <View>
-              <View style={{ marginVertical: 8, height: 1.5, backgroundColor: '#ddd' }} />
-              <Text style={{ fontWeight: 'bold', marginBottom: 8 }}>DONATE</Text>
-            </View>
-          )}
-          {app.flattr && (
-            <Touchable onPress={() => Linking.openURL('https://flattr.com/thing/' + app.flattr)}>
-              <View
-                style={{
-                  paddingVertical: 8,
-                  paddingHorizontal: 8,
-                  flexDirection: 'row',
-                  alignItems: 'center'
-                }}
-              >
-                <Icon name={'flattr'} size={20} color={'#aaa'} />
-                <Text style={{ marginLeft: 8, color: '#666', fontWeight: 'bold' }}>Flattr</Text>
-              </View>
-            </Touchable>
-          )}
-          {app.bitcoin && (
-            <Touchable
-              onPress={() => Linking.openURL('https://blockchain.info/address/' + app.bitcoin)}
-            >
-              <View
-                style={{
-                  paddingVertical: 8,
-                  paddingHorizontal: 8,
-                  flexDirection: 'row',
-                  alignItems: 'center'
-                }}
-              >
-                <FIcon style={{ marginLeft: 3 }} name={'bitcoin-circle'} size={20} color={'#aaa'} />
-                <Text style={{ marginLeft: 8, color: '#666', fontWeight: 'bold' }}>Bitcoin</Text>
-              </View>
-            </Touchable>
-          )}
-          {app.litecoin && (
-            <Touchable
-              onPress={() =>
-                Linking.openURL('http://explorer.litecoin.net/address/' + app.litecoin)
-              }
-            >
-              <View
-                style={{
-                  paddingVertical: 8,
-                  paddingHorizontal: 8,
-                  flexDirection: 'row',
-                  alignItems: 'center'
-                }}
-              >
-                <Icon name={'coin'} size={20} color={'#aaa'} />
-                <Text style={{ marginLeft: 8, color: '#666', fontWeight: 'bold' }}>Litecoin</Text>
-              </View>
-            </Touchable>
-          )}
-          {app.liberapay && (
-            <Touchable onPress={() => alert('Liberapay: ' + app.liberapay)}>
-              <View
-                style={{
-                  paddingVertical: 8,
-                  paddingHorizontal: 8,
-                  flexDirection: 'row',
-                  alignItems: 'center'
-                }}
-              >
-                <Icon name={'cash'} size={20} color={'#aaa'} />
-                <Text style={{ marginLeft: 8, color: '#666', fontWeight: 'bold' }}>Liberapay</Text>
-              </View>
-            </Touchable>
-          )}
-        </View>
-      </ScrollView>
+        </Modal>
+      </View>
     );
   }
 }

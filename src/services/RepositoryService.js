@@ -1,5 +1,7 @@
 import { Buffer } from 'buffer/';
 import { DOMParser } from 'xmldom';
+import RNFetchBlob from 'react-native-fetch-blob';
+const android = RNFetchBlob.android;
 
 /**
  * The RepositoryService allows to query ONE repository for packages, metadata, etc.
@@ -192,7 +194,9 @@ export const getRepositoryAsync = async baseUrl => {
      */
 
     const repoUUID = Buffer.from(baseUrl).toString('base64');
-    const response = await fetch(baseUrl + '/index.xml');
+    // const response = await fetch(baseUrl + '/index.xml');
+    const task = RNFetchBlob.config({ fileCache: true });
+    const response = await task.fetch('GET', baseUrl + '/index.xml');
     const responseXml = await response.text();
     const doc = parser.parseFromString(responseXml);
     const repoData = parseOldRepoIndex(doc, repoUUID, baseUrl);
@@ -200,5 +204,24 @@ export const getRepositoryAsync = async baseUrl => {
     return { success: true, meta: repoData.meta, applications: repoData.applications };
   } catch (e) {
     return { success: false, error: e.message };
+  }
+};
+
+export const downloadApp = async (appName, apkUrl) => {
+  try {
+    const task = RNFetchBlob.config({
+      addAndroidDownloads: {
+        useDownloadManager: true,
+        title: 'MDroid',
+        description: 'Downloading & installing « ' + appName + ' ».',
+        mime: 'application/vnd.android.package-archive',
+        mediaScannable: true,
+        notification: true
+      }
+    });
+    const response = await task.fetch('GET', apkUrl);
+    android.actionViewIntent(response.path(), 'application/vnd.android.package-archive');
+  } catch (e) {
+    console.log(e);
   }
 };
