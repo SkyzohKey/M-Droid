@@ -139,8 +139,10 @@ const parseOldRepoIndex = (doc, uuid, baseUrl) => {
       const packageData = {
         version: getNodeValue(packageNode, 'version'),
         versionCode: getNodeValue(packageNode, 'versioncode'),
-        apkname: baseUrl + '/' + getNodeValue(packageNode, 'apkname'),
-        srcname: baseUrl + '/' + getNodeValue(packageNode, 'srcname'),
+        apkName: getNodeValue(packageNode, 'apkname'),
+        apkUrl: baseUrl + '/' + getNodeValue(packageNode, 'apkname'),
+        srcName: getNodeValue(packageNode, 'srcname'),
+        srcUrl: baseUrl + '/' + getNodeValue(packageNode, 'srcname'),
         hash: getNodeValue(packageNode, 'hash'),
         size: getNodeValue(packageNode, 'size'),
         sdkVersion: getNodeValue(packageNode, 'sdkver'),
@@ -207,20 +209,26 @@ export const getRepositoryAsync = async baseUrl => {
   }
 };
 
-export const downloadApp = async (appName, apkUrl) => {
+export const downloadApp = async (appName, apkName, apkUrl) => {
   try {
-    const task = RNFetchBlob.config({
+    RNFetchBlob.config({
       addAndroidDownloads: {
         useDownloadManager: true,
+        path: RNFetchBlob.fs.dirs.DownloadDir + apkName,
         title: 'MDroid',
         description: 'Downloading & installing « ' + appName + ' ».',
         mime: 'application/vnd.android.package-archive',
         mediaScannable: true,
         notification: true
       }
-    });
-    const response = await task.fetch('GET', apkUrl);
-    android.actionViewIntent(response.path(), 'application/vnd.android.package-archive');
+    })
+      .fetch('GET', apkUrl)
+      .then(res => {
+        android.actionViewIntent(
+          RNFetchBlob.fs.dirs.DownloadDir + apkName,
+          'application/vnd.android.package-archive'
+        );
+      });
   } catch (e) {
     console.log(e);
   }

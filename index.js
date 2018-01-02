@@ -12,4 +12,10 @@ function uuidv4() {
 
 window.uuidv4 = uuidv4;
 
+console.ignoredYellowBox = [
+  'Warning: Failed prop type: Invalid props.style key',
+  'Modal with',
+  'Warning: Can only update a mounted or mounting component.'
+];
+
 AppRegistry.registerComponent('mdroid', () => App);

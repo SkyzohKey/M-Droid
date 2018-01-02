@@ -1,6 +1,6 @@
 {
   "name": "mdroid",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "private": true,
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
@@ -47,8 +47,6 @@
     "transform": {
       "^.+\\.js$": "babel-jest"
     },
-    "transformIgnorePatterns": [
-      "node_modules/(?!react-native|react-navigation)/"
-    ]
+    "transformIgnorePatterns": ["node_modules/(?!react-native|react-navigation)/"]
   }
 }

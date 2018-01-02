@@ -63,7 +63,7 @@ export default class AppDetailsScreen extends Component {
   }
 
   installApp(app) {
-    downloadApp(app.name, app.packages[0].apkname);
+    downloadApp(app.name, app.packages[0].apkName, app.packages[0].apkUrl);
     this.setState({ askForInstall: false });
   }
 
@@ -359,95 +359,100 @@ export default class AppDetailsScreen extends Component {
         </ScrollView>
         <Modal
           animationType={'fade'}
-          presentationStyle={'formSheet'}
+          presentationStyle={'overFullscreen'}
           transparent={true}
+          hardwareAccelerated={true}
           visible={!!this.state.askForInstall}
           onRequestClose={() => this.setState({ askForInstall: false })}
         >
-          <View
-            style={{
-              flex: 1,
-              justifyContent: 'center',
-              alignItems: 'center',
-              backgroundColor: 'rgba(0,0,0,.4)'
-            }}
-          >
+          <Touchable style={{ flex: 1 }} onPress={() => this.setState({ askForInstall: false })}>
             <View
               style={{
-                backgroundColor: 'white',
-                elevation: 6,
-                padding: 16,
-                height: 400,
-                width: this.state.width - 32 // 16px * 2
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+                backgroundColor: 'rgba(0,0,0,.4)'
               }}
             >
               <View
                 style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'flex-start',
-                  marginBottom: 8
+                  backgroundColor: 'white',
+                  elevation: 6,
+                  padding: 16,
+                  height: 400,
+                  width: this.state.width - 32 // 16px * 2
                 }}
               >
-                <CachedImage
-                  fadeDuration={0}
-                  source={{ uri: app.icon }}
-                  fallbackSource={require('../../assets/images/default-icon.png')}
-                  activityIndicatorProps={{ size: 'large', color: sharedStyles.ACCENT_COLOR }}
+                <View
                   style={{
-                    width: 46,
-                    height: 46,
-                    resizeMode: 'contain',
-                    overflow: 'visible'
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'flex-start',
+                    marginBottom: 8
                   }}
-                />
-                <Text style={{ marginLeft: 16, fontSize: 20, fontWeight: '200' }}>{app.name}</Text>
-              </View>
-              <Text style={{ fontSize: 12 }}>
-                The application request the following permissions:
-              </Text>
-              <ScrollView style={{ flex: 1 }}>
-                {app.packages[0].permissions.map((permission, index) => {
-                  return (
-                    <View
-                      key={index}
-                      style={{
-                        paddingVertical: 8,
-                        paddingHorizontal: 8,
-                        flexDirection: 'row',
-                        alignItems: 'center'
-                      }}
-                    >
-                      <Icon name={'cash'} size={20} color={'#aaa'} />
-                      <Text style={{ marginLeft: 8, color: '#666', fontWeight: 'bold' }}>
-                        {permission}
-                      </Text>
-                    </View>
-                  );
-                })}
-              </ScrollView>
-              <View
-                style={{
-                  marginTop: 16,
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'space-between'
-                }}
-              >
-                <Image
-                  source={require('../../assets/images/wordmarks/wordmark-muted.png')}
-                  style={{ height: 30, width: 100 }}
-                  fadeDuration={0}
-                />
-                <Button
-                  style={{ flex: 0.3 }}
-                  title="Accept"
-                  color={sharedStyles.ACCENT_COLOR}
-                  onPress={() => this.installApp(app)}
-                />
+                >
+                  <CachedImage
+                    fadeDuration={0}
+                    source={{ uri: app.icon }}
+                    fallbackSource={require('../../assets/images/default-icon.png')}
+                    activityIndicatorProps={{ size: 'large', color: sharedStyles.ACCENT_COLOR }}
+                    style={{
+                      width: 46,
+                      height: 46,
+                      resizeMode: 'contain',
+                      overflow: 'visible'
+                    }}
+                  />
+                  <Text style={{ marginLeft: 16, fontSize: 20, fontWeight: '200' }}>
+                    {app.name}
+                  </Text>
+                </View>
+                <Text style={{ fontSize: 12 }}>
+                  The application request the following permissions:
+                </Text>
+                <ScrollView style={{ flex: 1 }}>
+                  {app.packages[0].permissions.map((permission, index) => {
+                    return (
+                      <View
+                        key={index}
+                        style={{
+                          paddingVertical: 8,
+                          paddingHorizontal: 8,
+                          flexDirection: 'row',
+                          alignItems: 'center'
+                        }}
+                      >
+                        <Icon name={'cash'} size={20} color={'#aaa'} />
+                        <Text style={{ marginLeft: 8, color: '#666', fontWeight: 'bold' }}>
+                          {permission}
+                        </Text>
+                      </View>
+                    );
+                  })}
+                </ScrollView>
+                <View
+                  style={{
+                    marginTop: 16,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between'
+                  }}
+                >
+                  <Image
+                    source={require('../../assets/images/wordmarks/wordmark-muted.png')}
+                    style={{ height: 30, width: 100 }}
+                    fadeDuration={0}
+                  />
+                  <Button
+                    style={{ flex: 0.3 }}
+                    title="Accept"
+                    color={sharedStyles.ACCENT_COLOR}
+                    onPress={() => this.installApp(app)}
+                  />
+                </View>
               </View>
             </View>
-          </View>
+          </Touchable>
         </Modal>
       </View>
     );
