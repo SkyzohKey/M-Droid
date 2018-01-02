@@ -35,6 +35,7 @@ export default class AppCard extends Component {
             <View style={styles.iconWrapper}>
               <CachedImage
                 source={{ uri: appIconPath }}
+                fallbackSource={require('../../assets/images/default-icon.png')}
                 style={[styles.appIcon, { resizeMode: 'contain' }]}
               />
             </View>

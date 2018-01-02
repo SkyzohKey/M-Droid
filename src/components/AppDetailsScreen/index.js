@@ -94,6 +94,7 @@ export default class AppDetailsScreen extends Component {
             <View style={{ overflow: 'visible' }}>
               <CachedImage
                 source={{ uri: app.icon }}
+                fallbackSource={require('../../assets/images/default-icon.png')}
                 style={{
                   width: 46,
                   height: 46,
