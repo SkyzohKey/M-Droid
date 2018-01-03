@@ -213,7 +213,7 @@ export default class AppDetailsScreen extends Component {
                 />
               )}
           </View>
-          <View style={{ marginTop: 8, paddingHorizontal: 16, backgroundColor: '#fafafa' }}>
+          <View style={{ paddingTop: 16, paddingHorizontal: 16, backgroundColor: '#fafafa' }}>
             <Text style={{ fontWeight: 'bold', marginBottom: 8 }}>ABOUT THE APP</Text>
             {app.id && (
               <Touchable onPress={() => {}}>
