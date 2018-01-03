@@ -111,7 +111,8 @@ const parseOldRepoIndex = (doc, uuid, baseUrl) => {
       summary: getNodeValue(appNode, 'summary'),
       icon: baseUrl + '/icons/' + getNodeValue(appNode, 'icon'),
       featureGraphic: null,
-      description: getNodeValue(appNode, 'desc'),
+      description:
+        getNodeValue(appNode, 'desc') || getNodeValue(appNode, 'desc').substring(0, 32) + '...',
       license: getNodeValue(appNode, 'license'), // SPDX format.
       provides: getNodeValue(appNode, 'provides'),
       requirements: getNodeArray(appNode, 'requirements'),

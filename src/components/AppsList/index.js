@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, ScrollView, Text } from 'react-native';
+import { View, ScrollView, Text, FlatList } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import AppCard from '../AppCard';
@@ -12,7 +12,7 @@ class AppsList extends Component {
   static propTypes = {
     apps: PropTypes.array.isRequired,
     maxCount: PropTypes.number,
-    index: PropTypes.number,
+    offset: PropTypes.number,
     title: PropTypes.string.isRequired,
     icon: PropTypes.string,
     color: PropTypes.string,
@@ -20,8 +20,8 @@ class AppsList extends Component {
   };
 
   static defaultProps = {
-    maxCount: 3,
-    index: 0,
+    maxCount: 0,
+    offset: 0,
     icon: 'star',
     color: sharedStyles.ACCENT_COLOR
   };
@@ -31,18 +31,18 @@ class AppsList extends Component {
   }
 
   render() {
-    const { apps, maxCount, index, title, icon, color } = this.props;
+    const { apps, maxCount, offset, title, icon, color } = this.props;
     if (apps === null || apps === [] || apps.length === 0) {
       return null;
     }
 
-    let subset;
+    let subset = apps;
     if (maxCount !== 0) {
-      subset = apps.slice(index, maxCount);
+      subset = apps.slice(offset, maxCount);
     }
 
     return (
-      <ScrollView style={styles.container}>
+      <View style={styles.container}>
         <View
           style={{
             flexDirection: 'row',
@@ -66,33 +66,27 @@ class AppsList extends Component {
             </Text>
           </Touchable>
         </View>
-        <ScrollView
-          pagingEnabled
+        <FlatList
+          horizontal={true}
+          showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}
-          horizontal
-          style={{ flex: 0 }}
-        >
-          {subset.map((app, index) => {
-            // TODO: Handle the case were app does not have an icon.
-            if (app.name == null) {
-              // Do not display apps without name...
-              return null;
-            }
-            return (
+          data={subset}
+          renderItem={({ item, index }) =>
+            item.name === null ? null : (
               <AppCard
-                style={{ marginRight: 8 }}
+                style={{ marginRight: index <= subset.length - 1 ? 8 : 0 }}
                 key={index}
-                appName={app.name}
-                appSummary={app.summary}
-                appIconPath={app.icon}
+                appName={item.name}
+                appSummary={item.summary}
+                appIconPath={item.icon}
                 onPress={() => {
-                  this.props.openDetails(app);
+                  this.props.openDetails(item);
                 }}
               />
-            );
-          })}
-        </ScrollView>
-      </ScrollView>
+            )
+          }
+        />
+      </View>
     );
   }
 }

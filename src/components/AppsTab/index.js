@@ -54,62 +54,62 @@ export default class AppsTab extends Component {
           <ScrollView>
             <NewAppsSlider apps={newsApps} />
             <View style={styles.container}>
-              <AppsList apps={internetApps} maxCount={10} title={'Internet'} icon={'web'} />
+              <AppsList apps={internetApps} maxCount={24} title={'Internet'} icon={'web'} />
               <AppsList
                 apps={navigationApps}
-                maxCount={10}
+                maxCount={24}
                 title={'Navigation'}
                 icon={'navigation'}
               />
               <AppsList
                 apps={securityApps}
-                maxCount={10}
+                maxCount={24}
                 title={'Security'}
                 icon={'lock-outline'}
               />
-              <AppsList apps={timeApps} maxCount={10} title={'Time'} icon={'calendar-clock'} />
+              <AppsList apps={timeApps} maxCount={24} title={'Time'} icon={'calendar-clock'} />
               <AppsList
                 apps={scienceApps}
-                maxCount={10}
+                maxCount={24}
                 title={'Science & Education'}
                 icon={'school'}
               />
               <AppsList
                 apps={themingApps}
-                maxCount={10}
+                maxCount={24}
                 title={'Theming'}
                 icon={'theme-light-dark'}
               />
-              <AppsList apps={graphicsApps} maxCount={10} title={'Graphics'} icon={'image'} />
+              <AppsList apps={graphicsApps} maxCount={24} title={'Graphics'} icon={'image'} />
               <AppsList
                 apps={multimediaApps}
-                maxCount={10}
+                maxCount={24}
                 title={'Multimedia'}
                 icon={'shopping-music'}
               />
-              <AppsList apps={moneyApps} maxCount={10} title={'Money'} icon={'coin'} />
+              <AppsList apps={moneyApps} maxCount={24} title={'Money'} icon={'coin'} />
               <AppsList
                 apps={sportsApps}
-                maxCount={10}
+                maxCount={24}
                 title={'Sports & Health'}
                 icon={'car-sports'}
               />
-              <AppsList apps={readingApps} maxCount={10} title={'Reading'} icon={'book-open'} />
-              <AppsList apps={writingApps} maxCount={10} title={'Writing'} icon={'pen'} />
-              <AppsList apps={gamesApps} maxCount={10} title={'Games'} icon={'gamepad-variant'} />
+              <AppsList apps={readingApps} maxCount={24} title={'Reading'} icon={'book-open'} />
+              <AppsList apps={writingApps} maxCount={24} title={'Writing'} icon={'pen'} />
+              <AppsList apps={gamesApps} maxCount={24} title={'Games'} icon={'gamepad-variant'} />
               <AppsList
                 apps={connectivityApps}
-                maxCount={10}
+                maxCount={24}
                 title={'Connectivity'}
                 icon={'access-point-network'}
               />
               <AppsList
                 apps={devApps}
-                maxCount={10}
+                maxCount={24}
                 title={'Development'}
                 icon={'android-studio'}
               />
-              <AppsList apps={systemApps} maxCount={10} title={'System'} icon={'android'} />
+              <AppsList apps={systemApps} maxCount={24} title={'System'} icon={'android'} />
             </View>
           </ScrollView>
         ) : (

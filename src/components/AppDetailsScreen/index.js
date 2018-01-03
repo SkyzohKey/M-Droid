@@ -7,6 +7,7 @@ import { CachedImage } from 'react-native-cached-image';
 
 import MenuButton from '../MenuButton';
 import Touchable from '../Touchable';
+import AppsList from '../../containers/AppsListContainer';
 import sharedStyles from '../../bootstrap/sharedStyles';
 import styles from './styles';
 
@@ -71,6 +72,7 @@ export default class AppDetailsScreen extends Component {
 
   render() {
     const { app } = this.props.navigation.state.params;
+    const { apps } = this.props;
     const collapseDescription =
       this.state.descriptionExpanded === false
         ? {
@@ -81,6 +83,14 @@ export default class AppDetailsScreen extends Component {
           };
 
     const licenseUrl = false;
+
+    const sameAuthorApps = apps.filter(mApp => app.author === mApp.author);
+    const sameCategoryApps = apps.filter(mApp => app.category === mApp.category);
+
+    const categories = app.categories.filter(item => item !== app.category).join(', ');
+
+    const categoriesString =
+      categories.length > 0 ? app.category + ', ' + categories : app.category;
 
     return (
       <View style={{ flex: 1 }}>
@@ -185,7 +195,61 @@ export default class AppDetailsScreen extends Component {
               <Text style={{ fontSize: 24, fontWeight: 'bold' }}>Screenshots of {app.name}</Text>
             </View>
           )}
-          <View style={{ padding: 16, backgroundColor: '#fafafa' }}>
+          <View>
+            {app.author &&
+              sameAuthorApps.length > 0 && (
+                <AppsList
+                  apps={sameAuthorApps}
+                  title={'Other apps from ' + app.author}
+                  icon={'account-check'}
+                />
+              )}
+            {app.category &&
+              sameCategoryApps.length > 0 && (
+                <AppsList
+                  apps={sameCategoryApps}
+                  title={'Other apps in this category'}
+                  icon={'tag-multiple'}
+                />
+              )}
+          </View>
+          <View style={{ marginTop: 8, paddingHorizontal: 16, backgroundColor: '#fafafa' }}>
+            <Text style={{ fontWeight: 'bold', marginBottom: 8 }}>ABOUT THE APP</Text>
+            {app.id && (
+              <Touchable onPress={() => {}}>
+                <View
+                  style={{
+                    paddingVertical: 8,
+                    paddingHorizontal: 8,
+                    flexDirection: 'row',
+                    alignItems: 'center'
+                  }}
+                >
+                  <Icon name={'package'} size={20} color={'#aaa'} />
+                  <Text style={{ marginLeft: 8, color: '#666', fontWeight: 'bold' }}>{app.id}</Text>
+                </View>
+              </Touchable>
+            )}
+            {app.category && (
+              <Touchable onPress={() => {}}>
+                <View
+                  style={{
+                    paddingVertical: 8,
+                    paddingHorizontal: 8,
+                    flexDirection: 'row',
+                    alignItems: 'center'
+                  }}
+                >
+                  <Icon name={'tag-multiple'} size={20} color={'#aaa'} />
+                  <Text style={{ marginLeft: 8, color: '#666', fontWeight: 'bold' }}>
+                    {app.categories ? categoriesString : app.category}
+                  </Text>
+                </View>
+              </Touchable>
+            )}
+          </View>
+          <View style={{ paddingHorizontal: 16, backgroundColor: '#fafafa' }}>
+            <View style={{ marginVertical: 8, height: 1.5, backgroundColor: '#ddd' }} />
             <Text style={{ fontWeight: 'bold', marginBottom: 8 }}>DEVELOPER</Text>
             {app.license && (
               <Touchable
@@ -367,7 +431,7 @@ export default class AppDetailsScreen extends Component {
           visible={!!this.state.askForInstall}
           onRequestClose={() => this.setState({ askForInstall: false })}
         >
-          <Touchable style={{ flex: 1 }} onPress={() => this.setState({ askForInstall: false })}>
+          <View style={{ flex: 1 }} onPress={() => this.setState({ askForInstall: false })}>
             <View
               style={{
                 flex: 1,
@@ -457,7 +521,7 @@ export default class AppDetailsScreen extends Component {
                 </View>
               </View>
             </View>
-          </Touchable>
+          </View>
         </Modal>
       </View>
     );

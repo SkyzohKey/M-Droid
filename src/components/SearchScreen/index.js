@@ -57,7 +57,7 @@ export default class SearchScreen extends Component {
       <View style={styles.container}>
         {searchResults !== null
           ? this.renderResults(searchResults)
-          : this.renderEmpty('Hit the search bar to find your app!')}
+          : this.renderEmpty('search', 'Hit the search bar to find your app!')}
       </View>
     );
   }
@@ -76,20 +76,22 @@ export default class SearchScreen extends Component {
     const { params } = this.props.navigation.state;
 
     if (results.length <= 0) {
-      return this.renderEmpty('No result for ' + params.searchQuery);
+      return this.renderEmpty('bomb-off', 'No result for ' + params.searchQuery);
     }
 
     console.log(results[0]);
 
     return (
       <View>
-        <View style={styles.row}>
-          <Icon name={'search'} size={22} color={'black'} />
-          <Text style={styles.resultsTitle}>
-            Results for <Text style={{ fontWeight: 'bold' }}>{params.searchQuery}</Text>:
-          </Text>
-        </View>
         <FlatList
+          ListHeaderComponent={() => (
+            <View style={styles.row}>
+              <Icon name={'search'} size={22} color={'black'} />
+              <Text style={styles.resultsTitle}>
+                Results for <Text style={{ fontWeight: 'bold' }}>{params.searchQuery}</Text>:
+              </Text>
+            </View>
+          )}
           style={styles.results}
           showsVerticalScrollIndicator={false}
           keyExtractor={item => item.packageName}
@@ -100,10 +102,13 @@ export default class SearchScreen extends Component {
     );
   };
 
-  renderEmpty(message) {
+  renderEmpty(icon, message) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text>{message}</Text>
+        <Icon name={icon} size={48} color={'#BABABA'} />
+        <Text style={{ marginTop: 16, fontSize: 20, textAlign: 'center', color: '#BABABA' }}>
+          {message}
+        </Text>
       </View>
     );
   }
