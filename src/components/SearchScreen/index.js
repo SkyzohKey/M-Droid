@@ -8,7 +8,7 @@ import SearchResultRow from '../SearchResultRow';
 import sharedStyles from '../../bootstrap/sharedStyles';
 import styles from './styles';
 
-const KEYS_TO_FILTERS = ['name', 'summary', 'description', 'packageName', 'author'];
+const KEYS_TO_FILTERS = ['name', 'summary', 'description', 'id', 'author'];
 
 export default class SearchScreen extends Component {
   static navigationOptions = ({ navigation, screenProps }) => ({
