@@ -8,12 +8,25 @@ This project started because I hate the new F-Droid UI while still loving the ac
 
 #### Table of Contents
 
+* [Features](#features)
 * [How it works?](#how-it-works)
 * [Screenshots](#screenshots)
+* [Default repositories](#default-repositories)
 * [Contributing](#contributing)
 * [Compile & run](#compile--run)
 * [Donations](#donations)
 * [License](#license)
+
+## Features
+
+MDroid attempts to mimic F-Droid features as much as possible, in a Material design fashion. Here's a (not ordered) list of actual MDroid's features:
+
+* Clean Material Design UI
+* Fetching multiple [repositories](#default-repositories)
+* Curated main screen showing somes apps from each categories
+* View app's details
+* Download and install any app from repositories
+* Search for apps
 
 ## How it works?
 
@@ -31,6 +44,21 @@ The screenshots may not be up-to-date. This is currently an early stage for the 
 ![3rd step: Display apps informations!](https://i.imgur.com/TUpRRQT.png)
 ![3rd step: moar informations!](https://i.imgur.com/cgyemnv.png)
 ![4th step: Install the app!](https://i.imgur.com/Lo8UfeR.png)
+![5th step: Search (fuzzy)!](https://i.imgur.com/YA2Ay5J.png)
+
+## Default repositories
+
+Here is the list of included repositories by default. There is no way to change which repositories the app will fetch for now, but that's definitly a planned feature.
+
+* [Official F-Droid repo](https://f-droid.org/repo)
+* [The Guardian repo](https://guardianproject.info/fdroid/repo)
+* [The Guardian archives repo](https://guardianproject.info/fdroid/archive)
+* [Signal repo](https://eutopia.cz/fdroid/repo)
+* [Grote's Transportr repo](https://grobox.de/fdroid/repo)
+* [MicroG repo](https://microg.org/fdroid/repo)
+* [The Briar Project repo](https://briarproject.org/fdroid/repo)
+* [Krombel's repo](http://fdroid.krombel.de/repo)
+* [Copperhead's repo](https://fdroid.copperhead.co/repo)
 
 ## Contributing
 

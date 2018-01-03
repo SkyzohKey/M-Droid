@@ -69,7 +69,7 @@ class HomeScreen extends Component {
           navigation={navigation}
           iconName={'search'}
           color={sharedStyles.HEADER_COLOR}
-          onPress={() => navigation.navigate('AddContact')}
+          onPress={() => navigation.navigate('Search', { searchQuery: '' })}
         />
       </View>
     )
@@ -81,7 +81,7 @@ class HomeScreen extends Component {
 
   render() {
     return (
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1, backgroundColor: '#FAFAFA' }}>
         <StatusBar barStyle="dark-content" backgroundColor="white" />
         <HomeTabs {...this.props} />
       </View>

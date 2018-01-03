@@ -4,6 +4,7 @@ import { DrawerNavigator, StackNavigator } from 'react-navigation';
 
 import HomeScreen from '../components/HomeScreen';
 import AppDetailsScreen from '../containers/AppDetailsContainer';
+import SearchScreen from '../containers/SearchContainer';
 import MenuButton from '../components/MenuButton';
 
 import sharedStyles from './sharedStyles';
@@ -11,7 +12,8 @@ import sharedStyles from './sharedStyles';
 export const AppRoutes = StackNavigator(
   {
     Home: { screen: HomeScreen, path: 'home' },
-    AppDetails: { screen: AppDetailsScreen, path: 'app/:id/:name/:summary/:icon' }
+    AppDetails: { screen: AppDetailsScreen, path: 'app/:id/:name/:summary/:icon' },
+    Search: { screen: SearchScreen, path: 'search/:searchQuery' }
   },
   {
     navigationOptions: ({ navigation }) => ({

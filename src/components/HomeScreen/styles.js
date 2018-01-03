@@ -2,7 +2,8 @@ import sharedStyles from '../../bootstrap/sharedStyles';
 
 const styles = {
   container: {
-    ...sharedStyles.screenContainer
+    ...sharedStyles.screenContainer,
+    backgroundColor: '#FAFAFA'
   }
 };
 
