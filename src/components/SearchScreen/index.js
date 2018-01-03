@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, FlatList } from 'react-native';
+import { View, Text, FlatList, TextInput } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import SearchInput, { createFilter } from 'react-native-search-filter';
 
@@ -19,16 +19,27 @@ export default class SearchScreen extends Component {
     },
     headerTitleStyle: styles.searchInput,
     headerTitle: (
-      <SearchInput
-        fuzzy={true}
-        sortResults={true}
-        inputViewStyles={styles.searchInput}
-        placeholder={'Search app...'}
-        onChangeText={term => {
-          navigation.setParams({ searchQuery: term });
+      <View
+        style={{
+          elevation: 1,
+          margin: 2,
+          flex: 1,
+          width: '100%',
+          justifyContent: 'center'
         }}
-        /* value={navigation.state.params && navigation.state.params.searchQuery}*/
-      />
+      >
+        <SearchInput
+          autoFocus={true}
+          fuzzy={true}
+          sortResults={true}
+          inputViewStyles={styles.searchInput}
+          placeholder={'Search app...'}
+          onChangeText={term => {
+            navigation.setParams({ searchQuery: term });
+          }}
+          value={navigation.state.params.searchQuery && navigation.state.params.searchQuery}
+        />
+      </View>
     ),
     headerLeft: (
       <MenuButton
@@ -76,10 +87,8 @@ export default class SearchScreen extends Component {
     const { params } = this.props.navigation.state;
 
     if (results.length <= 0) {
-      return this.renderEmpty('bomb-off', 'No result for ' + params.searchQuery);
+      return this.renderEmpty('error-outline', 'No result for ' + params.searchQuery);
     }
-
-    console.log(results[0]);
 
     return (
       <View>
@@ -88,7 +97,10 @@ export default class SearchScreen extends Component {
             <View style={styles.row}>
               <Icon name={'search'} size={22} color={'black'} />
               <Text style={styles.resultsTitle}>
-                Results for <Text style={{ fontWeight: 'bold' }}>{params.searchQuery}</Text>:
+                Results for{' '}
+                <Text style={{ fontWeight: 'bold', color: sharedStyles.ACCENT_COLOR }}>
+                  {params.searchQuery}
+                </Text>
               </Text>
             </View>
           )}

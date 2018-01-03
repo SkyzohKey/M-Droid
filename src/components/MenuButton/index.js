@@ -12,6 +12,7 @@ export default class MenuButton extends Component {
           onPress={() => {
             this.props.onPress && this.props.onPress();
           }}
+          borderless={true}
         >
           <View
             style={{

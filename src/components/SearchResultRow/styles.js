@@ -6,14 +6,14 @@ const styles = {
     // marginHorizontal: 8
   },
   result: {
-    elevation: 2,
+    elevation: 1,
+    margin: 2,
+    marginBottom: 3,
     backgroundColor: 'white',
     padding: 8,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'flex-start',
-    borderColor: '#f1f1f1',
-    borderWidth: 1
+    justifyContent: 'flex-start'
   },
   appName: {
     fontWeight: 'bold',

@@ -32,30 +32,36 @@ export default class AppCard extends Component {
     const { appIconPath, appName, appSummary, onPress } = this.props;
     const containerWidth = {
       // 3 cards on the screen, minus margin/2 plus 15px (5*3) of the 4th card.
-      width: this.state.width / 3 - styles.container.marginRight / 2 - 9
+      width: this.state.width / 3 - styles.container.marginRight / 2 - 6
     };
 
     return (
-      <View style={[styles.container, containerWidth]} onLayout={() => this.onLayout()}>
-        <Touchable onPress={onPress}>
-          <View style={styles.card}>
-            <View style={styles.iconWrapper}>
-              <CachedImage
-                fadeDuration={0}
-                source={{ uri: appIconPath }}
-                fallbackSource={require('../../assets/images/default-icon.png')}
-                style={[styles.appIcon, { resizeMode: 'contain' }]}
-                activityIndicatorProps={{ size: 'large', color: sharedStyles.ACCENT_COLOR }}
-              />
+      <View
+        style={[styles.container, containerWidth]}
+        onLayout={() => this.onLayout()}
+        elevation={2}
+      >
+        <View style={styles.card}>
+          <Touchable onPress={onPress}>
+            <View style={styles.cardContent}>
+              <View style={styles.iconWrapper}>
+                <CachedImage
+                  fadeDuration={0}
+                  source={{ uri: appIconPath }}
+                  fallbackSource={require('../../assets/images/default-icon.png')}
+                  style={styles.appIcon}
+                  activityIndicatorProps={{ size: 'large', color: sharedStyles.ACCENT_COLOR }}
+                />
+              </View>
+              <Text numberOfLines={1} style={styles.appName}>
+                {appName}
+              </Text>
+              <Text numberOfLines={1} style={styles.appSummary}>
+                {appSummary}
+              </Text>
             </View>
-            <Text numberOfLines={1} style={styles.appName}>
-              {appName}
-            </Text>
-            <Text numberOfLines={1} style={styles.appSummary}>
-              {appSummary}
-            </Text>
-          </View>
-        </Touchable>
+          </Touchable>
+        </View>
       </View>
     );
   }

@@ -8,8 +8,11 @@ import {
   TouchableNativeFeedback,
   TouchableWithoutFeedback,
   BackgroundPropType,
-  Platform
+  Platform,
+  InteractionManager
 } from 'react-native';
+
+import sharedStyles from '../../bootstrap/sharedStyles';
 
 class Touchable extends Component {
   constructor(props) {
@@ -32,7 +35,17 @@ class Touchable extends Component {
     };
 
     return (
-      <Touchable {...this.props} useForeground={this.props.raised} style={{ borderRadius: 100 }}>
+      <Touchable
+        {...this.props}
+        onPress={() => {
+          if (this.props.onPress) {
+            InteractionManager.runAfterInteractions(this.props.onPress());
+          }
+        }}
+        useForeground={this.props.raised}
+        background={ripplesColor()}
+        style={{ borderRadius: 100 }}
+      >
         <View style={this.props.style}>{Children.only(this.props.children)}</View>
       </Touchable>
     );
@@ -44,14 +57,16 @@ Touchable.propTypes = {
   ripplesColor: PropTypes.string,
   borderless: PropTypes.bool,
   raised: PropTypes.bool,
-  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  onPress: PropTypes.func.isRequired
 };
 
 Touchable.defaultProps = {
   ripples: true,
-  ripplesColor: null,
+  ripplesColor: sharedStyles.RIPPLES_COLOR_DEFAULT,
   borderless: false,
-  raised: false
+  raised: false,
+  onPress: () => {}
 };
 
 export default Touchable;

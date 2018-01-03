@@ -61,13 +61,15 @@ class AppsList extends Component {
             onPress={() => alert('Show more ' + title + '.')}
             style={{ paddingHorizontal: 8, paddingVertical: 6 }}
           >
-            <Text style={{ color: '#BABABA', fontSize: 12 }}>
+            <Text style={{ color: '#BABABA', fontSize: 12, fontWeight: 'bold' }}>
               ALL <Icon name={'chevron-right'} color={'#BABABA'} />
             </Text>
           </Touchable>
         </View>
         <FlatList
           horizontal={true}
+          // pagingEnabled={true}
+          // numColumns={3} // Useful to make grids!
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}
           data={subset}
@@ -75,7 +77,7 @@ class AppsList extends Component {
             item.name === null ? null : (
               <AppCard
                 style={{ marginRight: index <= subset.length - 1 ? 8 : 0 }}
-                key={index}
+                key={item.id}
                 appName={item.name}
                 appSummary={item.summary}
                 appIconPath={item.icon}

@@ -1,5 +1,16 @@
 import React, { Component } from 'react';
-import { View, Text, Button, Dimensions, ScrollView, Linking, Modal, Image } from 'react-native';
+import {
+  Clipboard,
+  ToastAndroid,
+  View,
+  Text,
+  Button,
+  Dimensions,
+  ScrollView,
+  Linking,
+  Modal,
+  Image
+} from 'react-native';
 import HTMLView from 'react-native-htmlview';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import FIcon from 'react-native-vector-icons/Foundation';
@@ -8,6 +19,7 @@ import { CachedImage } from 'react-native-cached-image';
 import MenuButton from '../MenuButton';
 import Touchable from '../Touchable';
 import AppsList from '../../containers/AppsListContainer';
+import { toFileSize } from '../../utils';
 import sharedStyles from '../../bootstrap/sharedStyles';
 import styles from './styles';
 
@@ -31,9 +43,11 @@ export default class AppDetailsScreen extends Component {
     headerRight: (
       <MenuButton
         navigation={navigation}
-        iconName={'more-vert'}
+        iconName={'search'}
         color={sharedStyles.HEADER_COLOR}
-        onPress={() => navigation.navigate('Search')}
+        onPress={() =>
+          navigation.navigate('Search', { searchQuery: navigation.state.params.app.name })
+        }
       />
     )
   });
@@ -70,6 +84,11 @@ export default class AppDetailsScreen extends Component {
     this.setState({ askForInstall: false });
   }
 
+  copyText(text) {
+    Clipboard.setString(text);
+    ToastAndroid.show('Text copied to clipboard', 1000);
+  }
+
   render() {
     const { app } = this.props.navigation.state.params;
     const { apps } = this.props;
@@ -100,26 +119,37 @@ export default class AppDetailsScreen extends Component {
               width: this.state.width
             }}
           >
-            <CachedImage
-              fadeDuration={0}
-              source={{ uri: app.featureGraphic }}
-              fallbackSource={require('../../assets/images/feature-graphic-default.jpg')}
-              activityIndicatorProps={{ size: 'large', color: sharedStyles.ACCENT_COLOR }}
-              style={{
-                height: 180,
-                width: this.state.width,
-                resizeMode: 'stretch'
-              }}
-            />
+            {app.featureGraphic ? (
+              <CachedImage
+                fadeDuration={0}
+                source={{ uri: app.featureGraphic }}
+                fallbackSource={require('../../assets/images/feature-graphic-default.jpg')}
+                activityIndicatorProps={{ size: 'large', color: sharedStyles.ACCENT_COLOR }}
+                style={{
+                  height: 180,
+                  width: this.state.width,
+                  resizeMode: 'stretch'
+                }}
+              />
+            ) : null}
           </View>
           <View
             style={{
-              marginTop: -40,
+              marginTop: app.featureGraphic ? -40 : 0,
               zIndex: 2000,
               overflow: 'visible'
             }}
           >
-            <View style={{ padding: 16 }}>
+            <View
+              style={{
+                padding: 16,
+                borderBottomColor: '#DADADA',
+                borderBottomWidth: 2,
+                flexDirection: app.featureGraphic ? 'column' : 'row',
+                justifyContent: app.featureGraphic ? 'flex-start' : 'center',
+                alignItems: app.featureGraphic ? 'flex-start' : 'center'
+              }}
+            >
               <View style={{ overflow: 'visible' }}>
                 <CachedImage
                   fadeDuration={0}
@@ -136,6 +166,8 @@ export default class AppDetailsScreen extends Component {
               </View>
               <View
                 style={{
+                  marginLeft: app.featureGraphic ? 0 : 8,
+                  flex: 1,
                   backgroundColor: 'white',
                   flexDirection: 'row',
                   justifyContent: 'space-between',
@@ -146,7 +178,7 @@ export default class AppDetailsScreen extends Component {
                   <Text style={{ fontWeight: 'bold', fontSize: 16, color: '#505050' }}>
                     {app.name}
                   </Text>
-                  <Text style={{ fontSize: 11 }}>{app.author}</Text>
+                  {app.author && <Text style={{ fontSize: 11 }}>{app.author}</Text>}
                 </View>
                 <View style={{ flexDirection: 'column', flex: 0.3 }}>
                   <Button
@@ -179,8 +211,11 @@ export default class AppDetailsScreen extends Component {
                 </Touchable>
               </View>
             )}
-            <Text style={{ fontWeight: 'bold', color: '#696969' }}>{app.summary}</Text>
+            <Text selectable style={{ fontWeight: 'bold', color: '#696969' }}>
+              {app.summary}
+            </Text>
             <HTMLView
+              selectable
               value={app.description}
               stylesheet={{
                 p: { color: '#696969' },
@@ -200,7 +235,7 @@ export default class AppDetailsScreen extends Component {
               sameAuthorApps.length > 0 && (
                 <AppsList
                   apps={sameAuthorApps}
-                  title={'Other apps from ' + app.author}
+                  title={'More from ' + app.author}
                   icon={'account-check'}
                 />
               )}
@@ -208,7 +243,7 @@ export default class AppDetailsScreen extends Component {
               sameCategoryApps.length > 0 && (
                 <AppsList
                   apps={sameCategoryApps}
-                  title={'Other apps in this category'}
+                  title={'In the same category'}
                   icon={'tag-multiple'}
                 />
               )}
@@ -216,7 +251,7 @@ export default class AppDetailsScreen extends Component {
           <View style={{ paddingTop: 16, paddingHorizontal: 16, backgroundColor: '#fafafa' }}>
             <Text style={{ fontWeight: 'bold', marginBottom: 8 }}>ABOUT THE APP</Text>
             {app.id && (
-              <Touchable onPress={() => {}}>
+              <Touchable onPress={() => this.copyText(app.packages[0].id)}>
                 <View
                   style={{
                     paddingVertical: 8,
@@ -226,7 +261,58 @@ export default class AppDetailsScreen extends Component {
                   }}
                 >
                   <Icon name={'package'} size={20} color={'#aaa'} />
-                  <Text style={{ marginLeft: 8, color: '#666', fontWeight: 'bold' }}>{app.id}</Text>
+                  <Text selectable style={{ marginLeft: 8, color: '#666', fontWeight: 'bold' }}>{app.id}</Text>
+                </View>
+              </Touchable>
+            )}
+            {app.packages[0].added && (
+              <Touchable onPress={() => this.copyText(app.packages[0].added)}>
+                <View
+                  style={{
+                    paddingVertical: 8,
+                    paddingHorizontal: 8,
+                    flexDirection: 'row',
+                    alignItems: 'center'
+                  }}
+                >
+                  <Icon name={'calendar'} size={20} color={'#aaa'} />
+                  <Text selectable style={{ marginLeft: 8, color: '#666', fontWeight: 'bold' }}>
+                    Lastest update {app.packages[0].added}
+                  </Text>
+                </View>
+              </Touchable>
+            )}
+            {app.packages[0].version && (
+              <Touchable onPress={() => this.copyText(app.packages[0].version)}>
+                <View
+                  style={{
+                    paddingVertical: 8,
+                    paddingHorizontal: 8,
+                    flexDirection: 'row',
+                    alignItems: 'center'
+                  }}
+                >
+                  <Icon name={'information-outline'} size={20} color={'#aaa'} />
+                  <Text selectable style={{ marginLeft: 8, color: '#666', fontWeight: 'bold' }}>
+                    Version {app.packages[0].version}
+                  </Text>
+                </View>
+              </Touchable>
+            )}
+            {app.packages[0].size && (
+              <Touchable onPress={() => {}}>
+                <View
+                  style={{
+                    paddingVertical: 8,
+                    paddingHorizontal: 8,
+                    flexDirection: 'row',
+                    alignItems: 'center'
+                  }}
+                >
+                  <Icon name={'file-outline'} size={20} color={'#aaa'} />
+                  <Text style={{ marginLeft: 8, color: '#666', fontWeight: 'bold' }}>
+                    {toFileSize(app.packages[0].size)}
+                  </Text>
                 </View>
               </Touchable>
             )}
@@ -269,7 +355,7 @@ export default class AppDetailsScreen extends Component {
                 >
                   <Icon name={'copyright'} size={20} color={'#aaa'} />
                   <Text style={{ marginLeft: 8, color: '#666', fontWeight: 'bold' }}>
-                    {app.license}
+                    Licensed under {app.license}
                   </Text>
                 </View>
               </Touchable>

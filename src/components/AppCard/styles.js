@@ -2,17 +2,19 @@ import sharedStyles from '../../bootstrap/sharedStyles';
 
 const styles = {
   container: {
-    marginRight: 8,
+    marginRight: 4,
     elevation: 3
   },
   card: {
-    elevation: 2,
-    borderColor: '#f1f1f1',
-    borderWidth: 1,
-    padding: 16,
+    margin: 2,
+    marginBottom: 3,
+    elevation: 1,
+    backgroundColor: 'white'
+  },
+  cardContent: {
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'white'
+    padding: 16
   },
   appName: {
     fontWeight: 'bold',
@@ -24,7 +26,8 @@ const styles = {
   appIcon: {
     width: 40,
     height: 40,
-    margin: 0
+    margin: 0,
+    resizeMode: 'contain'
   },
   iconWrapper: {
     marginBottom: 8
