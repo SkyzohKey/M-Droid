@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { View, Image, StatusBar } from 'react-native';
+import { View, Image } from 'react-native';
 import { TabNavigator } from 'react-navigation';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import MenuButton from '../../components/MenuButton';
 import AppsTab from '../../containers/AppsTabContainer';
@@ -48,6 +49,7 @@ export const HomeTabs = TabNavigator(
 class HomeScreen extends Component {
   static navigationOptions = ({ navigation, screenProps }) => ({
     title: 'Home',
+    drawerIcon: ({ tintColor }) => <Icon name={'home'} color={tintColor} size={20} />,
     headerTintColor: sharedStyles.HEADER_COLOR,
     headerStyle: {
       backgroundColor: 'white',
@@ -82,7 +84,6 @@ class HomeScreen extends Component {
   render() {
     return (
       <View style={{ flex: 1, backgroundColor: '#FAFAFA' }}>
-        <StatusBar barStyle="dark-content" backgroundColor="white" />
         <HomeTabs {...this.props} />
       </View>
     );

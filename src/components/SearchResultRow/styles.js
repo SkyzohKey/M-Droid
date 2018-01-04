@@ -9,7 +9,9 @@ const styles = {
     elevation: 1,
     margin: 2,
     marginBottom: 3,
-    backgroundColor: 'white',
+    backgroundColor: 'white'
+  },
+  resultContent: {
     padding: 8,
     flexDirection: 'row',
     alignItems: 'center',
@@ -26,7 +28,8 @@ const styles = {
   appIcon: {
     width: 40,
     height: 40,
-    marginRight: 8
+    marginRight: 8,
+    resizeMode: 'contain'
   },
   iconWrapper: {
     flex: 0

@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { BackHandler, NativeModules } from 'react-native';
+import { BackHandler, NativeModules, StatusBar, View } from 'react-native';
 
 // Debuggers.
 import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly';

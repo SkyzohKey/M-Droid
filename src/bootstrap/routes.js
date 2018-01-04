@@ -1,34 +1,46 @@
 // @flow
 import React from 'react';
+import { Image } from 'react-native';
 import { DrawerNavigator, StackNavigator } from 'react-navigation';
 
 import HomeScreen from '../components/HomeScreen';
 import AppDetailsScreen from '../containers/AppDetailsContainer';
 import SearchScreen from '../containers/SearchContainer';
 import MenuButton from '../components/MenuButton';
+import ReposHomeScreen from '../containers/ReposHomeContainer';
 
 import sharedStyles from './sharedStyles';
 
+const navOptions = {
+  navigationOptions: ({ navigation }) => ({
+    headerLeft: (
+      <MenuButton
+        navigation={navigation}
+        iconName={'menu'}
+        color={sharedStyles.HEADER_COLOR}
+        onPress={() => navigation.navigate('DrawerOpen')}
+      />
+    )
+  })
+};
+
 export const AppRoutes = StackNavigator(
   {
-    Home: { screen: HomeScreen, path: 'home' },
-    AppDetails: { screen: AppDetailsScreen, path: 'app/:id/:name/:summary/:icon' },
-    Search: { screen: SearchScreen, path: 'search/:searchQuery' }
+    Home: { screen: HomeScreen, path: 'repos/home' },
+    AppDetails: { screen: AppDetailsScreen, path: 'repos/app/:id/:name/:summary/:icon' },
+    Search: { screen: SearchScreen, path: 'repos/search/:searchQuery' }
   },
+  navOptions
+);
+
+export const ReposRoutes = StackNavigator(
   {
-    navigationOptions: ({ navigation }) => ({
-      headerLeft: (
-        <MenuButton
-          navigation={navigation}
-          iconName={'menu'}
-          color={sharedStyles.HEADER_COLOR}
-          onPress={() => navigation.navigate('DrawerOpen')}
-        />
-      )
-    })
-  }
+    ReposHome: { screen: ReposHomeScreen, path: 'repos/home' }
+  },
+  navOptions
 );
 
 export const primaryRoutes = DrawerNavigator({
-  App: { screen: AppRoutes }
+  App: { screen: AppRoutes, path: 'apps' },
+  Repos: { screen: ReposRoutes, path: 'repos' }
 });

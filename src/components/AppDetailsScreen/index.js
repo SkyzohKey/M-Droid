@@ -1,3 +1,8 @@
+/**
+ * TODO; REFACTOR THIS CLASS IN MULTIPLE SMALLER COMPONENTS
+ * CURRENTLY THIS FILE IS A COMPLETE NIGHTMARE FOR FURTHER MAINTAINANCE.
+ */
+
 import React, { Component } from 'react';
 import {
   Clipboard,
