@@ -7,6 +7,7 @@ import MenuButton from '../MenuButton';
 import SearchResultRow from '../SearchResultRow';
 import sharedStyles from '../../bootstrap/sharedStyles';
 import styles from './styles';
+import { removeDuplicates } from '../../utils';
 
 const KEYS_TO_FILTERS = ['name', 'summary', 'description', 'id', 'author'];
 
@@ -15,7 +16,7 @@ export default class SearchScreen extends Component {
     title: 'Search',
     headerTintColor: sharedStyles.HEADER_COLOR,
     headerStyle: {
-      backgroundColor: 'white'
+      backgroundColor: sharedStyles.HEADER_COLOR
     },
     headerTitleStyle: styles.searchInput,
     headerTitle: (
@@ -33,7 +34,9 @@ export default class SearchScreen extends Component {
           fuzzy={true}
           sortResults={true}
           inputViewStyles={styles.searchInput}
+          style={styles.searchInputText}
           placeholder={'Search app...'}
+          placeholderTextColor={sharedStyles.HEADER_TEXT_COLOR}
           onChangeText={term => {
             navigation.setParams({ searchQuery: term });
           }}
@@ -45,7 +48,7 @@ export default class SearchScreen extends Component {
       <MenuButton
         navigation={navigation}
         iconName={'arrow-back'}
-        color={sharedStyles.HEADER_COLOR}
+        color={sharedStyles.HEADER_TEXT_COLOR}
         onPress={() => navigation.goBack()}
       />
     )
@@ -90,6 +93,11 @@ export default class SearchScreen extends Component {
       return this.renderEmpty('error-outline', 'No result for ' + params.searchQuery);
     }
 
+    const uniqResults = removeDuplicates(
+      results,
+      (item, t) => t.id === item.id && t.name === item.name
+    );
+
     return (
       <View>
         <FlatList
@@ -107,7 +115,7 @@ export default class SearchScreen extends Component {
           style={styles.results}
           showsVerticalScrollIndicator={false}
           keyExtractor={item => item.packageName}
-          data={results}
+          data={uniqResults}
           renderItem={this.renderItem}
         />
       </View>

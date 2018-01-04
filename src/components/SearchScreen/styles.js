@@ -9,7 +9,7 @@ const styles = {
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'white',
+    // backgroundColor: 'white',
     flex: 1,
     elevation: 3
   },
@@ -17,6 +17,9 @@ const styles = {
     flex: 1,
     width: '100%',
     justifyContent: 'center'
+  },
+  searchInputText: {
+    color: sharedStyles.HEADER_TEXT_COLOR
   },
   results: {
     padding: 8

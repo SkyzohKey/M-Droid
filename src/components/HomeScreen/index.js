@@ -8,6 +8,7 @@ import AppsTab from '../../containers/AppsTabContainer';
 import EntertainmentTab from '../../containers/EntertainmentTabContainer';
 
 import sharedStyles from '../../bootstrap/sharedStyles';
+import styles from './styles';
 
 export const HomeTabs = TabNavigator(
   {
@@ -32,10 +33,10 @@ export const HomeTabs = TabNavigator(
       },
       style: {
         padding: 0,
-        backgroundColor: 'white'
+        backgroundColor: sharedStyles.HEADER_COLOR
       },
       indicatorStyle: {
-        backgroundColor: sharedStyles.ACCENT_COLOR,
+        backgroundColor: sharedStyles.HEADER_TEXT_COLOR,
         height: 3
       },
       iconStyle: {
@@ -49,28 +50,28 @@ export const HomeTabs = TabNavigator(
 class HomeScreen extends Component {
   static navigationOptions = ({ navigation, screenProps }) => ({
     title: 'Home',
-    drawerIcon: ({ tintColor }) => <Icon name={'home'} color={tintColor} size={20} />,
+    drawerIcon: <Icon name={'home'} color={sharedStyles.HEADER_COLOR} size={20} />,
     headerTintColor: sharedStyles.HEADER_COLOR,
     headerStyle: {
-      backgroundColor: 'white',
+      backgroundColor: sharedStyles.HEADER_COLOR,
       elevation: 0 // remove shadow on Android
     },
     header: (
-      <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: 'white' }}>
+      <View style={styles.header}>
         <MenuButton
           navigation={navigation}
           iconName={'menu'}
-          color={sharedStyles.HEADER_COLOR}
+          color={sharedStyles.HEADER_TEXT_COLOR}
           onPress={() => navigation.navigate('DrawerOpen')}
         />
         <Image
-          source={require('../../assets/images/wordmarks/wordmark-muted.png')}
-          style={{ flex: 1, resizeMode: 'contain', height: 40, width: 150 }}
+          source={require('../../assets/images/wordmarks/wordmark-dark.png')}
+          style={styles.headerLogo}
         />
         <MenuButton
           navigation={navigation}
           iconName={'search'}
-          color={sharedStyles.HEADER_COLOR}
+          color={sharedStyles.HEADER_TEXT_COLOR}
           onPress={() => navigation.navigate('Search', { searchQuery: '' })}
         />
       </View>
@@ -83,7 +84,7 @@ class HomeScreen extends Component {
 
   render() {
     return (
-      <View style={{ flex: 1, backgroundColor: '#FAFAFA' }}>
+      <View style={styles.container}>
         <HomeTabs {...this.props} />
       </View>
     );

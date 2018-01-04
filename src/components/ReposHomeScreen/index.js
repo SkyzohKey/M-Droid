@@ -1,3 +1,8 @@
+/**
+ * TODO: REFACTOR THIS SCREEN AND CREATE A LISTROW COMPONENT
+ * INSTEAD OF RE-USING THE SEARCH RESULT ROW.
+ */
+
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { View, Text, FlatList } from 'react-native';
@@ -6,14 +11,16 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import ListRow from '../SearchResultRow';
 import styles from './styles';
 import sharedStyles from '../../bootstrap/sharedStyles';
+import { removeDuplicates } from '../../utils';
 
 export default class ReposHomeScreen extends Component {
   static navigationOptions = ({ navigation, screenProps }) => ({
     title: 'Repositories',
-    drawerIcon: ({ tintColor }) => <Icon name={'package'} color={tintColor} size={20} />,
-    headerTintColor: sharedStyles.HEADER_COLOR,
+
+    drawerIcon: <Icon name={'package'} color={sharedStyles.HEADER_COLOR} size={20} />,
+    headerTintColor: sharedStyles.HEADER_TEXT_COLOR,
     headerStyle: {
-      backgroundColor: 'white'
+      backgroundColor: sharedStyles.HEADER_COLOR
     }
   });
 
@@ -26,18 +33,12 @@ export default class ReposHomeScreen extends Component {
     super(props);
   }
 
-  removeDuplicates = items => {
-    const newItem = items.filter(
-      (item, index, self) =>
-        index === self.findIndex(t => t.pubkey === item.pubkey && t.name === item.name)
-    );
-
-    return newItem;
-  };
-
   render() {
     const reposByPubkey = this.props.repos;
-    const repos = this.removeDuplicates(Object.keys(reposByPubkey).map(key => reposByPubkey[key]));
+    const repos = removeDuplicates(
+      Object.keys(reposByPubkey).map(key => reposByPubkey[key]),
+      (item, t) => t.pubkey === item.pubkey && t.name === item.name
+    );
 
     console.log(repos);
 

@@ -17,7 +17,7 @@ const navOptions = {
       <MenuButton
         navigation={navigation}
         iconName={'menu'}
-        color={sharedStyles.HEADER_COLOR}
+        color={sharedStyles.HEADER_TEXT_COLOR}
         onPress={() => navigation.navigate('DrawerOpen')}
       />
     )

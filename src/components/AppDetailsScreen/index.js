@@ -33,15 +33,15 @@ import { downloadApp } from '../../services/RepositoryService';
 export default class AppDetailsScreen extends Component {
   static navigationOptions = ({ navigation, screenProps }) => ({
     title: navigation.state.params.app.name,
-    headerTintColor: sharedStyles.HEADER_COLOR,
+    headerTintColor: sharedStyles.HEADER_TEXT_COLOR,
     headerStyle: {
-      backgroundColor: 'white'
+      backgroundColor: sharedStyles.HEADER_COLOR
     },
     headerLeft: (
       <MenuButton
         navigation={navigation}
         iconName={'arrow-back'}
-        color={sharedStyles.HEADER_COLOR}
+        color={sharedStyles.HEADER_TEXT_COLOR}
         onPress={() => navigation.goBack()}
       />
     ),
@@ -49,7 +49,7 @@ export default class AppDetailsScreen extends Component {
       <MenuButton
         navigation={navigation}
         iconName={'search'}
-        color={sharedStyles.HEADER_COLOR}
+        color={sharedStyles.HEADER_TEXT_COLOR}
         onPress={() =>
           navigation.navigate('Search', { searchQuery: navigation.state.params.app.name })
         }
@@ -179,15 +179,15 @@ export default class AppDetailsScreen extends Component {
                   alignItems: 'flex-start'
                 }}
               >
-                <View style={{ flexDirection: 'column', flex: 0.7 }}>
+                <View style={{ flexDirection: 'column', flex: 1 }}>
                   <Text style={{ fontWeight: 'bold', fontSize: 16, color: '#505050' }}>
                     {app.name}
                   </Text>
                   {app.author && <Text style={{ fontSize: 11 }}>{app.author}</Text>}
                 </View>
-                <View style={{ flexDirection: 'column', flex: 0.3 }}>
+                <View style={{ flexDirection: 'column', flex: 0.4 }}>
                   <Button
-                    style={{ flex: 0.3 }}
+                    style={{ flex: 1 }}
                     title="Install"
                     color={sharedStyles.ACCENT_COLOR}
                     onPress={() => this.askForDownload(app)}
@@ -256,7 +256,7 @@ export default class AppDetailsScreen extends Component {
           <View style={{ paddingTop: 16, paddingHorizontal: 16, backgroundColor: '#fafafa' }}>
             <Text style={{ fontWeight: 'bold', marginBottom: 8 }}>ABOUT THE APP</Text>
             {app.id && (
-              <Touchable onPress={() => this.copyText(app.packages[0].id)}>
+              <Touchable onPress={() => this.copyText(app.id)}>
                 <View
                   style={{
                     paddingVertical: 8,
@@ -266,7 +266,9 @@ export default class AppDetailsScreen extends Component {
                   }}
                 >
                   <Icon name={'package'} size={20} color={'#aaa'} />
-                  <Text selectable style={{ marginLeft: 8, color: '#666', fontWeight: 'bold' }}>{app.id}</Text>
+                  <Text selectable style={{ marginLeft: 8, color: '#666', fontWeight: 'bold' }}>
+                    {app.id}
+                  </Text>
                 </View>
               </Touchable>
             )}
