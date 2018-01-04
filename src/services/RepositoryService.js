@@ -266,7 +266,7 @@ export const downloadApp = async (appName, apkName, apkUrl) => {
       .fetch('GET', apkUrl)
       .then(res => {
         android.actionViewIntent(
-          RNFetchBlob.fs.dirs.DownloadDir + '/' + apkName,
+          res.path(),
           'application/vnd.android.package-archive'
         );
       });
