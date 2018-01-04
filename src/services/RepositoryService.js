@@ -1,5 +1,6 @@
 import { DOMParser } from 'xmldom';
 import RNFetchBlob from 'react-native-fetch-blob';
+import { ImageCacheManager } from 'react-native-cached-image';
 const android = RNFetchBlob.android;
 
 /**
@@ -8,6 +9,10 @@ const android = RNFetchBlob.android;
  */
 
 const parser = new DOMParser();
+const imgCacheManager = new ImageCacheManager();
+const imgCacheOpts = {
+  allowSelfSignedSSL: true
+};
 
 /**
  * Check if value is defined for a node, and if that node exists in the parent node.
@@ -140,6 +145,18 @@ const parseOldRepoIndex = (doc, uuid, baseUrl) => {
       .then(res => {
         if (res.info().status === 200) {
           appData.featureGraphic = featureGraphicPath;
+          imgCacheManager.downloadAndCacheUrl(featureGraphicPath, imgCacheOpts);
+        }
+      })
+      .catch(err => console.log(err));
+
+    // Test for the icon.
+    RNFetchBlob.fetch('GET', appData.icon)
+      .then(res => {
+        if (res.info().status === 200) {
+          imgCacheManager.downloadAndCacheUrl(appData.icon, imgCacheOpts);
+        } else {
+          appData.icon = null;
         }
       })
       .catch(err => console.log(err));
@@ -192,12 +209,12 @@ const parseRepoIndexV1 = (json, uuid, baseUrl) => {
 
 export const getCacheForParsedRepo = baseUrl => {
   const hash = RNFetchBlob.base64.encode(baseUrl).replace('=', '');
-  const filePath = RNFetchBlob.fs.dirs.CacheDir + '/' + hash;
+  const filePath = RNFetchBlob.fs.dirs.CacheDir + '/' + hash + '.json';
   console.log('File path: ', filePath);
   return RNFetchBlob.fs.exists(filePath).then(exists => {
     if (exists) {
-      return RNFetchBlob.fs.readFile(filePath, 'utf8').then(data => {
-        return JSON.parse(data);
+      return RNFetchBlob.fs.readFile(filePath, 'base64').then(data => {
+        return JSON.parse(RNFetchBlob.base64.decode(data));
       });
     }
     return Promise.reject();
@@ -206,9 +223,9 @@ export const getCacheForParsedRepo = baseUrl => {
 
 export const cacheParsedRepo = (baseUrl, repoData) => {
   const hash = RNFetchBlob.base64.encode(baseUrl).replace('=', '');
-  const data = JSON.stringify(repoData);
-  const filePath = RNFetchBlob.fs.dirs.CacheDir + '/' + hash;
-  return RNFetchBlob.fs.writeFile(filePath, data, 'utf8');
+  const data = RNFetchBlob.base64.encode(JSON.stringify(repoData));
+  const filePath = RNFetchBlob.fs.dirs.CacheDir + '/' + hash + '.json';
+  return RNFetchBlob.fs.writeFile(filePath, data, 'base64');
 };
 
 /**
@@ -232,7 +249,6 @@ export const getRepositoryAsync = async baseUrl => {
     })
     .catch(async () => {
       const repoUUID = RNFetchBlob.base64.encode(baseUrl).replace('=', '');
-      // const response = await fetch(baseUrl + '/index.xml');
       const task = RNFetchBlob.config({ fileCache: true });
       const response = await task.fetch('GET', baseUrl + '/index.xml');
       const responseXml = await response.text();
@@ -265,10 +281,7 @@ export const downloadApp = async (appName, apkName, apkUrl) => {
     })
       .fetch('GET', apkUrl)
       .then(res => {
-        android.actionViewIntent(
-          res.path(),
-          'application/vnd.android.package-archive'
-        );
+        android.actionViewIntent(res.path(), 'application/vnd.android.package-archive');
       });
   } catch (e) {
     console.log(e);
