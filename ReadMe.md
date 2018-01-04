@@ -21,12 +21,13 @@ This project started because I hate the new F-Droid UI while still loving the ac
 
 MDroid attempts to mimic F-Droid features as much as possible, in a Material design fashion. Here's a (not ordered) list of actual MDroid's features:
 
-* Clean Material Design UI
+* Clean UI following the Material Design specifications
 * Fetching multiple [repositories](#default-repositories)
 * Curated main screen showing somes apps from each categories
 * View app's details
 * Download and install any app from repositories
-* Search for apps
+* Search for apps (fuzzy search, super fast)
+* Manage (add, edit, delete) your repositories
 
 ## How it works?
 
@@ -40,11 +41,13 @@ That's Simple (c).
 
 The screenshots may not be up-to-date. This is currently an early stage for the project and I'll try to update screenshots as many as possible.
 
-![2nd step: Prepare the UI!](https://i.imgur.com/14oMn3n.png)
-![3rd step: Display apps informations!](https://i.imgur.com/TUpRRQT.png)
-![3rd step: moar informations!](https://i.imgur.com/cgyemnv.png)
-![4th step: Install the app!](https://i.imgur.com/Lo8UfeR.png)
-![5th step: Search (fuzzy)!](https://i.imgur.com/YA2Ay5J.png)
+![2nd step: Prepare the UI!](https://i.imgur.com/h7zoYHE.png)
+![3rd step: Display apps informations!](https://i.imgur.com/WBITCw9.png)
+![3rd step: moar informations!](https://i.imgur.com/HcI1KVu.png)
+![3rd-bis step: even mooooar informations!](https://i.imgur.com/MwX8YB3.png)
+![4th step: Install the app!](https://i.imgur.com/yAjibIB.png)
+![5th step: Search (fuzzy)!](https://i.imgur.com/9aCzPpE.png)
+![6th step: Repositories managment](https://i.imgur.com/wIEUjmK.png)
 
 ## Default repositories
 
