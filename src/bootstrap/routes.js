@@ -8,6 +8,7 @@ import AppDetailsScreen from '../containers/AppDetailsContainer';
 import SearchScreen from '../containers/SearchContainer';
 import MenuButton from '../components/MenuButton';
 import ReposHomeScreen from '../containers/ReposHomeContainer';
+import Drawer from '../components/Drawer';
 
 import sharedStyles from './sharedStyles';
 
@@ -40,7 +41,19 @@ export const ReposRoutes = StackNavigator(
   navOptions
 );
 
-export const primaryRoutes = DrawerNavigator({
-  App: { screen: AppRoutes, path: 'apps' },
-  Repos: { screen: ReposRoutes, path: 'repos' }
-});
+export const primaryRoutes = DrawerNavigator(
+  {
+    App: { screen: AppRoutes, path: 'apps' },
+    Repos: { screen: ReposRoutes, path: 'repos' }
+  },
+  {
+    drawerOpenRoute: 'DrawerOpen',
+    drawerCloseRoute: 'DrawerClose',
+    drawerToggleRoute: 'DrawerToggle',
+    contentComponent: props => <Drawer {...props} />,
+    contentOptions: {
+      activeTintColor: sharedStyles.ACCENT_COLOR,
+      inactiveTintColor: '#222'
+    }
+  }
+);

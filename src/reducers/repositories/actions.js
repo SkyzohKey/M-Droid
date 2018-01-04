@@ -49,6 +49,18 @@ export const fetchRepositories = () => {
   };
 };
 
+export const toggleRepository = repository => {
+  return (dispatch, getState) => {
+    const { reposByPubkey } = getState().repositories;
+    const repo = reposByPubkey[repository.pubkey];
+    dispatch({
+      type: types.SET_REPOSITORY_ENABLED,
+      repository: repository,
+      enabled: !repo.enabled
+    });
+  };
+};
+
 /**
  * An action creator that deletes a repository based on it's UUID.
  *

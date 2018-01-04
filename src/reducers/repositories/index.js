@@ -60,8 +60,19 @@ const repositoriesReducer = (state = initialState, action) => {
         fetchComplete: state.reposFetched === state.reposCount,
         reposByPubkey: {
           ...state.reposByPubkey,
-          [action.repository.uuid]: {
+          [action.repository.pubkey]: {
             ...action.repository
+          }
+        }
+      };
+    case types.SET_REPOSITORY_ENABLED:
+      return {
+        ...state,
+        reposByPubkey: {
+          ...state.reposByPubkey,
+          [action.repository.pubkey]: {
+            ...state.reposByPubkey[action.repository.pubkey],
+            enabled: action.enabled
           }
         }
       };

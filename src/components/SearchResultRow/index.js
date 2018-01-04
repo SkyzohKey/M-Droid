@@ -24,7 +24,7 @@ export default class SearchResultRow extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.result}>
-          <Touchable onPress={onPress}>
+          <Touchable onPress={onPress} delayPressIn={0}>
             <View style={styles.resultContent}>
               <View style={styles.iconWrapper}>
                 <CachedImage

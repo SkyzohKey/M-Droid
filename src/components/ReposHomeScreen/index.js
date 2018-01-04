@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 import { View, FlatList } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import ListRow from '../SearchResultRow';
+import RepoListRow from '../RepoListRow';
 import EmptyPlaceholder from '../EmptyPlaceholder';
 import styles from './styles';
 import sharedStyles from '../../bootstrap/sharedStyles';
@@ -18,7 +18,7 @@ export default class ReposHomeScreen extends Component {
   static navigationOptions = ({ navigation, screenProps }) => ({
     title: 'Repositories',
 
-    drawerIcon: <Icon name={'package'} color={sharedStyles.HEADER_COLOR} size={20} />,
+    drawerIcon: ({ tintColor }) => <Icon name={'package'} color={tintColor} size={20} />,
     headerTintColor: sharedStyles.HEADER_TEXT_COLOR,
     headerStyle: {
       backgroundColor: sharedStyles.HEADER_COLOR
@@ -27,7 +27,9 @@ export default class ReposHomeScreen extends Component {
 
   static propTypes = {
     repos: PropTypes.object.isRequired,
-    refreshRepositories: PropTypes.func.isRequired
+    refreshRepositories: PropTypes.func.isRequired,
+    toggleRepo: PropTypes.func.isRequired,
+    openDetails: PropTypes.func.isRequired
   };
 
   constructor(props) {
@@ -53,14 +55,18 @@ export default class ReposHomeScreen extends Component {
             style={styles.flatlist}
             data={repos}
             keyExtractor={item => item.pubkey + item.name}
-            renderItem={({ item }) => {
+            renderItem={({ item, index }) => {
               const icon = item.url + '/icons/' + item.icon;
+              const isLatestRow = index == repos.length - 1;
               return (
-                <ListRow
-                  appName={item.name}
-                  appSummary={item.description}
-                  appIcon={icon}
+                <RepoListRow
+                  name={item.name}
+                  summary={item.description}
+                  iconPath={icon}
+                  enabled={item.enabled || false}
                   onPress={() => this.props.openDetails(item)}
+                  onSwitch={() => this.props.toggleRepo(item)}
+                  isLatestRow={isLatestRow}
                 />
               );
             }}
@@ -68,7 +74,7 @@ export default class ReposHomeScreen extends Component {
         ) : (
           <EmptyPlaceholder
             icon={'package'}
-            title={'No repositories yet'}
+            title={'No repositories yet...'}
             tagline={'Try adding a repository first by tapping the Plus button.'}
           />
         )}

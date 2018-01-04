@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { View, FlatList } from 'react-native';
+import { View, FlatList, RefreshControl } from 'react-native';
 import PropTypes from 'prop-types';
 
 import AppsList from '../../containers/AppsListContainer';
 import NewAppsSlider from '../../containers/NewAppsSliderContainer';
 import EmptyPlaceholder from '../EmptyPlaceholder';
 import styles from './styles';
+import sharedStyles from '../../bootstrap/sharedStyles';
 
 export default class AppsTab extends Component {
   static navigationOptions = {
@@ -24,7 +25,7 @@ export default class AppsTab extends Component {
   }
 
   componentWillMount() {
-    this.props.fetchRepos();
+    this.props.reposCount === 0 && this.props.fetchRepos();
   }
 
   render() {
@@ -56,6 +57,19 @@ export default class AppsTab extends Component {
         {reposFetched === reposCount && reposCount > 0 ? (
           <FlatList
             style={{ flex: 1 }}
+            // refreshing={this.props.fetchComplete}
+            // onRefresh={() => this.props.fetchRepos()}
+            showsVerticalScrollIndicator={false}
+            refreshControl={
+              <RefreshControl
+                refreshing={this.props.fetchComplete}
+                onRefresh={() => this.props.fetchRepos()}
+                title={'Pull to refresh'}
+                tintColor={'#ffffff'}
+                titleColor={'#ffffff'}
+                colors={sharedStyles.LOGO_COLORS}
+              />
+            }
             data={categories}
             keyExtractor={item => item.name}
             renderItem={({ item }) => {

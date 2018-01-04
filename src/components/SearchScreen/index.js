@@ -97,8 +97,8 @@ export default class SearchScreen extends Component {
     if (results.length <= 0) {
       return this.renderEmpty(
         'all-inclusive',
-        'Cannot find what you\'re looking for',
-        params.searchQuery
+        'No results for your query',
+        'You may want to try with other keywords'
       );
     }
 
@@ -132,6 +132,10 @@ export default class SearchScreen extends Component {
   };
 
   renderEmpty(icon, title, tagline) {
-    return <EmptyPlaceholder icon={icon} title={title} tagline={tagline} />;
+    return (
+      <View style={{ padding: 32, flex: 1 }}>
+        <EmptyPlaceholder icon={icon} title={title} tagline={tagline} />
+      </View>
+    );
   }
 }

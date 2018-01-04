@@ -1,7 +1,7 @@
 // import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { fetchRepositories } from '../reducers/repositories/actions';
+import { fetchRepositories, toggleRepository } from '../reducers/repositories/actions';
 import ReposHomeScreen from '../components/ReposHomeScreen';
 
 const mapStateToProps = (state, ownProps) => {
@@ -21,6 +21,9 @@ const mapDispatchToProps = dispatch => {
     },
     refreshRepositories: () => {
       dispatch(fetchRepositories());
+    },
+    toggleRepo: repo => {
+      dispatch(toggleRepository(repo));
     }
   };
 };

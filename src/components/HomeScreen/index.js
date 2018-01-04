@@ -50,7 +50,7 @@ export const HomeTabs = TabNavigator(
 class HomeScreen extends Component {
   static navigationOptions = ({ navigation, screenProps }) => ({
     title: 'Home',
-    drawerIcon: <Icon name={'home'} color={sharedStyles.HEADER_COLOR} size={20} />,
+    drawerIcon: ({ tintColor }) => <Icon name={'home'} color={tintColor} size={20} />,
     headerTintColor: sharedStyles.HEADER_COLOR,
     headerStyle: {
       backgroundColor: sharedStyles.HEADER_COLOR,

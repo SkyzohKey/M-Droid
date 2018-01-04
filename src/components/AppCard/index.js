@@ -42,7 +42,7 @@ export default class AppCard extends Component {
         elevation={2}
       >
         <View style={styles.card}>
-          <Touchable onPress={onPress}>
+          <Touchable onPress={onPress} delayPressIn={0}>
             <View style={styles.cardContent}>
               <View style={styles.iconWrapper}>
                 <CachedImage

@@ -45,6 +45,7 @@ class Touchable extends Component {
         useForeground={this.props.raised}
         background={ripplesColor()}
         style={{ borderRadius: 100 }}
+        delayPressIn={this.props.delayPressIn}
       >
         <View style={this.props.style}>{Children.only(this.props.children)}</View>
       </Touchable>
@@ -58,6 +59,7 @@ Touchable.propTypes = {
   borderless: PropTypes.bool,
   raised: PropTypes.bool,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  delayPressIn: PropTypes.number,
   onPress: PropTypes.func.isRequired
 };
 
@@ -66,6 +68,7 @@ Touchable.defaultProps = {
   ripplesColor: sharedStyles.RIPPLES_COLOR_DEFAULT,
   borderless: false,
   raised: false,
+  delayPressIn: 0.5,
   onPress: () => {}
 };
 
