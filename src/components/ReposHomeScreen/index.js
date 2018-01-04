@@ -5,10 +5,11 @@
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, FlatList } from 'react-native';
+import { View, FlatList } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import ListRow from '../SearchResultRow';
+import EmptyPlaceholder from '../EmptyPlaceholder';
 import styles from './styles';
 import sharedStyles from '../../bootstrap/sharedStyles';
 import { removeDuplicates } from '../../utils';
@@ -44,25 +45,33 @@ export default class ReposHomeScreen extends Component {
 
     return (
       <View style={styles.container}>
-        <FlatList
-          showsVerticalScrollIndicator={false}
-          onRefresh={() => this.props.refreshRepositories()}
-          refreshing={false}
-          style={styles.flatlist}
-          data={repos}
-          keyExtractor={item => item.pubkey + item.name}
-          renderItem={({ item }) => {
-            const icon = item.url + '/icons/' + item.icon;
-            return (
-              <ListRow
-                appName={item.name}
-                appSummary={item.description}
-                appIcon={icon}
-                onPress={() => this.props.openDetails(item)}
-              />
-            );
-          }}
-        />
+        {repos.length > 0 ? (
+          <FlatList
+            showsVerticalScrollIndicator={false}
+            onRefresh={() => this.props.refreshRepositories()}
+            refreshing={false}
+            style={styles.flatlist}
+            data={repos}
+            keyExtractor={item => item.pubkey + item.name}
+            renderItem={({ item }) => {
+              const icon = item.url + '/icons/' + item.icon;
+              return (
+                <ListRow
+                  appName={item.name}
+                  appSummary={item.description}
+                  appIcon={icon}
+                  onPress={() => this.props.openDetails(item)}
+                />
+              );
+            }}
+          />
+        ) : (
+          <EmptyPlaceholder
+            icon={'package'}
+            title={'No repositories yet'}
+            tagline={'Try adding a repository first by tapping the Plus button.'}
+          />
+        )}
       </View>
     );
   }

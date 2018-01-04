@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import { ScrollView, View, Text, ActivityIndicator, FlatList } from 'react-native';
+import { View, FlatList } from 'react-native';
 import PropTypes from 'prop-types';
 
 import AppsList from '../../containers/AppsListContainer';
 import NewAppsSlider from '../../containers/NewAppsSliderContainer';
+import EmptyPlaceholder from '../EmptyPlaceholder';
 import styles from './styles';
-import sharedStyles from '../../bootstrap/sharedStyles';
 
 export default class AppsTab extends Component {
   static navigationOptions = {
@@ -14,6 +14,8 @@ export default class AppsTab extends Component {
 
   static propTypes = {
     fetchRepos: PropTypes.func.isRequired,
+    reposFetched: PropTypes.number.isRequired,
+    reposCount: PropTypes.number.isRequired,
     apps: PropTypes.array.isRequired
   };
 
@@ -49,38 +51,26 @@ export default class AppsTab extends Component {
       { name: 'System', icon: 'android' }
     ];
 
-    // TODO: Find a better way to do that.
-    const internetApps = apps.filter(app => app.category === 'Internet');
-    const phoneSmsApps = apps.filter(app => app.category === 'Phone & SMS');
-    const navigationApps = apps.filter(app => app.category === 'Navigation');
-    const securityApps = apps.filter(app => app.category === 'Security');
-    const timeApps = apps.filter(app => app.category === 'Time');
-    const scienceApps = apps.filter(app => app.category === 'Science & Education');
-    const themingApps = apps.filter(app => app.category === 'Theming');
-    const graphicsApps = apps.filter(app => app.category === 'Graphics');
-    const multimediaApps = apps.filter(app => app.category === 'Multimedia');
-    const moneyApps = apps.filter(app => app.category === 'Money');
-    const sportsApps = apps.filter(app => app.category === 'Sports & Health');
-    const readingApps = apps.filter(app => app.category === 'Reading');
-    const writingApps = apps.filter(app => app.category === 'Writing');
-    const gamesApps = apps.filter(app => app.category === 'Games');
-    const connectivityApps = apps.filter(app => app.category === 'Connectivity');
-    const devApps = apps.filter(app => app.category === 'Development');
-    const systemApps = apps.filter(app => app.category === 'System');
-    // alert(JSON.stringify(themingApps));
-
     return (
-      <View style={{ flex: 1 }}>
-        <FlatList
-          style={{ flex: 1 }}
-          data={categories}
-          keyExtractor={item => item.name}
-          renderItem={({ item }) => {
-            const sApps = apps.filter(app => app.category === item.name);
-            return <AppsList apps={sApps} maxCount={24} title={item.name} icon={item.icon} />;
-          }}
-          ListHeaderComponent={<NewAppsSlider apps={newsApps} />}
-        />
+      <View style={styles.container}>
+        {reposFetched === reposCount && reposCount > 0 ? (
+          <FlatList
+            style={{ flex: 1 }}
+            data={categories}
+            keyExtractor={item => item.name}
+            renderItem={({ item }) => {
+              const sApps = apps.filter(app => app.category === item.name);
+              return <AppsList apps={sApps} maxCount={24} title={item.name} icon={item.icon} />;
+            }}
+            ListHeaderComponent={<NewAppsSlider apps={newsApps} />}
+          />
+        ) : (
+          <EmptyPlaceholder
+            icon={'package'}
+            title={'Loading packages...'}
+            tagline={'This operation may take seconds.'}
+          />
+        )}
       </View>
     );
   }

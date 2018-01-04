@@ -8,7 +8,9 @@ const mapStateToProps = (state, ownProps) => {
   return {
     // appsByCategoryName: state.applications.appsByCategoryName
     apps: state.applications.apps,
-    fetchComplete: state.repositories.fetchComplete
+    fetchComplete: state.repositories.fetchComplete,
+    reposCount: state.repositories.reposCount,
+    reposFetched: state.repositories.reposFetched
   };
 };
 

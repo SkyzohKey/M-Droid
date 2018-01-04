@@ -101,8 +101,8 @@ android {
         applicationId "com.mdroid"
         minSdkVersion 16
         targetSdkVersion 22
-        versionCode 8
-        versionName "4.0"
+        versionCode 9
+        versionName "4.1"
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
@@ -126,7 +126,11 @@ android {
         }
     }
     buildTypes {
+        debug {
+            manifestPlaceholders = [excludeSystemAlertWindowPermission: "false"]
+        }
         release {
+            manifestPlaceholders = [excludeSystemAlertWindowPermission: "true"]
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
             signingConfig signingConfigs.release

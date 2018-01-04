@@ -5,6 +5,7 @@ import SearchInput, { createFilter } from 'react-native-search-filter';
 
 import MenuButton from '../MenuButton';
 import SearchResultRow from '../SearchResultRow';
+import EmptyPlaceholder from '../EmptyPlaceholder';
 import sharedStyles from '../../bootstrap/sharedStyles';
 import styles from './styles';
 import { removeDuplicates } from '../../utils';
@@ -71,7 +72,11 @@ export default class SearchScreen extends Component {
       <View style={styles.container}>
         {searchResults !== null
           ? this.renderResults(searchResults)
-          : this.renderEmpty('search', 'Hit the search bar to find your app!')}
+          : this.renderEmpty(
+              'search',
+              'Type to search',
+              'We\'ll show you a list of results once you type something...'
+            )}
       </View>
     );
   }
@@ -90,7 +95,11 @@ export default class SearchScreen extends Component {
     const { params } = this.props.navigation.state;
 
     if (results.length <= 0) {
-      return this.renderEmpty('error-outline', 'No result for ' + params.searchQuery);
+      return this.renderEmpty(
+        'all-inclusive',
+        'Cannot find what you\'re looking for',
+        params.searchQuery
+      );
     }
 
     const uniqResults = removeDuplicates(
@@ -122,14 +131,7 @@ export default class SearchScreen extends Component {
     );
   };
 
-  renderEmpty(icon, message) {
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Icon name={icon} size={48} color={'#BABABA'} />
-        <Text style={{ marginTop: 16, fontSize: 20, textAlign: 'center', color: '#BABABA' }}>
-          {message}
-        </Text>
-      </View>
-    );
+  renderEmpty(icon, title, tagline) {
+    return <EmptyPlaceholder icon={icon} title={title} tagline={tagline} />;
   }
 }
