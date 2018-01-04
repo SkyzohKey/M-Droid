@@ -31,6 +31,7 @@ export default class AppsTab extends Component {
 
     // TODO: Find a better way to do that.
     const internetApps = apps.filter(app => app.category === 'Internet');
+    const phoneSmsApps = apps.filter(app => app.category === 'Phone & SMS');
     const navigationApps = apps.filter(app => app.category === 'Navigation');
     const securityApps = apps.filter(app => app.category === 'Security');
     const timeApps = apps.filter(app => app.category === 'Time');
@@ -55,6 +56,7 @@ export default class AppsTab extends Component {
             <NewAppsSlider apps={newsApps} />
             <View style={styles.container}>
               <AppsList apps={internetApps} maxCount={24} title={'Internet'} icon={'web'} />
+              <AppsList apps={phoneSmsApps} maxCount={24} title={'Phone & SMS'} icon={'phone'} />
               <AppsList
                 apps={navigationApps}
                 maxCount={24}
