@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ScrollView, View, Text, ActivityIndicator } from 'react-native';
+import { ScrollView, View, Text, ActivityIndicator, FlatList } from 'react-native';
 import PropTypes from 'prop-types';
 
 import AppsList from '../../containers/AppsListContainer';
@@ -29,6 +29,26 @@ export default class AppsTab extends Component {
     const { apps, reposFetched, reposCount } = this.props;
     const newsApps = apps.filter(app => app.featureGraphic !== null).slice(0, 5);
 
+    const categories = [
+      { name: 'Internet', icon: 'web' },
+      { name: 'Phone & SMS', icon: 'phone' },
+      { name: 'Navigation', icon: 'navigation' },
+      { name: 'Security', icon: 'lock-outline' },
+      { name: 'Time', icon: 'calendar-clock' },
+      { name: 'Science & Education', icon: 'school' },
+      { name: 'Theming', icon: 'theme-light-dark' },
+      { name: 'Graphics', icon: 'image' },
+      { name: 'Multimedia', icon: 'shopping-music' },
+      { name: 'Money', icon: 'coin' },
+      { name: 'Sports & Health', icon: 'car-sports' },
+      { name: 'Reading', icon: 'book-open' },
+      { name: 'Writing', icon: 'pen' },
+      { name: 'Games', icon: 'gamepad-variant' },
+      { name: 'Connectivity', icon: 'access-point-network' },
+      { name: 'Development', icon: 'android-studio' },
+      { name: 'System', icon: 'android' }
+    ];
+
     // TODO: Find a better way to do that.
     const internetApps = apps.filter(app => app.category === 'Internet');
     const phoneSmsApps = apps.filter(app => app.category === 'Phone & SMS');
@@ -51,79 +71,16 @@ export default class AppsTab extends Component {
 
     return (
       <View style={{ flex: 1 }}>
-        {reposFetched === reposCount ? (
-          <ScrollView>
-            <NewAppsSlider apps={newsApps} />
-            <View style={styles.container}>
-              <AppsList apps={internetApps} maxCount={24} title={'Internet'} icon={'web'} />
-              <AppsList apps={phoneSmsApps} maxCount={24} title={'Phone & SMS'} icon={'phone'} />
-              <AppsList
-                apps={navigationApps}
-                maxCount={24}
-                title={'Navigation'}
-                icon={'navigation'}
-              />
-              <AppsList
-                apps={securityApps}
-                maxCount={24}
-                title={'Security'}
-                icon={'lock-outline'}
-              />
-              <AppsList apps={timeApps} maxCount={24} title={'Time'} icon={'calendar-clock'} />
-              <AppsList
-                apps={scienceApps}
-                maxCount={24}
-                title={'Science & Education'}
-                icon={'school'}
-              />
-              <AppsList
-                apps={themingApps}
-                maxCount={24}
-                title={'Theming'}
-                icon={'theme-light-dark'}
-              />
-              <AppsList apps={graphicsApps} maxCount={24} title={'Graphics'} icon={'image'} />
-              <AppsList
-                apps={multimediaApps}
-                maxCount={24}
-                title={'Multimedia'}
-                icon={'shopping-music'}
-              />
-              <AppsList apps={moneyApps} maxCount={24} title={'Money'} icon={'coin'} />
-              <AppsList
-                apps={sportsApps}
-                maxCount={24}
-                title={'Sports & Health'}
-                icon={'car-sports'}
-              />
-              <AppsList apps={readingApps} maxCount={24} title={'Reading'} icon={'book-open'} />
-              <AppsList apps={writingApps} maxCount={24} title={'Writing'} icon={'pen'} />
-              <AppsList apps={gamesApps} maxCount={24} title={'Games'} icon={'gamepad-variant'} />
-              <AppsList
-                apps={connectivityApps}
-                maxCount={24}
-                title={'Connectivity'}
-                icon={'access-point-network'}
-              />
-              <AppsList
-                apps={devApps}
-                maxCount={24}
-                title={'Development'}
-                icon={'android-studio'}
-              />
-              <AppsList apps={systemApps} maxCount={24} title={'System'} icon={'android'} />
-            </View>
-          </ScrollView>
-        ) : (
-          <View
-            style={[styles.container, { flex: 1, justifyContent: 'center', alignItems: 'center' }]}
-          >
-            <ActivityIndicator size={'large'} color={sharedStyles.ACCENT_COLOR} />
-            <Text style={{ fontSize: 18, color: 'rgba(0,0,0,.84)', fontWeight: 'bold' }}>
-              Syncing repositories
-            </Text>
-          </View>
-        )}
+        <FlatList
+          style={{ flex: 1 }}
+          data={categories}
+          keyExtractor={item => item.name}
+          renderItem={({ item }) => {
+            const sApps = apps.filter(app => app.category === item.name);
+            return <AppsList apps={sApps} maxCount={24} title={item.name} icon={item.icon} />;
+          }}
+          ListHeaderComponent={<NewAppsSlider apps={newsApps} />}
+        />
       </View>
     );
   }

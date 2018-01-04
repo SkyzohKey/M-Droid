@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, ScrollView, Text, FlatList } from 'react-native';
+import { View, Text, FlatList } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import AppCard from '../AppCard';
 import Touchable from '../Touchable';
 import styles from './styles';
 import sharedStyles from '../../bootstrap/sharedStyles';
+import { removeDuplicates } from '../../utils';
 
 class AppsList extends Component {
   static propTypes = {
@@ -41,6 +42,11 @@ class AppsList extends Component {
       subset = apps.slice(offset, maxCount);
     }
 
+    const uniqApps = removeDuplicates(
+      subset,
+      (item, t) => t.id === item.id && t.name === item.name
+    );
+
     return (
       <View style={styles.container}>
         <View
@@ -72,12 +78,12 @@ class AppsList extends Component {
           // numColumns={3} // Useful to make grids!
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}
-          data={subset}
+          data={uniqApps}
           renderItem={({ item, index }) =>
             item.name === null ? null : (
               <AppCard
-                style={{ marginRight: index <= subset.length - 1 ? 8 : 0 }}
-                key={item.id}
+                key={item.id + item.summary + index}
+                style={{ marginRight: index <= uniqApps.length - 1 ? 8 : 0 }}
                 appName={item.name}
                 appSummary={item.summary}
                 appIconPath={item.icon}
