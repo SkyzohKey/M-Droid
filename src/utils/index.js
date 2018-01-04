@@ -11,3 +11,19 @@ export const toFileSize = bytes => {
   const res = (bytes / m.pow(1024, exp)).toFixed(2);
   return [res, exp === 0 ? 'bytes' : 'KMGTPEZY'[exp - 1] + 'B'].join(' ');
 };
+
+/**
+ * Given an array of objects, removes duplicates based on a specified
+ * predicate. It returns a new array instead of mutating the initial one.
+ *
+ * @param {Array} items - An array of items to removes duplicates from
+ * @param {Function} predicate - A function that got the item argument.
+ * @return {Array} returns a new array with duplicates removed.
+ */
+export const removeDuplicates = (items, predicate) => {
+  const newItems = items.filter(
+    (item, index, self) => index === self.findIndex(t => predicate(item, t))
+  );
+
+  return newItems;
+};
