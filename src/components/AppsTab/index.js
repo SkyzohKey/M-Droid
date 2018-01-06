@@ -23,8 +23,12 @@ export default class AppsTab extends Component {
     apps: PropTypes.array.isRequired
   };
 
+  headerComponent = () => <NewAppsSlider apps={newsApps} />;
+
   constructor(props) {
     super(props);
+
+    this.headerComponent = this.headerComponent.bind(this);
   }
 
   componentWillMount() {
@@ -79,7 +83,7 @@ export default class AppsTab extends Component {
               const appsUniq = removeDuplicates(sApps, (k, t) => t.id === k.id);
               return <AppsList apps={appsUniq} maxCount={9} title={item.name} icon={item.icon} />;
             }}
-            ListHeaderComponent={<NewAppsSlider apps={newsApps} />}
+            ListHeaderComponent={this.headerComponent}
           />
         ) : (
           <EmptyPlaceholder
