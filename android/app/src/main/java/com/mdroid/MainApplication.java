@@ -3,6 +3,7 @@ package com.mdroid;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.reactnativecomponent.splashscreen.RCTSplashScreenPackage;
 import com.dylanvann.fastimage.FastImageViewPackage;
 import com.rnziparchive.RNZipArchivePackage;
 import com.RNFetchBlob.RNFetchBlobPackage;
@@ -26,11 +27,12 @@ public class MainApplication extends Application implements ReactApplication {
     @Override
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
-          new MainReactPackage(),
-            new FastImageViewPackage(),
-            new RNZipArchivePackage(),
-            new RNFetchBlobPackage(),
-            new VectorIconsPackage()
+        new MainReactPackage(),
+        new RCTSplashScreenPackage(),
+        new FastImageViewPackage(),
+        new RNZipArchivePackage(),
+        new RNFetchBlobPackage(),
+        new VectorIconsPackage()
       );
     }
 

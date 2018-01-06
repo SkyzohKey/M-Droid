@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { View, FlatList, RefreshControl } from 'react-native';
 import PropTypes from 'prop-types';
+import SplashScreen from 'react-native-smart-splash-screen';
 
 import AppsList from '../../containers/AppsListContainer';
 import NewAppsSlider from '../../containers/NewAppsSliderContainer';
@@ -23,11 +24,12 @@ export default class AppsTab extends Component {
     apps: PropTypes.array.isRequired
   };
 
-  headerComponent = () => <NewAppsSlider apps={newsApps} />;
-
   constructor(props) {
     super(props);
 
+    const { apps } = this.props;
+    const newsApps = apps.filter(app => app.featureGraphic !== null);
+    this.headerComponent = () => <NewAppsSlider apps={newsApps} />;
     this.headerComponent = this.headerComponent.bind(this);
   }
 
@@ -35,11 +37,18 @@ export default class AppsTab extends Component {
     this.props.reposCount === 0 && this.props.fetchRepos();
   }
 
+  componentDidMount() {
+    SplashScreen.close({
+      animationType: SplashScreen.animationType.none,
+      duration: 850,
+      delay: 500
+    });
+  }
+
   render() {
     const { apps, reposFetched, reposCount } = this.props;
-    const newsApps = apps.filter(app => app.featureGraphic !== null);
-
     const categories = [
+      { type: 'slider' },
       { name: 'Internet', icon: 'web' },
       { name: 'Phone & SMS', icon: 'phone' },
       { name: 'Navigation', icon: 'navigation' },
@@ -79,11 +88,14 @@ export default class AppsTab extends Component {
             data={categories}
             keyExtractor={item => item.name}
             renderItem={({ item }) => {
+              if (item.type && item.type === 'slider') {
+                return this.headerComponent;
+              }
+
               const sApps = apps.filter(app => app.category === item.name);
               const appsUniq = removeDuplicates(sApps, (k, t) => t.id === k.id);
               return <AppsList apps={appsUniq} maxCount={9} title={item.name} icon={item.icon} />;
             }}
-            ListHeaderComponent={this.headerComponent}
           />
         ) : (
           <EmptyPlaceholder

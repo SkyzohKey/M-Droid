@@ -120,7 +120,7 @@ export default class AppDetailsScreen extends Component {
     const collapseDescription =
       this.state.descriptionExpanded === false
         ? {
-            height: app.screenshots !== null ? 155 : 'auto'
+            height: app.screenshots !== null ? 80 : 'auto'
           }
         : {
             height: 'auto'
@@ -148,14 +148,11 @@ export default class AppDetailsScreen extends Component {
           >
             {app.featureGraphic ? (
               <FastImage
-                fadeDuration={0}
                 source={{ uri: app.featureGraphic }}
-                fallbackSource={require('../../assets/images/feature-graphic-default.jpg')}
-                activityIndicatorProps={{ size: 'large', color: sharedStyles.ACCENT_COLOR }}
+                resizeMode={FastImage.resizeMode.stretch}
                 style={{
                   height: 180,
                   width: this.state.width,
-                  resizeMode: 'stretch'
                 }}
               />
             ) : null}
@@ -179,14 +176,11 @@ export default class AppDetailsScreen extends Component {
             >
               <View style={{ overflow: 'visible' }}>
                 <FastImage
-                  fadeDuration={0}
                   source={{ uri: app.icon }}
-                  fallbackSource={require('../../assets/images/default-icon.png')}
-                  activityIndicatorProps={{ size: 'large', color: sharedStyles.ACCENT_COLOR }}
+                  resizeMode={FastImage.resizeMode.contain}
                   style={{
                     width: 46,
                     height: 46,
-                    resizeMode: 'contain',
                     overflow: 'visible'
                   }}
                 />
@@ -198,15 +192,15 @@ export default class AppDetailsScreen extends Component {
                   backgroundColor: 'white',
                   flexDirection: 'row',
                   justifyContent: 'space-between',
-                  alignItems: 'flex-start'
+                  alignItems: app.featureGraphic ? 'flex-start': 'center'
                 }}
               >
                 <View style={{ flexDirection: 'column', flex: 1 }}>
-                  <Text style={{ fontWeight: 'bold', fontSize: 16, color: '#505050' }}>{name}</Text>
+                  <Text style={{ fontWeight: 'bold', fontSize: 16, color: '#505050' }}>{name || app.name || app.localized[0].name}</Text>
                   {app.author ? (
                     <Text style={{ fontSize: 11 }}>{app.author}</Text>
                   ) : (
-                    <Text style={{ fontSize: 11 }}>{summary}</Text>
+                    <Text style={{ fontSize: 11 }}>{summary || app.summary || app.localized[0].summary}</Text>
                   )}
                 </View>
                 <View style={{ flexDirection: 'column', flex: 0.4 }}>
@@ -220,17 +214,17 @@ export default class AppDetailsScreen extends Component {
               </View>
             </View>
           </View>
-          <View style={[{ padding: 16, backgroundColor: '#fafafa' }, collapseDescription]}>
+          <View style={[{ padding: 16, backgroundColor: '#fafafa' }]}>
             {app.screenshots !== null && (
               <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
                 <Touchable
                   onPress={() => this.toggleDescription()}
                   style={{
-                    paddingHorizontal: 8,
-                    paddingVertical: 6
+                    paddingHorizontal: 16,
+                    paddingVertical: 8
                   }}
                 >
-                  <Text style={{ color: '#BABABA', fontSize: 12, fontWeight: 'bold' }}>
+                  <Text style={{ color: '#BABABA', fontSize: 12, fontWeight: 'bold', textAlign: 'center' }}>
                     {this.state.descriptionExpanded ? 'LESS' : 'MORE'}{' '}
                     <Icon
                       name={this.state.descriptionExpanded ? 'chevron-up' : 'chevron-down'}
@@ -243,14 +237,16 @@ export default class AppDetailsScreen extends Component {
             <Text selectable style={{ fontWeight: 'bold', color: '#696969' }}>
               {summary || app.summary || app.localized[0].summary}
             </Text>
-            <HTMLView
-              selectable
-              value={description || app.description || app.localized[0].description}
-              stylesheet={{
-                p: { color: '#696969' },
-                a: { fontWeight: 'bold', color: sharedStyles.ACCENT_COLOR }
-              }}
-            />
+            <View style={[{ backgroundColor: '#FAFAFA', paddingVertical: 8 }, collapseDescription]}>
+              <HTMLView
+                selectable
+                value={description || app.description || app.localized[0].description}
+                stylesheet={{
+                  p: { color: '#696969' },
+                  a: { fontWeight: 'bold', color: sharedStyles.ACCENT_COLOR }
+                }}
+              />
+            </View>
           </View>
           {app.screenshots && (
             <View
@@ -329,7 +325,7 @@ export default class AppDetailsScreen extends Component {
               </Touchable>
             )}
             {app.packages[0].added && (
-              <Touchable onPress={() => this.copyText(app.packages[0].added)}>
+              <Touchable onPress={() => this.copyText('Last update ' + unixToDate(app.packages[0].added))}>
                 <View
                   style={{
                     paddingVertical: 8,
@@ -397,7 +393,7 @@ export default class AppDetailsScreen extends Component {
               </Touchable>
             )}
           </View>
-          <View style={{ paddingHorizontal: 16, backgroundColor: '#fafafa' }}>
+          <View style={{ paddingHorizontal: 16, paddingBottom: 16, backgroundColor: '#fafafa' }}>
             <View style={{ marginVertical: 8, height: 1.5, backgroundColor: '#ddd' }} />
             <Text style={{ fontWeight: 'bold', marginBottom: 8 }}>DEVELOPER</Text>
             {app.license && (

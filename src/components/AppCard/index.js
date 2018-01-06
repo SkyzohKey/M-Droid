@@ -34,8 +34,7 @@ export default class AppCard extends Component {
     const { appIconPath, appName, appSummary, onPress } = this.props;
     const containerWidth = {
       // 3 cards on the screen, minus margin/2 plus 15px (5*3) of the 4th card.
-      width: this.state.width / 3 - styles.container.marginRight / 2 - 6,
-      height: 160
+      width: this.state.width / 3 - styles.container.marginRight / 2 - 6
     };
 
     if (appName === null || appName.trim() == '') {

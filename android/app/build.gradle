@@ -101,8 +101,8 @@ android {
         applicationId "com.mdroid"
         minSdkVersion 16
         targetSdkVersion 22
-        versionCode 50
-        versionName "5.0"
+        versionCode 51
+        versionName "5.1"
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
@@ -152,6 +152,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-smart-splash-screen')
     compile project(':react-native-fast-image')
     compile project(':react-native-zip-archive')
     compile project(':react-native-fetch-blob')
