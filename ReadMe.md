@@ -42,7 +42,7 @@ That's Simple (c).
 The screenshots may not be up-to-date. This is currently an early stage for the project and I'll try to update screenshots as many as possible.
 
 ![2nd step: Prepare the UI!](https://i.imgur.com/h7zoYHE.png)
-![3rd step: Display apps informations!](https://i.imgur.com/WBITCw9.png)
+![3rd step: Display apps informations!](https://i.imgur.com/hZtGh6j.png)
 ![3rd step: moar informations!](https://i.imgur.com/HcI1KVu.png)
 ![3rd-bis step: even mooooar informations!](https://i.imgur.com/MwX8YB3.png)
 ![4th step: Install the app!](https://i.imgur.com/yAjibIB.png)
