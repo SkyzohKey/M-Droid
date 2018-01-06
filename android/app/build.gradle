@@ -101,8 +101,8 @@ android {
         applicationId "com.mdroid"
         minSdkVersion 16
         targetSdkVersion 22
-        versionCode 43
-        versionName "4.3"
+        versionCode 50
+        versionName "5.0"
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }

@@ -1,7 +1,7 @@
 import { AppRegistry } from 'react-native';
 import App from './src/App';
 
-window.appVersion = 'v0.4.3-beta';
+window.appVersion = 'v0.5.0';
 
 // Instead of depending on yet another module, use the following for uuid v4 gen.
 window.uuidv4 = () => {
