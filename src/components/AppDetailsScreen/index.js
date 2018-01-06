@@ -241,11 +241,11 @@ export default class AppDetailsScreen extends Component {
               </View>
             )}
             <Text selectable style={{ fontWeight: 'bold', color: '#696969' }}>
-              {summary}
+              {summary || app.summary || app.localized[0].summary}
             </Text>
             <HTMLView
               selectable
-              value={description}
+              value={description || app.description || app.localized[0].description}
               stylesheet={{
                 p: { color: '#696969' },
                 a: { fontWeight: 'bold', color: sharedStyles.ACCENT_COLOR }
