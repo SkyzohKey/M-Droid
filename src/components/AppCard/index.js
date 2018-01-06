@@ -12,15 +12,17 @@ export default class AppCard extends Component {
     appName: PropTypes.string.isRequired,
     appSummary: PropTypes.string.isRequired,
     appIconPath: PropTypes.string.isRequired,
-    isFirstCard: PropTypes.bool.isRequired,
-    isLastCard: PropTypes.bool.isRequired,
+    horizontal: PropTypes.bool,
+    isFirst: PropTypes.bool,
+    isLast: PropTypes.bool,
     onPress: PropTypes.func.isRequired
   };
 
   static defaultProps = {
     appName: '',
     appSummary: '',
-    appIconPath: ''
+    appIconPath: '',
+    horizontal: true
   };
 
   constructor(props) {
@@ -32,21 +34,28 @@ export default class AppCard extends Component {
 
   render() {
     const { appIconPath, appName, appSummary, onPress } = this.props;
-    const containerWidth = {
-      // 3 cards on the screen, minus margin/2 plus 15px (5*3) of the 4th card.
-      width: this.state.width / 3 - styles.container.marginRight / 2 - 6
-    };
-
-    if (appName === null || appName.trim() == '') {
+    if (appName === null || appName.trim() === '') {
       return null;
     }
 
+    const cardWidth = this.state.width / 3 - 8;
+    const paddingStyle = this.props.horizontal
+      ? {
+          paddingRight: this.props.isLast ? 16 : 4,
+          paddingLeft: this.props.isFirst ? 16 : 4,
+          paddingVertical: 0,
+          width: cardWidth,
+          minWidth: cardWidth
+          // maxWidth: cardWidth
+        }
+      : {
+          margin: 1,
+          width: cardWidth,
+          minWidth: cardWidth
+        };
+
     return (
-      <View
-        style={[styles.container, containerWidth]}
-        onLayout={() => this.onLayout()}
-        elevation={2}
-      >
+      <View style={[styles.container, paddingStyle]} onLayout={() => this.onLayout()} elevation={2}>
         <View style={styles.card}>
           <Touchable onPress={onPress} delayPressIn={0}>
             <View style={styles.cardContent}>

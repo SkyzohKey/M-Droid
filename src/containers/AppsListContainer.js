@@ -18,6 +18,13 @@ const mapDispatchToProps = dispatch => {
         routeName: 'AppDetails',
         params: { app: app }
       });
+    },
+    openListing: (apps, name) => {
+      dispatch({
+        type: 'Navigation/NAVIGATE',
+        routeName: 'Listing',
+        params: { apps: apps, name: name }
+      });
     }
   };
 };

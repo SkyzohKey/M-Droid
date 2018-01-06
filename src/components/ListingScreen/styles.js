@@ -3,7 +3,8 @@ import sharedStyles from '../../bootstrap/sharedStyles';
 const styles = {
   container: {
     ...sharedStyles.screenContainer,
-    backgroundColor: '#FAFAFA'
+    backgroundColor: '#FAFAFA',
+    padding: 8
   }
 };
 

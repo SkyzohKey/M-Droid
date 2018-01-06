@@ -14,13 +14,16 @@ class AppsList extends Component {
     apps: PropTypes.array.isRequired,
     maxCount: PropTypes.number,
     offset: PropTypes.number,
-    title: PropTypes.string.isRequired,
+    title: PropTypes.string,
     icon: PropTypes.string,
     color: PropTypes.string,
-    openDetails: PropTypes.func.isRequired
+    horizontal: PropTypes.bool,
+    openDetails: PropTypes.func.isRequired,
+    openListing: PropTypes.func.isRequired
   };
 
   static defaultProps = {
+    horizontal: true,
     maxCount: 0,
     offset: 0,
     icon: 'star',
@@ -37,7 +40,14 @@ class AppsList extends Component {
       return null;
     }
 
-    let subset = apps;
+    // Don't want blank name on the screen.
+    let subset = apps.filter(app => {
+      const kName =
+        app.localized && app.localized['en-US'] ? app.localized['en-US'].name : app.name;
+
+      return kName !== null && String(kName).trim() !== '';
+    });
+
     if (maxCount !== 0) {
       subset = apps.slice(offset, maxCount);
     }
@@ -47,64 +57,69 @@ class AppsList extends Component {
       (item, t) => t.id === item.id && t.name === item.name
     );
 
+    const appsCount = uniqApps.length - 1;
+
+    const numCols = this.props.horizontal
+      ? null
+      : {
+          numColumns: 3
+        };
+
     return (
       <View style={styles.container}>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            margin: 12
-          }}
-        >
+        {this.props.title && (
           <View
-            style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start' }}
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              margin: 12
+            }}
           >
-            <Icon name={icon} size={20} color={color} />
-            <Text style={{ marginLeft: 8, color: 'black', fontWeight: 'bold' }}>{title}</Text>
+            <View
+              style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start' }}
+            >
+              <Icon name={icon} size={20} color={color} />
+              <Text style={{ marginLeft: 8, color: 'black', fontWeight: 'bold' }}>{title}</Text>
+            </View>
+            <Touchable
+              onPress={() => this.props.openListing(apps, title)}
+              style={{ paddingHorizontal: 8, paddingVertical: 6 }}
+            >
+              <Text style={{ color: '#BABABA', fontSize: 12, fontWeight: 'bold' }}>
+                ALL <Icon name={'chevron-right'} color={'#BABABA'} />
+              </Text>
+            </Touchable>
           </View>
-          <Touchable
-            onPress={() => alert('Show more ' + title + '.')}
-            style={{ paddingHorizontal: 8, paddingVertical: 6 }}
-          >
-            <Text style={{ color: '#BABABA', fontSize: 12, fontWeight: 'bold' }}>
-              ALL <Icon name={'chevron-right'} color={'#BABABA'} />
-            </Text>
-          </Touchable>
-        </View>
+        )}
         <FlatList
-          horizontal={true}
-          // pagingEnabled={true}
-          // numColumns={3} // Useful to make grids!
+          horizontal={this.props.horizontal}
+          {...numCols}
           initialNumToRender={3}
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}
           data={uniqApps}
           renderItem={({ item, index }) => {
             // To deal with i18n
-            let description = '';
-            let name = '';
-            let summary = '';
-            if (item.localized && item.localized['en-US']) {
-              description = item.localized['en-US'].description;
-              summary = item.localized['en-US'].summary;
-              name = item.localized['en-US'].name;
-            } else {
-              description = item.description;
-              summary = item.summary;
-              name = item.name;
-            }
-
-            if (name === null) {
-              return null;
-            }
+            const description =
+              item.localized && item.localized['en-US']
+                ? item.localized['en-US'].description
+                : item.description;
+            const summary =
+              item.localized && item.localized['en-US']
+                ? item.localized['en-US'].summary
+                : item.summary;
+            const name =
+              item.localized && item.localized['en-US'] ? item.localized['en-US'].name : item.name;
 
             return (
               <AppCard
-                key={item.id + summary + index}
-                style={{ marginRight: index <= uniqApps.length - 1 ? 8 : 0 }}
-                appName={name}
-                appSummary={summary}
+                key={item.id + index}
+                isFirst={index === 0}
+                isLast={index === appsCount}
+                horizontal={this.props.horizontal}
+                appName={name || item.name}
+                appSummary={summary || item.summary}
                 appIconPath={item.icon}
                 onPress={() => {
                   this.props.openDetails(item);

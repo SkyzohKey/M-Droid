@@ -8,6 +8,7 @@ import AppDetailsScreen from '../containers/AppDetailsContainer';
 import SearchScreen from '../containers/SearchContainer';
 import MenuButton from '../components/MenuButton';
 import ReposHomeScreen from '../containers/ReposHomeContainer';
+import ListingScreen from '../components/ListingScreen';
 import Drawer from '../components/Drawer';
 
 import sharedStyles from './sharedStyles';
@@ -27,9 +28,10 @@ const navOptions = {
 
 export const AppRoutes = StackNavigator(
   {
-    Home: { screen: HomeScreen, path: 'repos/home' },
-    AppDetails: { screen: AppDetailsScreen, path: 'repos/app/:id/:name/:summary/:icon' },
-    Search: { screen: SearchScreen, path: 'repos/search/:searchQuery' }
+    Home: { screen: HomeScreen, path: 'apps/home' },
+    AppDetails: { screen: AppDetailsScreen, path: 'apps/app/:id/:name/:summary/:icon' },
+    Search: { screen: SearchScreen, path: 'apps/search/:searchQuery' },
+    Listing: { screen: ListingScreen, path: 'apps/listing/:name/:apps' }
   },
   navOptions
 );

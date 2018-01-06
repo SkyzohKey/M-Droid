@@ -30,53 +30,45 @@ class NewAppsSlider extends Component {
   render() {
     const { apps, openDetails } = this.props;
 
-    if (apps === null || apps === []) {
+    /* if (apps === null || apps === []) {
       return null;
-    }
+    }*/
 
-    const appsUniq = removeDuplicates(apps, (item, t) => t.id === item.id).slice(0, 8);
+    const appsUniq = removeDuplicates(apps, (item, t) => t.id === item.id).slice(0, 16);
 
     return (
-      <FlatList
-        style={styles.container}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        pagingEnabled
-        onLayout={() => this.onLayout()}
-        data={appsUniq}
-        keyExtractor={item => item.id}
-        renderItem={({ item, index }) => (
-          <Touchable key={item.id} onPress={() => openDetails(item)}>
-            <View style={{ height: 150 }}>
-              <FastImage
-                fadeDuration={0}
-                resizeMode={FastImage.resizeMode.cover}
-                source={{ uri: item.featureGraphic }}
-                style={[styles.appIcon, { height: 150, width: this.state.width }]}
-              />
-              <View style={styles.appInfos}>
+      <View style={styles.container}>
+        <FlatList
+          style={styles.container}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          pagingEnabled
+          onLayout={() => this.onLayout()}
+          data={appsUniq}
+          keyExtractor={item => item.id}
+          renderItem={({ item, index }) => (
+            <Touchable key={item.id} onPress={() => openDetails(item)} delayPressIn={0}>
+              <View style={{ height: 160 }}>
                 <FastImage
                   fadeDuration={0}
-                  resizeMode={FastImage.resizeMode.cover}
-                  source={{ uri: item.icon }}
-                  style={{
-                    position: 'absolute',
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                    height: 50,
-                    width: this.state.width,
-                    backgroundColor: 'rgba(255,255,255,.4)'
-                  }}
+                  resizeMode={FastImage.resizeMode.stretch}
+                  source={{ uri: item.featureGraphic }}
+                  style={[styles.appIcon, { height: 160, width: this.state.width }]}
                 />
-                <Text style={{ fontSize: 18, fontWeight: 'bold', color: 'black' }}>
-                  {item.name || item.localized[0].name}
-                </Text>
               </View>
-            </View>
-          </Touchable>
-        )}
-      />
+            </Touchable>
+          )}
+        />
+        {/* TODO: Make animated dots component */}
+        {/* <View style={styles.appInfos}>
+          {appsUniq.map((item, index) => {
+            const isActiveStyle = {
+              backgroundColor: index === 0 ? 'white' : 'rgba(255,255,255,.5)'
+            };
+            return <View style={[styles.dot, isActiveStyle]} />;
+          })}
+        </View>*/}
+      </View>
     );
   }
 }
