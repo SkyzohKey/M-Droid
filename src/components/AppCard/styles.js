@@ -9,7 +9,8 @@ const styles = {
     margin: 2,
     marginBottom: 3,
     elevation: 1,
-    backgroundColor: 'white'
+    backgroundColor: 'white',
+    height: 120
   },
   cardContent: {
     alignItems: 'center',
@@ -21,7 +22,8 @@ const styles = {
     color: 'black'
   },
   appSummary: {
-    fontSize: 10
+    fontSize: 10,
+    textAlign: 'center'
   },
   appIcon: {
     width: 40,

@@ -1,24 +1,19 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, ScrollView, Text, Dimensions } from 'react-native';
+import { View, FlatList, Text, Dimensions } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { CachedImage } from 'react-native-cached-image';
+import FastImage from 'react-native-fast-image';
 
 import AppCard from '../AppCard';
 import Touchable from '../Touchable';
 import styles from './styles';
 import sharedStyles from '../../bootstrap/sharedStyles';
+import { removeDuplicates } from '../../utils';
 
 class NewAppsSlider extends Component {
-  static propTypes = {
-    apps: PropTypes.array.isRequired,
-    openDetails: PropTypes.func.isRequired
-  };
+  static propTypes = {};
 
-  static defaultProps = {
-    maxCount: 3,
-    index: 0
-  };
+  static defaultProps = {};
 
   constructor(props) {
     super(props);
@@ -35,30 +30,32 @@ class NewAppsSlider extends Component {
   render() {
     const { apps, openDetails } = this.props;
 
+    if (apps === null || apps === []) {
+      return null;
+    }
+
+    const appsUniq = removeDuplicates(apps, (item, t) => t.id === item.id).slice(0, 8);
+
     return (
-      <ScrollView
+      <FlatList
         style={styles.container}
         horizontal
+        showsHorizontalScrollIndicator={false}
         pagingEnabled
         onLayout={() => this.onLayout()}
-      >
-        {apps.map((app, index) => {
-          return (
-            <Touchable key={index} onPress={() => openDetails(app)}>
-              <CachedImage
-                fadeDuration={0}
-                source={{ uri: app.featureGraphic }}
-                fallbackSource={require('../../assets/images/feature-graphic-default.jpg')}
-                style={[
-                  styles.appIcon,
-                  { resizeMode: 'cover', height: 150, width: this.state.width }
-                ]}
-                activityIndicatorProps={{ size: 'large', color: sharedStyles.ACCENT_COLOR }}
-              />
-            </Touchable>
-          );
-        })}
-      </ScrollView>
+        data={appsUniq}
+        keyExtractor={item => item.id}
+        renderItem={({ item, index }) => (
+          <Touchable key={item.id} onPress={() => openDetails(item)}>
+            <FastImage
+              fadeDuration={0}
+              resizeMode={FastImage.resizeMode.cover}
+              source={{ uri: item.featureGraphic }}
+              style={[styles.appIcon, { height: 150, width: this.state.width }]}
+            />
+          </Touchable>
+        )}
+      />
     );
   }
 }

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, Dimensions } from 'react-native';
-import { CachedImage } from 'react-native-cached-image';
+import { View, Text, Dimensions, Image } from 'react-native';
+import FastImage from 'react-native-fast-image';
 
 import Touchable from '../Touchable';
 import styles from './styles';
@@ -12,6 +12,8 @@ export default class AppCard extends Component {
     appName: PropTypes.string.isRequired,
     appSummary: PropTypes.string.isRequired,
     appIconPath: PropTypes.string.isRequired,
+    isFirstCard: PropTypes.bool.isRequired,
+    isLastCard: PropTypes.bool.isRequired,
     onPress: PropTypes.func.isRequired
   };
 
@@ -32,8 +34,13 @@ export default class AppCard extends Component {
     const { appIconPath, appName, appSummary, onPress } = this.props;
     const containerWidth = {
       // 3 cards on the screen, minus margin/2 plus 15px (5*3) of the 4th card.
-      width: this.state.width / 3 - styles.container.marginRight / 2 - 6
+      width: this.state.width / 3 - styles.container.marginRight / 2 - 6,
+      height: 160
     };
+
+    if (appName === null || appName.trim() == '') {
+      return null;
+    }
 
     return (
       <View
@@ -45,18 +52,12 @@ export default class AppCard extends Component {
           <Touchable onPress={onPress} delayPressIn={0}>
             <View style={styles.cardContent}>
               <View style={styles.iconWrapper}>
-                <CachedImage
-                  fadeDuration={0}
-                  source={{ uri: appIconPath }}
-                  fallbackSource={require('../../assets/images/default-icon.png')}
-                  style={styles.appIcon}
-                  activityIndicatorProps={{ size: 'large', color: sharedStyles.ACCENT_COLOR }}
-                />
+                <FastImage fadeDuration={0} source={{ uri: appIconPath }} style={styles.appIcon} />
               </View>
               <Text numberOfLines={1} style={styles.appName}>
                 {appName}
               </Text>
-              <Text numberOfLines={1} style={styles.appSummary}>
+              <Text numberOfLines={2} style={styles.appSummary}>
                 {appSummary}
               </Text>
             </View>

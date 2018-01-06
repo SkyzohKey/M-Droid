@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { View, Text, Switch } from 'react-native';
-import { CachedImage } from 'react-native-cached-image';
+import FastImage from 'react-native-fast-image';
 
 import Touchable from '../Touchable';
 import styles from './styles';
@@ -34,32 +34,33 @@ export default class RepoListRow extends Component {
 
     return (
       <View style={styles.container}>
-        <View style={[styles.row, lastRowStyle]}>
+        <View style={[styles.row]}>
           <Touchable onPress={onPress} delayPressIn={0}>
             <View style={styles.rowContent}>
               <View style={styles.iconWrapper}>
-                <CachedImage
-                  fadeDuration={0}
+                <FastImage
+                  resizeMode={FastImage.resizeMode.contain}
                   source={{ uri: iconPath }}
-                  fallbackSource={require('../../assets/images/default-icon.png')}
                   style={styles.icon}
-                  activityIndicatorProps={{ size: 'large', color: sharedStyles.ACCENT_COLOR }}
                 />
               </View>
-              <View style={styles.textsWrapper}>
-                <Text numberOfLines={1} style={styles.name}>
-                  {name}
-                </Text>
-                <Text numberOfLines={2} style={styles.summary}>
-                  {summary}
-                </Text>
+              <View style={[styles.borderWrapper, lastRowStyle]}>
+                <View style={styles.textsWrapper}>
+                  <Text numberOfLines={1} style={styles.name}>
+                    {name}
+                  </Text>
+                  <Text numberOfLines={2} style={styles.summary}>
+                    {summary}
+                  </Text>
+                </View>
+
+                <Switch
+                  thumbTintColor={sharedStyles.ACCENT_COLOR}
+                  onTintColor={sharedStyles.ACCENT_COLOR_LIGHT}
+                  value={enabled}
+                  onValueChange={() => onSwitch()}
+                />
               </View>
-              <Switch
-                thumbTintColor={sharedStyles.ACCENT_COLOR}
-                onTintColor={sharedStyles.ACCENT_COLOR_LIGHT}
-                value={enabled}
-                onValueChange={() => onSwitch()}
-              />
             </View>
           </Touchable>
         </View>

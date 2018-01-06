@@ -1,6 +1,7 @@
 // @flow
 import { types } from './types';
 import { types as appTypes } from '../applications/types';
+import { removeDuplicates } from '../../utils';
 import * as repoService from '../../services/RepositoryService';
 
 /**
@@ -12,6 +13,8 @@ import * as repoService from '../../services/RepositoryService';
 export const fetchRepositories = () => {
   return (dispatch, getState) => {
     const { defaultRepositories, reposFetched, reposCount } = getState().repositories;
+    const { apps } = getState().applications;
+
     dispatch({ type: types.FETCH_REPOSITORIES_REQUEST, count: defaultRepositories.length });
 
     // TODO: Loop over the repositories.
@@ -27,9 +30,15 @@ export const fetchRepositories = () => {
           if (response.success) {
             console.log('Processed', repo, response);
             dispatch({ type: types.SET_REPOSITORY_DATA, repository: response.meta });
+
+            const appUniq = removeDuplicates(
+              [...apps, ...response.applications],
+              (item, t) => t.id === item.id
+            );
+
             dispatch({
               type: appTypes.SET_APPLICATIONS_DATA,
-              applications: response.applications
+              applications: appUniq
             });
           } else {
             dispatch({

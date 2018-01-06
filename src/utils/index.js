@@ -27,3 +27,16 @@ export const removeDuplicates = (items, predicate) => {
 
   return newItems;
 };
+
+/**
+ * Given an UNIX timestamp, returns a date (yyyy-mm-dd)
+ *
+ * @param {Number} timestamp - An UNIX timestamp in MS.
+ */
+export const unixToDate = timestamp => {
+  const date = new Date(timestamp);
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1;
+  const day = date.getDay() < 10 ? '0' + date.getDay() : date.getDay();
+  return [year, month, day].join('-');
+};

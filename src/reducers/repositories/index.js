@@ -51,6 +51,8 @@ const repositoriesReducer = (state = initialState, action) => {
     case types.FETCH_REPOSITORIES_FAILURE:
       return {
         ...state,
+        reposFetched: state.reposFetched + 1,
+        fetchComplete: state.reposFetched === state.reposCount,
         errors: [...state.errors, action.error]
       };
     case types.SET_REPOSITORY_DATA:
@@ -61,7 +63,8 @@ const repositoriesReducer = (state = initialState, action) => {
         reposByPubkey: {
           ...state.reposByPubkey,
           [action.repository.pubkey]: {
-            ...action.repository
+            ...action.repository,
+            enabled: true
           }
         }
       };

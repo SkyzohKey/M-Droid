@@ -72,11 +72,13 @@ export default class ReposHomeScreen extends Component {
             }}
           />
         ) : (
-          <EmptyPlaceholder
-            icon={'package'}
-            title={'No repositories yet...'}
-            tagline={'Try adding a repository first by tapping the Plus button.'}
-          />
+          <View style={{ padding: 16, flex: 1 }}>
+            <EmptyPlaceholder
+              icon={'package'}
+              title={'No repositories yet...'}
+              tagline={'Try adding a repository first by tapping the Plus button.'}
+            />
+          </View>
         )}
       </View>
     );

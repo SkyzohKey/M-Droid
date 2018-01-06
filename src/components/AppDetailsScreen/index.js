@@ -10,21 +10,22 @@ import {
   View,
   Text,
   Button,
+  Image,
   Dimensions,
   ScrollView,
   Linking,
   Modal,
-  Image
+  FlatList
 } from 'react-native';
 import HTMLView from 'react-native-htmlview';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import FIcon from 'react-native-vector-icons/Foundation';
-import { CachedImage } from 'react-native-cached-image';
+import FastImage from 'react-native-fast-image';
 
 import MenuButton from '../MenuButton';
 import Touchable from '../Touchable';
 import AppsList from '../../containers/AppsListContainer';
-import { toFileSize } from '../../utils';
+import { toFileSize, unixToDate } from '../../utils';
 import sharedStyles from '../../bootstrap/sharedStyles';
 import styles from './styles';
 
@@ -32,7 +33,7 @@ import { downloadApp } from '../../services/RepositoryService';
 
 export default class AppDetailsScreen extends Component {
   static navigationOptions = ({ navigation, screenProps }) => ({
-    title: navigation.state.params.app.name,
+    title: navigation.state.params.app.name || navigation.state.params.app.localized['en-US'].name,
     headerTintColor: sharedStyles.HEADER_TEXT_COLOR,
     headerStyle: {
       backgroundColor: sharedStyles.HEADER_COLOR
@@ -84,7 +85,11 @@ export default class AppDetailsScreen extends Component {
 
   installApp(app) {
     if (app.packages && app.packages[0]) {
-      downloadApp(app.name, app.packages[0].apkName, app.packages[0].apkUrl);
+      downloadApp(
+        app.name || app.localized['en-US'].name,
+        app.packages[0].apkName,
+        app.packages[0].apkUrl
+      );
     }
     this.setState({ askForInstall: false });
   }
@@ -97,10 +102,25 @@ export default class AppDetailsScreen extends Component {
   render() {
     const { app } = this.props.navigation.state.params;
     const { apps } = this.props;
+
+    // To deal with i18n
+    let description = '';
+    let name = '';
+    let summary = '';
+    if (app.localized && app.localized['en-US']) {
+      description = app.localized['en-US'].description;
+      summary = app.localized['en-US'].summary;
+      name = app.localized['en-US'].name;
+    } else {
+      description = app.description;
+      summary = app.summary;
+      name = app.name;
+    }
+
     const collapseDescription =
       this.state.descriptionExpanded === false
         ? {
-            height: app.screenshots ? 155 : 'auto'
+            height: app.screenshots !== null ? 155 : 'auto'
           }
         : {
             height: 'auto'
@@ -108,8 +128,10 @@ export default class AppDetailsScreen extends Component {
 
     const licenseUrl = false;
 
-    const sameAuthorApps = apps.filter(mApp => app.author === mApp.author);
-    const sameCategoryApps = apps.filter(mApp => app.category === mApp.category);
+    const sameAuthorApps = apps.filter(mApp => app.author === mApp.author && app.id !== mApp.id);
+    const sameCategoryApps = apps.filter(
+      mApp => app.category === mApp.category && app.id !== mApp.id
+    );
 
     const categories = app.categories.filter(item => item !== app.category).join(', ');
 
@@ -125,7 +147,7 @@ export default class AppDetailsScreen extends Component {
             }}
           >
             {app.featureGraphic ? (
-              <CachedImage
+              <FastImage
                 fadeDuration={0}
                 source={{ uri: app.featureGraphic }}
                 fallbackSource={require('../../assets/images/feature-graphic-default.jpg')}
@@ -156,7 +178,7 @@ export default class AppDetailsScreen extends Component {
               }}
             >
               <View style={{ overflow: 'visible' }}>
-                <CachedImage
+                <FastImage
                   fadeDuration={0}
                   source={{ uri: app.icon }}
                   fallbackSource={require('../../assets/images/default-icon.png')}
@@ -180,10 +202,12 @@ export default class AppDetailsScreen extends Component {
                 }}
               >
                 <View style={{ flexDirection: 'column', flex: 1 }}>
-                  <Text style={{ fontWeight: 'bold', fontSize: 16, color: '#505050' }}>
-                    {app.name}
-                  </Text>
-                  {app.author && <Text style={{ fontSize: 11 }}>{app.author}</Text>}
+                  <Text style={{ fontWeight: 'bold', fontSize: 16, color: '#505050' }}>{name}</Text>
+                  {app.author ? (
+                    <Text style={{ fontSize: 11 }}>{app.author}</Text>
+                  ) : (
+                    <Text style={{ fontSize: 11 }}>{summary}</Text>
+                  )}
                 </View>
                 <View style={{ flexDirection: 'column', flex: 0.4 }}>
                   <Button
@@ -197,7 +221,7 @@ export default class AppDetailsScreen extends Component {
             </View>
           </View>
           <View style={[{ padding: 16, backgroundColor: '#fafafa' }, collapseDescription]}>
-            {app.screenshots !== undefined && (
+            {app.screenshots !== null && (
               <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
                 <Touchable
                   onPress={() => this.toggleDescription()}
@@ -217,11 +241,11 @@ export default class AppDetailsScreen extends Component {
               </View>
             )}
             <Text selectable style={{ fontWeight: 'bold', color: '#696969' }}>
-              {app.summary}
+              {summary}
             </Text>
             <HTMLView
               selectable
-              value={app.description}
+              value={description}
               stylesheet={{
                 p: { color: '#696969' },
                 a: { fontWeight: 'bold', color: sharedStyles.ACCENT_COLOR }
@@ -230,9 +254,41 @@ export default class AppDetailsScreen extends Component {
           </View>
           {app.screenshots && (
             <View
-              style={{ marginTop: 16, height: 200, alignItems: 'center', justifyContent: 'center' }}
+              style={{
+                backgroundColor: 'rgba(0,0,0,.05)',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
             >
-              <Text style={{ fontSize: 24, fontWeight: 'bold' }}>Screenshots of {app.name}</Text>
+              <FlatList
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                data={app.screenshots}
+                renderItem={({ item, index }) => {
+                  const isFirstImage = index === 0;
+                  const isLastImage = index === app.screenshots.length - 1;
+                  const paddingStyle = {
+                    paddingRight: isLastImage ? 16 : 4,
+                    paddingLeft: isFirstImage ? 16 : 4,
+                    paddingVertical: 16
+                  };
+
+                  return (
+                    <View key={index} style={paddingStyle}>
+                      <FastImage
+                        fadeDuration={0}
+                        source={{ uri: item }}
+                        activityIndicatorProps={{ size: 'large', color: sharedStyles.ACCENT_COLOR }}
+                        resizeMode={FastImage.resizeMode.contain}
+                        style={{
+                          width: 150,
+                          height: 260
+                        }}
+                      />
+                    </View>
+                  );
+                }}
+              />
             </View>
           )}
           <View>
@@ -284,7 +340,7 @@ export default class AppDetailsScreen extends Component {
                 >
                   <Icon name={'calendar'} size={20} color={'#aaa'} />
                   <Text selectable style={{ marginLeft: 8, color: '#666', fontWeight: 'bold' }}>
-                    Lastest update {app.packages[0].added}
+                    Last update {unixToDate(app.packages[0].added)}
                   </Text>
                 </View>
               </Touchable>
@@ -550,7 +606,7 @@ export default class AppDetailsScreen extends Component {
                     marginBottom: 8
                   }}
                 >
-                  <CachedImage
+                  <FastImage
                     fadeDuration={0}
                     source={{ uri: app.icon }}
                     fallbackSource={require('../../assets/images/default-icon.png')}
@@ -586,7 +642,7 @@ export default class AppDetailsScreen extends Component {
                         >
                           <Icon name={'cash'} size={20} color={'#aaa'} />
                           <Text style={{ marginLeft: 8, color: '#666', fontWeight: 'bold' }}>
-                            {permission}
+                            {permission.replace('android.permission.', '')}
                           </Text>
                         </View>
                       );

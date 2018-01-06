@@ -16,6 +16,7 @@ const initialState = {
 const applicationsReducer = (state = initialState, action) => {
   switch (action.type) {
     case types.SET_APPLICATIONS_DATA:
+      // Ensure we don't store duplicate apps. Better RAM usage.
       return {
         ...state,
         apps: [...state.apps, ...action.applications]

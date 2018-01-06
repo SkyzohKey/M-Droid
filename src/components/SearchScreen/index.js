@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, FlatList, TextInput } from 'react-native';
+import { View, Text, FlatList } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import SearchInput, { createFilter } from 'react-native-search-filter';
 
@@ -73,7 +73,7 @@ export default class SearchScreen extends Component {
         {searchResults !== null
           ? this.renderResults(searchResults)
           : this.renderEmpty(
-              'search',
+              'regex',
               'Type to search',
               'We\'ll show you a list of results once you type something...'
             )}
@@ -96,9 +96,9 @@ export default class SearchScreen extends Component {
 
     if (results.length <= 0) {
       return this.renderEmpty(
-        'all-inclusive',
-        'No results for your query',
-        'You may want to try with other keywords'
+        'emoticon-dead',
+        'Snap! No results!',
+        'Try with a different query or use differents keywords...'
       );
     }
 
@@ -133,7 +133,7 @@ export default class SearchScreen extends Component {
 
   renderEmpty(icon, title, tagline) {
     return (
-      <View style={{ padding: 32, flex: 1 }}>
+      <View style={{ paddingHorizontal: 32, flex: 1 }}>
         <EmptyPlaceholder icon={icon} title={title} tagline={tagline} />
       </View>
     );

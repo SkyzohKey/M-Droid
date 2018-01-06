@@ -5,6 +5,9 @@ import PropTypes from 'prop-types';
 import AppsList from '../../containers/AppsListContainer';
 import NewAppsSlider from '../../containers/NewAppsSliderContainer';
 import EmptyPlaceholder from '../EmptyPlaceholder';
+
+import { removeDuplicates } from '../../utils';
+
 import styles from './styles';
 import sharedStyles from '../../bootstrap/sharedStyles';
 
@@ -30,13 +33,13 @@ export default class AppsTab extends Component {
 
   render() {
     const { apps, reposFetched, reposCount } = this.props;
-    const newsApps = apps.filter(app => app.featureGraphic !== null).slice(0, 5);
+    const newsApps = apps.filter(app => app.featureGraphic !== null);
 
     const categories = [
       { name: 'Internet', icon: 'web' },
       { name: 'Phone & SMS', icon: 'phone' },
       { name: 'Navigation', icon: 'navigation' },
-      { name: 'Security', icon: 'lock-outline' },
+      { name: 'Security', icon: 'security' },
       { name: 'Time', icon: 'calendar-clock' },
       { name: 'Science & Education', icon: 'school' },
       { name: 'Theming', icon: 'theme-light-dark' },
@@ -57,8 +60,7 @@ export default class AppsTab extends Component {
         {reposFetched === reposCount && reposCount > 0 ? (
           <FlatList
             style={{ flex: 1 }}
-            // refreshing={this.props.fetchComplete}
-            // onRefresh={() => this.props.fetchRepos()}
+            initialNumToRender={20}
             showsVerticalScrollIndicator={false}
             refreshControl={
               <RefreshControl
@@ -74,7 +76,8 @@ export default class AppsTab extends Component {
             keyExtractor={item => item.name}
             renderItem={({ item }) => {
               const sApps = apps.filter(app => app.category === item.name);
-              return <AppsList apps={sApps} maxCount={24} title={item.name} icon={item.icon} />;
+              const appsUniq = removeDuplicates(sApps, (k, t) => t.id === k.id);
+              return <AppsList apps={appsUniq} maxCount={9} title={item.name} icon={item.icon} />;
             }}
             ListHeaderComponent={<NewAppsSlider apps={newsApps} />}
           />

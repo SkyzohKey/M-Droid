@@ -1,6 +1,8 @@
 import { DOMParser } from 'xmldom';
 import RNFetchBlob from 'react-native-fetch-blob';
-import { ImageCacheManager } from 'react-native-cached-image';
+import { unzip } from 'react-native-zip-archive';
+import FastImage from 'react-native-fast-image';
+import { unixToDate } from '../utils';
 const android = RNFetchBlob.android;
 
 /**
@@ -9,10 +11,8 @@ const android = RNFetchBlob.android;
  */
 
 const parser = new DOMParser();
-const imgCacheManager = new ImageCacheManager();
-const imgCacheOpts = {
-  allowSelfSignedSSL: true
-};
+
+const CACHE_KEY = 'cache-02';
 
 /**
  * Check if value is defined for a node, and if that node exists in the parent node.
@@ -116,6 +116,7 @@ const parseOldRepoIndex = (doc, uuid, baseUrl) => {
       summary: getNodeValue(appNode, 'summary'),
       icon: baseUrl + '/icons/' + getNodeValue(appNode, 'icon'),
       featureGraphic: null,
+      screenshots: null, // Not implemented @see 1.0
       description:
         getNodeValue(appNode, 'desc') || getNodeValue(appNode, 'desc').substring(0, 32) + '...',
       license: getNodeValue(appNode, 'license'), // SPDX format.
@@ -136,6 +137,7 @@ const parseOldRepoIndex = (doc, uuid, baseUrl) => {
       liberapay: getNodeValue(appNode, 'liberapay'),
       marketVersion: getNodeValue(appNode, 'marketversion'),
       marketVersionCode: getNodeValue(appNode, 'marketvercode'),
+      antiFeatures: null, // Not implemented @see 1.0
       packages: []
     };
 
@@ -145,7 +147,7 @@ const parseOldRepoIndex = (doc, uuid, baseUrl) => {
       .then(res => {
         if (res.info().status === 200) {
           appData.featureGraphic = featureGraphicPath;
-          imgCacheManager.downloadAndCacheUrl(featureGraphicPath, imgCacheOpts);
+          FastImage.preload([{ uri: featureGraphicPath }]);
         }
       })
       .catch(err => console.log(err));
@@ -154,7 +156,7 @@ const parseOldRepoIndex = (doc, uuid, baseUrl) => {
     RNFetchBlob.fetch('GET', appData.icon)
       .then(res => {
         if (res.info().status === 200) {
-          imgCacheManager.downloadAndCacheUrl(appData.icon, imgCacheOpts);
+          FastImage.preload([{ uri: appData.icon }]);
         } else {
           appData.icon = null;
         }
@@ -200,32 +202,181 @@ const parseOldRepoIndex = (doc, uuid, baseUrl) => {
  * @param {String} baseUrl - The repository's base URL.
  * @return {Object} returns the processed repository as an Object.
  */
-const parseRepoIndexV1 = (json, uuid, baseUrl) => {
-  // TODO: Unzip the .jar file and get index.json content.
-  // TODO: Parse the json file to make it compliant (ie. same fields) with index.xml
-  // TODO: return the data.
-  // Unless that is done, proxy to the old method.
+const parseRepoIndexV1 = (json, uuid, baseUrl, pubkey) => {
+  // TODO: Unzip index-v1.jar/index-v1.json
+
+  const repo = JSON.parse(json); // from index-v1.json.
+  const applications = repo.apps;
+  const packages = repo.packages;
+
+  const repoData = {
+    meta: {
+      uuid: uuid,
+      icon: repo.repo.icon || null,
+      name: repo.repo.name || null,
+      pubkey: uuid, // GET from .rsa file.
+      timestamp: repo.repo.timestamp || null,
+      url: repo.repo.address || null,
+      version: repo.repo.version || null,
+      maxage: repo.repo.maxage || null,
+      description: repo.repo.description || null
+    },
+    applications: []
+  };
+
+  for (let i = 0, l = applications.length; i < l; i++) {
+    const app = applications[i];
+    const pkgs = packages[app.packageName];
+
+    const appData = {
+      id: app.packageName || null,
+      added: unixToDate(app.added) || null,
+      lastUpdated: unixToDate(app.lastUpdated) || null,
+      name: app.name || null,
+      summary: app.summary
+        ? app.summary
+        : app.description ? app.description.substr(0, 32) + '...' : null || null,
+      icon: baseUrl + '/icons/' + app.icon || null,
+      featureGraphic:
+        (app.localized &&
+          app.localized['en-US'] &&
+          baseUrl + '/' + app.packageName + '/en-US/' + app.localized['en-US'].featureGraphic) ||
+        null,
+      screenshots:
+        (app.localized &&
+          app.localized['en-US'] &&
+          app.localized['en-US'].phoneScreenshots &&
+          app.localized['en-US'].phoneScreenshots.map(
+            item => baseUrl + '/' + app.packageName + '/en-US/phoneScreenshots/' + item
+          )) ||
+        null,
+      description: app.description || null,
+      localized: app.localized || null,
+      license: app.license || null, // SPDX format.
+      provides: app.provides || null,
+      requirements: app.requirements || null,
+      categories: app.categories || [],
+      category: app.categories[0] || null,
+      website: app.website || null,
+      source: app.sourceCode || null,
+      tracker: app.issueTracker || null,
+      changelog: app.changelog || null,
+      author: app.authorName || null,
+      authorEmail: app.authorEmail || null,
+      donate: app.donate || null,
+      bitcoin: app.bitecoin || null,
+      litecoin: app.litecoin || null,
+      flattr: app.flattrID || null,
+      liberapay: app.liberapayID || null,
+      marketVersion: app.suggestedVersionName || null,
+      marketVersionCode: app.suggestedVersionCode || null,
+      antiFeatures: app.antiFeatures || null,
+      packages: []
+    };
+
+    // Test/cache the featureGraphics.
+    if (appData.featureGraphic !== null) {
+      RNFetchBlob.fetch('GET', appData.featureGraphic)
+        .then(res => {
+          if (res.info().status === 200) {
+            FastImage.preload([{ uri: appData.featureGraphic }]);
+          } else {
+            appData.featureGraphic = null;
+          }
+        })
+        .catch(err => console.log(err));
+    }
+
+    // Test/cache the icon.
+    if (appData.icon !== null) {
+      RNFetchBlob.fetch('GET', appData.icon)
+        .then(res => {
+          if (res.info().status === 200) {
+            FastImage.preload([{ uri: appData.icon }]);
+          } else {
+            appData.icon = null;
+          }
+        })
+        .catch(err => console.log(err));
+    }
+
+    // Test/cache the screenshots.
+    if (appData.screenshots !== null) {
+      for (let o = 0, p = appData.screenshots.length; o < p; o++) {
+        const screen = o[p];
+        if (screen) {
+          RNFetchBlob.fetch('GET', screen)
+            .then(res => {
+              if (res.info().status === 200) {
+                FastImage.preload([{ uri: screen }]);
+              } else {
+                delete appData.screenshots[p];
+              }
+            })
+            .catch(() => {});
+        }
+      }
+    }
+
+    for (let j = 0, k = pkgs.length; j < k; j++) {
+      const pkg = pkgs[j];
+      const packageData = {
+        version: pkg.versionName || null,
+        versionCode: pkg.versionCode || null,
+        apkName: pkg.apkName || null,
+        apkUrl: baseUrl + '/' + pkg.apkName || null,
+        srcName: pkg.srcname || null,
+        srcUrl: baseUrl + '/' + pkg.srcname || null,
+        hash: pkg.hash || null,
+        hashType: pkg.hashType || null,
+        size: pkg.size || null,
+        sdkVersion: pkg.minSdkVersion || null,
+        targetSdkVersion: pkg.targetSdkVersion || null,
+        added: pkg.added || null,
+        sig: pkg.sig || null,
+        signer: pkg.signer || null,
+        permissions:
+          (pkg['uses-permission'] &&
+            pkg['uses-permission'].map((permission, index) => pkg['uses-permission'][index][0])) ||
+          null,
+        nativecode: pkg.nativecode || null
+      };
+
+      appData.packages.push(packageData);
+    }
+
+    repoData.applications.push(appData);
+  }
+
+  return repoData || null;
 };
 
-export const getCacheForParsedRepo = baseUrl => {
-  const hash = RNFetchBlob.base64.encode(baseUrl).replace('=', '');
+export const getCacheForParsedRepo = (baseUrl, cacheKey) => {
+  const hash = RNFetchBlob.base64.encode(baseUrl + cacheKey).replace('=', '');
   const filePath = RNFetchBlob.fs.dirs.CacheDir + '/' + hash + '.json';
-  console.log('File path: ', filePath);
   return RNFetchBlob.fs.exists(filePath).then(exists => {
     if (exists) {
-      return RNFetchBlob.fs.readFile(filePath, 'base64').then(data => {
-        return JSON.parse(RNFetchBlob.base64.decode(data));
+      console.log('Cached repo. File path: ', filePath);
+      return RNFetchBlob.fs.readFile(filePath, 'utf8').then(data => {
+        return JSON.parse(data);
       });
     }
     return Promise.reject();
   });
 };
 
-export const cacheParsedRepo = (baseUrl, repoData) => {
-  const hash = RNFetchBlob.base64.encode(baseUrl).replace('=', '');
-  const data = RNFetchBlob.base64.encode(JSON.stringify(repoData));
+export const cacheParsedRepo = (baseUrl, repoData, cacheKey) => {
+  const hash = RNFetchBlob.base64.encode(baseUrl + cacheKey).replace('=', '');
+  const data = JSON.stringify(repoData);
   const filePath = RNFetchBlob.fs.dirs.CacheDir + '/' + hash + '.json';
-  return RNFetchBlob.fs.writeFile(filePath, data, 'base64');
+  return RNFetchBlob.fs.writeFile(filePath, data, 'utf8');
+};
+
+export const sanitizeUrl = url => {
+  return url
+    .replace(/(^\w+:|^)\/\//, '')
+    .replace(/\//g, '-')
+    .replace('.', '-');
 };
 
 /**
@@ -236,28 +387,53 @@ export const cacheParsedRepo = (baseUrl, repoData) => {
  * @return {Object} returns a Repository object, or an Error object.
  */
 export const getRepositoryAsync = async baseUrl => {
-  /**
-   * TODO: Check if `${baseUrl}/index-v1.jar exists.
-   *        - If exists, unzip it and parse the index-v1.json file inside.
-   *        - Else, download the old index.xml and parse it using parseOldRepoIndex.
-   */
-  return await getCacheForParsedRepo(baseUrl)
+  return await getCacheForParsedRepo(baseUrl, CACHE_KEY)
     .then(repoData => {
+      if (repoData.meta === undefined) {
+        Promise.reject();
+      }
+
       console.log('Fetched repoData from cache for ' + baseUrl);
       console.log(repoData);
       return { success: true, meta: repoData.meta, applications: repoData.applications };
     })
     .catch(async () => {
+      /**
+       * Check if `${baseUrl}/index-v1.jar exists.
+       * - If it does exists, unzip it & parse the index-v1.json file inside.
+       * - Else, parse the old index.xml file.
+       */
       const repoUUID = RNFetchBlob.base64.encode(baseUrl).replace('=', '');
-      const task = RNFetchBlob.config({ fileCache: true });
-      const response = await task.fetch('GET', baseUrl + '/index.xml');
-      const responseXml = await response.text();
-      const doc = parser.parseFromString(responseXml);
-      const repoData = parseOldRepoIndex(doc, repoUUID, baseUrl);
-      console.log('Downloaded repoData from the repository at ' + baseUrl);
+      const dlPath = RNFetchBlob.fs.dirs.DownloadDir + '/' + sanitizeUrl(baseUrl);
+
+      const indexJarPath = dlPath + '/index-v1.jar';
+      const indexJarJson = dlPath + '/index-v1.json';
+
+      const responseV1 = await RNFetchBlob.config({ path: indexJarPath }).fetch(
+        'GET',
+        baseUrl + '/index-v1.jar'
+      );
+
+      let repoData = null;
+      const exists = await RNFetchBlob.fs.exists(indexJarPath);
+      if (exists && responseV1.info().status === 200) {
+        const jsonPath = await unzip(indexJarPath, dlPath);
+        console.log('Unzipped index-v1 at ' + jsonPath);
+        const jsonData = await RNFetchBlob.fs.readFile(jsonPath + '/index-v1.json', 'utf8');
+        // console.log(jsonData);
+        repoData = parseRepoIndexV1(jsonData, repoUUID, baseUrl);
+        await RNFetchBlob.fs.unlink(dlPath);
+        console.log('Downloaded JSON v1 repoData from the repository at ' + baseUrl);
+      } else {
+        const response = await RNFetchBlob.fetch('GET', baseUrl + '/index.xml');
+        const responseXml = await response.text();
+        const doc = parser.parseFromString(responseXml);
+        repoData = parseOldRepoIndex(doc, repoUUID, baseUrl);
+        console.log('Downloaded XML repoData from the repository at ' + baseUrl);
+      }
 
       if (repoData !== null) {
-        cacheParsedRepo(baseUrl, repoData);
+        cacheParsedRepo(baseUrl, repoData, CACHE_KEY);
         console.log('Cached repoData for ' + baseUrl);
         console.log(repoData);
         return { success: true, meta: repoData.meta, applications: repoData.applications };

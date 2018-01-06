@@ -76,23 +76,42 @@ class AppsList extends Component {
           horizontal={true}
           // pagingEnabled={true}
           // numColumns={3} // Useful to make grids!
+          initialNumToRender={3}
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}
           data={uniqApps}
-          renderItem={({ item, index }) =>
-            item.name === null ? null : (
+          renderItem={({ item, index }) => {
+            // To deal with i18n
+            let description = '';
+            let name = '';
+            let summary = '';
+            if (item.localized && item.localized['en-US']) {
+              description = item.localized['en-US'].description;
+              summary = item.localized['en-US'].summary;
+              name = item.localized['en-US'].name;
+            } else {
+              description = item.description;
+              summary = item.summary;
+              name = item.name;
+            }
+
+            if (name === null) {
+              return null;
+            }
+
+            return (
               <AppCard
-                key={item.id + item.summary + index}
+                key={item.id + summary + index}
                 style={{ marginRight: index <= uniqApps.length - 1 ? 8 : 0 }}
-                appName={item.name}
-                appSummary={item.summary}
+                appName={name}
+                appSummary={summary}
                 appIconPath={item.icon}
                 onPress={() => {
                   this.props.openDetails(item);
                 }}
               />
-            )
-          }
+            );
+          }}
         />
       </View>
     );

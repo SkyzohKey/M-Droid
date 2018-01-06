@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { View, Text } from 'react-native';
-import { CachedImage } from 'react-native-cached-image';
+import PropTypes from 'prop-types';
+import FastImage from 'react-native-fast-image';
 
 import Touchable from '../Touchable';
 import styles from './styles';
@@ -27,12 +27,10 @@ export default class SearchResultRow extends Component {
           <Touchable onPress={onPress} delayPressIn={0}>
             <View style={styles.resultContent}>
               <View style={styles.iconWrapper}>
-                <CachedImage
-                  fadeDuration={0}
+                <FastImage
                   source={{ uri: appIconPath }}
-                  fallbackSource={require('../../assets/images/default-icon.png')}
                   style={styles.appIcon}
-                  activityIndicatorProps={{ size: 'large', color: sharedStyles.ACCENT_COLOR }}
+                  resizeMode={FastImage.resizeMode.contain}
                 />
               </View>
               <View style={styles.textsWrapper}>

@@ -5,16 +5,12 @@ const styles = {
     ...sharedStyles.screenContainer
   },
   row: {
-    elevation: 0,
-    borderBottomColor: '#DADADA',
-    borderBottomWidth: 1
+    elevation: 0
     // backgroundColor: 'white'
   },
   rowContent: {
-    padding: 8,
     flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-start'
+    alignItems: 'center'
   },
   name: {
     fontWeight: 'bold',
@@ -27,8 +23,7 @@ const styles = {
   icon: {
     width: 40,
     height: 40,
-    marginRight: 16,
-    resizeMode: 'contain'
+    marginRight: 16
   },
   iconWrapper: {
     flex: 0
@@ -36,6 +31,15 @@ const styles = {
   textsWrapper: {
     flexDirection: 'column',
     alignItems: 'flex-start',
+    justifyContent: 'flex-start',
+    flex: 1
+  },
+  borderWrapper: {
+    borderBottomColor: '#DADADA',
+    borderBottomWidth: 1,
+    padding: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'flex-start',
     flex: 1
   }
