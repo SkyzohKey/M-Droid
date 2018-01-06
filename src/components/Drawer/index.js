@@ -23,7 +23,7 @@ export default class Drawer extends Component {
               />
             </View>
             <View style={styles.versionContainer}>
-              <Text style={styles.version}>v0.4.1-beta</Text>
+              <Text style={styles.version}>{window.appVersion}</Text>
             </View>
           </View>
           <DrawerItems {...this.props} />
