@@ -18,7 +18,8 @@ const initialState = {
     'https://microg.org/fdroid/repo', // MicroG repo.
     'https://briarproject.org/fdroid/repo',
     'http://fdroid.krombel.de/repo',
-    'https://fdroid.copperhead.co/repo'
+    'https://fdroid.copperhead.co/repo',
+    'https://pkg.tox.chat/fdroid/repo'
   ],
   reposCount: 0,
   reposFetched: 0,
