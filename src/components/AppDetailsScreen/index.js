@@ -15,7 +15,8 @@ import {
   ScrollView,
   Linking,
   Modal,
-  FlatList
+  FlatList,
+  ProgressBarAndroid
 } from 'react-native';
 import HTMLView from 'react-native-htmlview';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -65,11 +66,12 @@ export default class AppDetailsScreen extends Component {
 
     const { width, height } = Dimensions.get('window');
     this.state = {
-      descriptionExpanded: false,
-      askForInstall: false,
+      descriptionExpanded: false, // SET THIS BACK TO FALSE AFTER UI STYLING !
+      askForInstall: false, // SET THIS BACK TO FALSE AFTER UI STYLING !
       width,
       height,
-      appInstalled: false,
+      appInstalled: false, // SET THIS BACK TO FALSE AFTER UI STYLING !
+      progressRunning: false, // SET THIS BACK TO FALSE AFTER UI STYLING !
       received: 0,
       total: 0
     };
@@ -90,30 +92,45 @@ export default class AppDetailsScreen extends Component {
 
   installApp(app) {
     if (app.packages && app.packages[0]) {
-      RNFetchBlob.config({
-        addAndroidDownloads: {
+      this.downloadTask = RNFetchBlob.config({
+        path: RNFetchBlob.fs.dirs.DownloadDir + app.packages[0].apkName,
+        mime: 'application/vnd.android.package-archive'
+        /* addAndroidDownloads: {
           useDownloadManager: true,
-          path: RNFetchBlob.fs.dirs.DownloadDir + app.packages[0].apkName,
           title: app.packages[0].apkName,
           description:
             'Downloading & installing « ' + app.name || app.localized['en-US'].name + ' ».',
           mime: 'application/vnd.android.package-archive',
-          mediaScannable: true,
+          mediaScannable: true
           notification: true
-        }
-      })
-        .fetch('GET', app.packages[0].apkUrl)
-        .progress({ interval: 500 }, (received, total) => {
+        }*/
+      }).fetch('GET', app.packages[0].apkUrl);
+
+      this.downloadTask
+        .progress({ interval: 1000 }, (received, total) => {
           this.setState({ progressRunning: true, received: received, total: total });
+          // console.log('Received ' + received + ' over ' + total + '.');
         })
         .then(res => {
-          RNFetchBlob.android.actionViewIntent(
-            res.path(),
-            'application/vnd.android.package-archive'
-          );
+          if (this.state.progressRunning) {
+            RNFetchBlob.android.actionViewIntent(
+              res.path(),
+              'application/vnd.android.package-archive'
+            );
+          }
+          this.setState({ progressRunning: false, received: 0, total: 0 });
         });
     }
     this.setState({ askForInstall: false });
+  }
+
+  cancelDownload() {
+    this.downloadTask &&
+      this.downloadTask.cancel((err, taskId) => {
+        if (err === null) {
+          this.setState({ progressRunning: false, received: 0, total: 0 });
+        }
+      });
   }
 
   copyText(text) {
@@ -164,7 +181,11 @@ export default class AppDetailsScreen extends Component {
 
     const licenseUrl = false;
 
-    const sameAuthorApps = apps.filter(mApp => app.author === mApp.author && app.id !== mApp.id);
+    const sameAuthorApps = apps.filter(
+      mApp =>
+        (app.author === mApp.author || app.id.split('.')[1] === mApp.id.split('.')[1]) &&
+        app.id !== mApp.id
+    );
     const sameCategoryApps = apps.filter(
       mApp => app.category === mApp.category && app.id !== mApp.id
     );
@@ -238,55 +259,84 @@ export default class AppDetailsScreen extends Component {
                   {app.author ? (
                     <Text style={{ fontSize: 11 }}>{app.author}</Text>
                   ) : (
-                    <Text style={{ fontSize: 11 }}>
-                      {summary || app.summary || app.localized[0].summary}
-                    </Text>
+                    <Text style={{ fontSize: 11 }}>{String(app.id).split('.')[1]}</Text>
                   )}
                 </View>
                 <View>
-                  {this.state.appInstalled === false ? (
-                    <View style={{ flexDirection: 'column', marginBottom: 5 }}>
-                      <View style={{ marginBottom: 5 }}>  
-                        <Button
-                          style={{ flex: 1 }}
-                          title="Install"
-                          color={sharedStyles.ACCENT_COLOR}
-                          onPress={() => installApp()}
+                  {this.state.appInstalled === false &&
+                    this.state.progressRunning === false && (
+                      <View style={{ flexDirection: 'column', marginBottom: 5 }}>
+                        <View style={{ marginBottom: 5 }}>
+                          <Button
+                            style={{ flex: 1 }}
+                            title="Install"
+                            color={sharedStyles.ACCENT_COLOR}
+                            onPress={() => installApp()}
                           />
+                        </View>
                       </View>
-                    </View>  
-                  ) : (
+                    )}
+                  {this.state.appInstalled &&
+                    this.state.progressRunning == false && (
+                      <View
+                        style={{
+                          backgroundColor: 'white',
+                          flexDirection: 'row',
+                          justifyContent: 'flex-end'
+                        }}
+                      >
+                        <View style={{ marginRight: 8, marginBottom: 5 }}>
+                          <Button title="Uninstall" color={'#666'} onPress={() => uninstallApp()} />
+                        </View>
+                        <View style={{ marginBottom: 5 }}>
+                          <Button
+                            title="Launch"
+                            color={sharedStyles.ACCENT_COLOR}
+                            onPress={() => runApp()}
+                          />
+                        </View>
+                      </View>
+                    )}
+                  {this.state.progressRunning && (
                     <View
                       style={{
-                        backgroundColor: 'white',
                         flexDirection: 'row',
                         justifyContent: 'flex-end',
+                        alignItems: 'center',
+                        width: 150
                       }}
                     >
-                      <View style={{ marginRight: 8, marginBottom: 5 }}>
-                        <Button
-                          title="Uninstall"
-                          color={'#666'}
-                          onPress={() => uninstallApp()}
+                      <View
+                        style={{
+                          flexDirection: 'column',
+                          alignItems: 'flex-end',
+                          width: 150,
+                          marginRight: 8
+                        }}
+                      >
+                        <ProgressBarAndroid
+                          progress={this.state.received / this.state.total}
+                          color={sharedStyles.ACCENT_COLOR}
+                          styleAttr={'Horizontal'}
+                          style={{ width: 150 }}
+                          indeterminate={false}
                         />
+                        <Text style={{ fontWeight: 'bold', color: '#CACACA' }}>
+                          {toFileSize(this.state.received)} / {toFileSize(this.state.total)}
+                        </Text>
+                      </View>
+                      <Touchable
+                        delayPressIn={0}
+                        borderless={true}
+                        onPress={() => this.cancelDownload()}
+                      >
+                        <View style={{ padding: 8, borderRadius: 8 }}>
+                          <Icon name={'close'} size={24} color={'#CACACA'} />
                         </View>
-                      <View style={{ marginBottom: 5 }}>  
-                      <Button
-                        title="Launch"
-                        color={sharedStyles.ACCENT_COLOR}
-                        onPress={() => runApp()}
-                          />
-                      </View>    
+                      </Touchable>
                     </View>
                   )}
                 </View>
-                {this.state.total !== 0 && (
-                  <View style={{ backgroundColor: 'red' }}>
-                    <Text>
-                      {this.state.received} / {this.state.total}
-                    </Text>
-                  </View>
-                )}
               </View>
             </View>
           </View>
@@ -375,7 +425,7 @@ export default class AppDetailsScreen extends Component {
               sameAuthorApps.length > 0 && (
                 <AppsList
                   apps={sameAuthorApps}
-                  title={'More from ' + app.author}
+                  title={'More from ' + (app.author || String(app.id).split('.')[1])}
                   icon={'account-check'}
                 />
               )}
@@ -655,7 +705,7 @@ export default class AppDetailsScreen extends Component {
         </ScrollView>
         <Modal
           animationType={'fade'}
-          //presentationStyle={'overFullscreen'}
+          // presentationStyle={'overFullscreen'}
           transparent={true}
           hardwareAccelerated={true}
           visible={!!this.state.askForInstall}
