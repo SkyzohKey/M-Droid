@@ -152,6 +152,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-apk')
     compile project(':react-native-smart-splash-screen')
     compile project(':react-native-fast-image')
     compile project(':react-native-zip-archive')

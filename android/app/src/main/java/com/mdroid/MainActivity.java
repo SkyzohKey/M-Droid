@@ -8,7 +8,9 @@ public class MainActivity extends ReactActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        RCTSplashScreen.openSplashScreen(this);// react-native-smart-splash-screen Module.
+        // react-native-smart-splash-screen Module.
+        RCTSplashScreen.openSplashScreen(this); 
+        
         super.onCreate(savedInstanceState);
     }
 

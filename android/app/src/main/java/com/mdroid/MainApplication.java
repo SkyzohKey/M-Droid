@@ -3,6 +3,7 @@ package com.mdroid;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import be.skyzohlabs.rnapk.ReactNativeAPKPackage;
 import com.reactnativecomponent.splashscreen.RCTSplashScreenPackage;
 import com.dylanvann.fastimage.FastImageViewPackage;
 import com.rnziparchive.RNZipArchivePackage;
@@ -28,6 +29,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
         new MainReactPackage(),
+        new ReactNativeAPKPackage(),
         new RCTSplashScreenPackage(),
         new FastImageViewPackage(),
         new RNZipArchivePackage(),

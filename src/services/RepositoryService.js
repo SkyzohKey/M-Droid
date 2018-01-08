@@ -442,24 +442,7 @@ export const getRepositoryAsync = async baseUrl => {
     });
 };
 
-export const downloadApp = async (appName, apkName, apkUrl) => {
-  try {
-    RNFetchBlob.config({
-      addAndroidDownloads: {
-        useDownloadManager: true,
-        path: RNFetchBlob.fs.dirs.DownloadDir + apkName,
-        title: apkName,
-        description: 'Downloading & installing « ' + appName + ' ».',
-        mime: 'application/vnd.android.package-archive',
-        mediaScannable: true,
-        notification: true
-      }
-    })
-      .fetch('GET', apkUrl)
-      .then(res => {
-        android.actionViewIntent(res.path(), 'application/vnd.android.package-archive');
-      });
-  } catch (e) {
-    console.log(e);
-  }
-};
+/*
+export const downloadApp = (appName, apkName, apkUrl) => {
+  return 
+};*/

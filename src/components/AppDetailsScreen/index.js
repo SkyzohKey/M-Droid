@@ -21,6 +21,8 @@ import HTMLView from 'react-native-htmlview';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import FIcon from 'react-native-vector-icons/Foundation';
 import FastImage from 'react-native-fast-image';
+import ApkUtils from 'react-native-apk';
+import RNFetchBlob from 'react-native-fetch-blob';
 
 import MenuButton from '../MenuButton';
 import Touchable from '../Touchable';
@@ -29,7 +31,7 @@ import { toFileSize, unixToDate } from '../../utils';
 import sharedStyles from '../../bootstrap/sharedStyles';
 import styles from './styles';
 
-import { downloadApp } from '../../services/RepositoryService';
+// import { downloadApp } from '../../services/RepositoryService';
 
 export default class AppDetailsScreen extends Component {
   static navigationOptions = ({ navigation, screenProps }) => ({
@@ -66,7 +68,10 @@ export default class AppDetailsScreen extends Component {
       descriptionExpanded: false,
       askForInstall: false,
       width,
-      height
+      height,
+      appInstalled: false,
+      received: 0,
+      total: 0
     };
   }
 
@@ -85,11 +90,28 @@ export default class AppDetailsScreen extends Component {
 
   installApp(app) {
     if (app.packages && app.packages[0]) {
-      downloadApp(
-        app.name || app.localized['en-US'].name,
-        app.packages[0].apkName,
-        app.packages[0].apkUrl
-      );
+      RNFetchBlob.config({
+        addAndroidDownloads: {
+          useDownloadManager: true,
+          path: RNFetchBlob.fs.dirs.DownloadDir + app.packages[0].apkName,
+          title: app.packages[0].apkName,
+          description:
+            'Downloading & installing « ' + app.name || app.localized['en-US'].name + ' ».',
+          mime: 'application/vnd.android.package-archive',
+          mediaScannable: true,
+          notification: true
+        }
+      })
+        .fetch('GET', app.packages[0].apkUrl)
+        .progress({ interval: 500 }, (received, total) => {
+          this.setState({ progressRunning: true, received: received, total: total });
+        })
+        .then(res => {
+          RNFetchBlob.android.actionViewIntent(
+            res.path(),
+            'application/vnd.android.package-archive'
+          );
+        });
     }
     this.setState({ askForInstall: false });
   }
@@ -102,6 +124,20 @@ export default class AppDetailsScreen extends Component {
   render() {
     const { app } = this.props.navigation.state.params;
     const { apps } = this.props;
+
+    ApkUtils.isAppInstalled(app.id, installed => {
+      this.setState({ appInstalled: installed });
+    });
+
+    const installApp = () => this.askForDownload(app);
+    const runApp = () => ApkUtils.runApp(app.id);
+    const uninstallApp = () => {
+      ApkUtils.uninstallApp(app.id, () => {
+        ApkUtils.isAppInstalled(app.id, installed => {
+          this.setState({ appInstalled: installed });
+        });
+      });
+    };
 
     // To deal with i18n
     let description = '';
@@ -152,7 +188,7 @@ export default class AppDetailsScreen extends Component {
                 resizeMode={FastImage.resizeMode.stretch}
                 style={{
                   height: 180,
-                  width: this.state.width,
+                  width: this.state.width
                 }}
               />
             ) : null}
@@ -192,25 +228,65 @@ export default class AppDetailsScreen extends Component {
                   backgroundColor: 'white',
                   flexDirection: 'row',
                   justifyContent: 'space-between',
-                  alignItems: app.featureGraphic ? 'flex-start': 'center'
+                  alignItems: app.featureGraphic ? 'flex-start' : 'center'
                 }}
               >
                 <View style={{ flexDirection: 'column', flex: 1 }}>
-                  <Text style={{ fontWeight: 'bold', fontSize: 16, color: '#505050' }}>{name || app.name || app.localized[0].name}</Text>
+                  <Text style={{ fontWeight: 'bold', fontSize: 16, color: '#505050' }}>
+                    {name || app.name || app.localized[0].name}
+                  </Text>
                   {app.author ? (
                     <Text style={{ fontSize: 11 }}>{app.author}</Text>
                   ) : (
-                    <Text style={{ fontSize: 11 }}>{summary || app.summary || app.localized[0].summary}</Text>
+                    <Text style={{ fontSize: 11 }}>
+                      {summary || app.summary || app.localized[0].summary}
+                    </Text>
                   )}
                 </View>
-                <View style={{ flexDirection: 'column', flex: 0.4 }}>
-                  <Button
-                    style={{ flex: 1 }}
-                    title="Install"
-                    color={sharedStyles.ACCENT_COLOR}
-                    onPress={() => this.askForDownload(app)}
-                  />
+                <View>
+                  {this.state.appInstalled === false ? (
+                    <View style={{ flexDirection: 'column', marginBottom: 5 }}>
+                      <View style={{ marginBottom: 5 }}>  
+                        <Button
+                          style={{ flex: 1 }}
+                          title="Install"
+                          color={sharedStyles.ACCENT_COLOR}
+                          onPress={() => installApp()}
+                          />
+                      </View>
+                    </View>  
+                  ) : (
+                    <View
+                      style={{
+                        backgroundColor: 'white',
+                        flexDirection: 'row',
+                        justifyContent: 'flex-end',
+                      }}
+                    >
+                      <View style={{ marginRight: 8, marginBottom: 5 }}>
+                        <Button
+                          title="Uninstall"
+                          color={'#666'}
+                          onPress={() => uninstallApp()}
+                        />
+                        </View>
+                      <View style={{ marginBottom: 5 }}>  
+                      <Button
+                        title="Launch"
+                        color={sharedStyles.ACCENT_COLOR}
+                        onPress={() => runApp()}
+                          />
+                      </View>    
+                    </View>
+                  )}
                 </View>
+                {this.state.total !== 0 && (
+                  <View style={{ backgroundColor: 'red' }}>
+                    <Text>
+                      {this.state.received} / {this.state.total}
+                    </Text>
+                  </View>
+                )}
               </View>
             </View>
           </View>
@@ -224,7 +300,14 @@ export default class AppDetailsScreen extends Component {
                     paddingVertical: 8
                   }}
                 >
-                  <Text style={{ color: '#BABABA', fontSize: 12, fontWeight: 'bold', textAlign: 'center' }}>
+                  <Text
+                    style={{
+                      color: '#BABABA',
+                      fontSize: 12,
+                      fontWeight: 'bold',
+                      textAlign: 'center'
+                    }}
+                  >
                     {this.state.descriptionExpanded ? 'LESS' : 'MORE'}{' '}
                     <Icon
                       name={this.state.descriptionExpanded ? 'chevron-up' : 'chevron-down'}
@@ -325,7 +408,9 @@ export default class AppDetailsScreen extends Component {
               </Touchable>
             )}
             {app.packages[0].added && (
-              <Touchable onPress={() => this.copyText('Last update ' + unixToDate(app.packages[0].added))}>
+              <Touchable
+                onPress={() => this.copyText('Last update ' + unixToDate(app.packages[0].added))}
+              >
                 <View
                   style={{
                     paddingVertical: 8,
@@ -570,7 +655,7 @@ export default class AppDetailsScreen extends Component {
         </ScrollView>
         <Modal
           animationType={'fade'}
-          presentationStyle={'overFullscreen'}
+          //presentationStyle={'overFullscreen'}
           transparent={true}
           hardwareAccelerated={true}
           visible={!!this.state.askForInstall}
