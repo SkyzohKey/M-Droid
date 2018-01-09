@@ -25,6 +25,7 @@ import FastImage from 'react-native-fast-image';
 import ApkUtils from 'react-native-apk';
 import RNFetchBlob from 'react-native-fetch-blob';
 
+import EmptyPlaceholder from '../EmptyPlaceholder';
 import MenuButton from '../MenuButton';
 import Touchable from '../Touchable';
 import AppsList from '../../containers/AppsListContainer';
@@ -36,7 +37,7 @@ import styles from './styles';
 
 export default class AppDetailsScreen extends Component {
   static navigationOptions = ({ navigation, screenProps }) => ({
-    title: navigation.state.params.app.name || navigation.state.params.app.localized['en-US'].name,
+    //title: navigation.state.params.app.name || navigation.state.params.app.localized['en-US'].name || 'lol',
     headerTintColor: sharedStyles.HEADER_TEXT_COLOR,
     headerStyle: {
       backgroundColor: sharedStyles.HEADER_COLOR
@@ -55,7 +56,7 @@ export default class AppDetailsScreen extends Component {
         iconName={'search'}
         color={sharedStyles.HEADER_TEXT_COLOR}
         onPress={() =>
-          navigation.navigate('Search', { searchQuery: navigation.state.params.app.name })
+          navigation.navigate('Search', { searchQuery: navigation.state.params.app.name || '' })
         }
       />
     )
@@ -91,6 +92,10 @@ export default class AppDetailsScreen extends Component {
   }
 
   installApp(app) {
+    if (!app) {
+      return;
+    }
+
     if (app.packages && app.packages[0]) {
       this.downloadTask = RNFetchBlob.config({
         path: RNFetchBlob.fs.dirs.DownloadDir + app.packages[0].apkName,
@@ -125,12 +130,13 @@ export default class AppDetailsScreen extends Component {
   }
 
   cancelDownload() {
-    this.downloadTask &&
-      this.downloadTask.cancel((err, taskId) => {
+    if (this.downloadTask) {
+      this.downloadTask.cancel(err => {
         if (err === null) {
           this.setState({ progressRunning: false, received: 0, total: 0 });
         }
       });
+    }
   }
 
   copyText(text) {
@@ -139,8 +145,18 @@ export default class AppDetailsScreen extends Component {
   }
 
   render() {
-    const { app } = this.props.navigation.state.params;
+    if (!this.props.navigation.state.params.app) {
+      return (
+        <EmptyPlaceholder
+          icon={'package'}
+          title={'Snap, no app!'}
+          tagline={'Try adding the app\'s repository or try to search for it...'}
+        />
+      );
+    }
+
     const { apps } = this.props;
+    const app = this.props.navigation.state.params.app;
 
     ApkUtils.isAppInstalled(app.id, installed => {
       this.setState({ appInstalled: installed });
@@ -155,6 +171,10 @@ export default class AppDetailsScreen extends Component {
         });
       });
     };
+
+    /* ApkUtils.getNonSystemApps((apps) => {
+      console.log(apps);
+    })*/
 
     // To deal with i18n
     let description = '';
@@ -183,7 +203,10 @@ export default class AppDetailsScreen extends Component {
 
     const sameAuthorApps = apps.filter(
       mApp =>
-        (app.author === mApp.author || app.id.split('.')[1] === mApp.id.split('.')[1]) &&
+        (app.author === mApp.author ||
+          (app.id &&
+            app.id.split('.').length >= 0 &&
+            app.id.split('.')[1] === mApp.id.split('.')[1])) &&
         app.id !== mApp.id
     );
     const sameCategoryApps = apps.filter(

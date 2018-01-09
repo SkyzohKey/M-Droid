@@ -1,6 +1,5 @@
 // @flow
 import React from 'react';
-import { Image } from 'react-native';
 import { DrawerNavigator, StackNavigator } from 'react-navigation';
 
 import HomeScreen from '../components/HomeScreen';

@@ -9,10 +9,11 @@ import sharedStyles from '../../bootstrap/sharedStyles';
 
 export default class AppCard extends Component {
   static propTypes = {
-    appName: PropTypes.string.isRequired,
-    appSummary: PropTypes.string.isRequired,
-    appIconPath: PropTypes.string.isRequired,
+    appName: PropTypes.string,
+    appSummary: PropTypes.string,
+    appIconPath: PropTypes.string,
     horizontal: PropTypes.bool,
+    offset: PropTypes.number,
     isFirst: PropTypes.bool,
     isLast: PropTypes.bool,
     onPress: PropTypes.func.isRequired
@@ -22,7 +23,8 @@ export default class AppCard extends Component {
     appName: '',
     appSummary: '',
     appIconPath: '',
-    horizontal: true
+    horizontal: true,
+    offset: 3
   };
 
   constructor(props) {
@@ -38,7 +40,8 @@ export default class AppCard extends Component {
       return null;
     }
 
-    const cardWidth = this.state.width / 3 - 8;
+    const halfPadding = this.props.offset > 2 ? 4 : 0;
+    const cardWidth = this.state.width / this.props.offset - halfPadding;
     const paddingStyle = this.props.horizontal
       ? {
           paddingRight: this.props.isLast ? 16 : 4,

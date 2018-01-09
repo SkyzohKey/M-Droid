@@ -121,6 +121,7 @@ class AppsList extends Component {
                 appName={name || item.name}
                 appSummary={summary || item.summary}
                 appIconPath={item.icon}
+                offset={uniqApps.length > 2 ? 3 : uniqApps.length}
                 onPress={() => {
                   this.props.openDetails(item);
                 }}

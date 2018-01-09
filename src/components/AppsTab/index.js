@@ -18,6 +18,7 @@ export default class AppsTab extends Component {
   };
 
   static propTypes = {
+    fetchComplete: PropTypes.bool.isRequired,
     fetchRepos: PropTypes.func.isRequired,
     reposFetched: PropTypes.number.isRequired,
     reposCount: PropTypes.number.isRequired,
@@ -29,7 +30,9 @@ export default class AppsTab extends Component {
   }
 
   componentWillMount() {
-    this.props.reposCount === 0 && this.props.fetchRepos();
+    if (this.props.reposCount === 0) {
+      this.props.fetchRepos();
+    }
   }
 
   componentDidMount() {

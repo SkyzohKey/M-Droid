@@ -3,7 +3,6 @@ import RNFetchBlob from 'react-native-fetch-blob';
 import { unzip } from 'react-native-zip-archive';
 import FastImage from 'react-native-fast-image';
 import { unixToDate } from '../utils';
-const android = RNFetchBlob.android;
 
 /**
  * The RepositoryService allows to query ONE repository for packages, metadata, etc.
@@ -356,7 +355,6 @@ export const getCacheForParsedRepo = (baseUrl, cacheKey) => {
   const filePath = RNFetchBlob.fs.dirs.CacheDir + '/' + hash + '.json';
   return RNFetchBlob.fs.exists(filePath).then(exists => {
     if (exists) {
-      console.log('Cached repo. File path: ', filePath);
       return RNFetchBlob.fs.readFile(filePath, 'utf8').then(data => {
         return JSON.parse(data);
       });
@@ -393,8 +391,6 @@ export const getRepositoryAsync = async baseUrl => {
         Promise.reject();
       }
 
-      console.log('Fetched repoData from cache for ' + baseUrl);
-      console.log(repoData);
       return { success: true, meta: repoData.meta, applications: repoData.applications };
     })
     .catch(async () => {
@@ -407,8 +403,6 @@ export const getRepositoryAsync = async baseUrl => {
       const dlPath = RNFetchBlob.fs.dirs.DownloadDir + '/' + sanitizeUrl(baseUrl);
 
       const indexJarPath = dlPath + '/index-v1.jar';
-      const indexJarJson = dlPath + '/index-v1.json';
-
       const responseV1 = await RNFetchBlob.config({ path: indexJarPath }).fetch(
         'GET',
         baseUrl + '/index-v1.jar'
@@ -418,24 +412,19 @@ export const getRepositoryAsync = async baseUrl => {
       const exists = await RNFetchBlob.fs.exists(indexJarPath);
       if (exists && responseV1.info().status === 200) {
         const jsonPath = await unzip(indexJarPath, dlPath);
-        console.log('Unzipped index-v1 at ' + jsonPath);
         const jsonData = await RNFetchBlob.fs.readFile(jsonPath + '/index-v1.json', 'utf8');
-        // console.log(jsonData);
+
         repoData = parseRepoIndexV1(jsonData, repoUUID, baseUrl);
         await RNFetchBlob.fs.unlink(dlPath);
-        console.log('Downloaded JSON v1 repoData from the repository at ' + baseUrl);
       } else {
         const response = await RNFetchBlob.fetch('GET', baseUrl + '/index.xml');
         const responseXml = await response.text();
         const doc = parser.parseFromString(responseXml);
         repoData = parseOldRepoIndex(doc, repoUUID, baseUrl);
-        console.log('Downloaded XML repoData from the repository at ' + baseUrl);
       }
 
       if (repoData !== null) {
         cacheParsedRepo(baseUrl, repoData, CACHE_KEY);
-        console.log('Cached repoData for ' + baseUrl);
-        console.log(repoData);
         return { success: true, meta: repoData.meta, applications: repoData.applications };
       }
       return { success: false, error: 'Unknown error, cannot fetch repository ' + baseUrl };
@@ -444,5 +433,5 @@ export const getRepositoryAsync = async baseUrl => {
 
 /*
 export const downloadApp = (appName, apkName, apkUrl) => {
-  return 
+  return
 };*/

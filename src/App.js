@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { BackHandler, NativeModules, StatusBar, View } from 'react-native';
+import { BackHandler, NativeModules } from 'react-native';
 
 // Debuggers.
 import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly';
@@ -14,7 +14,7 @@ import thunk from 'redux-thunk';
 import { Provider as ReduxProvider, connect } from 'react-redux';
 
 // react-navigation stuff.
-import { NavigationActions, DrawerNavigator, addNavigationHelpers } from 'react-navigation';
+import { NavigationActions, addNavigationHelpers } from 'react-navigation';
 
 // app specific imports.
 import { config } from './bootstrap/config';
@@ -122,8 +122,6 @@ export class App extends Component {
     if (UIManager.setLayoutAnimationEnabledExperimental) {
       UIManager.setLayoutAnimationEnabledExperimental(true);
     }
-
-    // TODO: this._checkForUpdates();
   }
 
   render() {

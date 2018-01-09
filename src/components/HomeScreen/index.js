@@ -3,6 +3,8 @@ import { View, Image } from 'react-native';
 import { TabNavigator } from 'react-navigation';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
+import DeepLinkingProvider from '../../bootstrap/DeepLinkingProvider';
+
 import MenuButton from '../../components/MenuButton';
 import AppsTab from '../../containers/AppsTabContainer';
 import EntertainmentTab from '../../containers/EntertainmentTabContainer';
@@ -85,7 +87,9 @@ class HomeScreen extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <HomeTabs {...this.props} />
+        <DeepLinkingProvider>
+          <HomeTabs {...this.props} />
+        </DeepLinkingProvider>
       </View>
     );
   }

@@ -28,7 +28,6 @@ export const fetchRepositories = () => {
         .getRepositoryAsync(repo)
         .then(response => {
           if (response.success) {
-            console.log('Processed', repo, response);
             dispatch({ type: types.SET_REPOSITORY_DATA, repository: response.meta });
 
             const appUniq = removeDuplicates(

@@ -7,10 +7,11 @@ const styles = {
   },
   card: {
     margin: 2,
-    marginBottom: 3,
-    elevation: 1,
+    marginBottom: 4,
+    elevation: 2,
     backgroundColor: 'white',
-    height: 120
+    height: 120,
+    borderRadius: 1
   },
   cardContent: {
     alignItems: 'center',
@@ -28,8 +29,7 @@ const styles = {
   appIcon: {
     width: 40,
     height: 40,
-    margin: 0,
-    resizeMode: 'contain'
+    margin: 0
   },
   iconWrapper: {
     marginBottom: 8
