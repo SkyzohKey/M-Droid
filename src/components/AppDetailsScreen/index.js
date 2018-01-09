@@ -16,8 +16,10 @@ import {
   Linking,
   Modal,
   FlatList,
-  ProgressBarAndroid
+  ProgressBarAndroid,
+  Animated
 } from 'react-native';
+import PropTypes from 'prop-types';
 import HTMLView from 'react-native-htmlview';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import FIcon from 'react-native-vector-icons/Foundation';
@@ -35,38 +37,7 @@ import styles from './styles';
 
 // import { downloadApp } from '../../services/RepositoryService';
 
-export default class AppDetailsScreen extends Component {
-  static navigationOptions = ({ navigation, screenProps }) => ({
-    // title: navigation.state.params.app.name || navigation.state.params.app.localized['en-US'].name || 'lol',
-    headerTintColor: sharedStyles.HEADER_TEXT_COLOR,
-    headerStyle: {
-      backgroundColor:
-        navigation.state.params.app.featureGraphic && !navigation.state.params.translucent
-          ? 'rgba(0,0,0,0.01)'
-          : sharedStyles.HEADER_COLOR,
-      elevation:
-        navigation.state.params.app.featureGraphic && !navigation.state.params.translucent ? 0 : 6
-    },
-    headerLeft: (
-      <MenuButton
-        navigation={navigation}
-        iconName={'arrow-back'}
-        color={sharedStyles.HEADER_TEXT_COLOR}
-        onPress={() => navigation.goBack()}
-      />
-    ),
-    headerRight: (
-      <MenuButton
-        navigation={navigation}
-        iconName={'search'}
-        color={sharedStyles.HEADER_TEXT_COLOR}
-        onPress={() =>
-          navigation.navigate('Search', { searchQuery: navigation.state.params.app.name || '' })
-        }
-      />
-    )
-  });
-
+class AppDetailsScreen extends Component {
   constructor(props) {
     super(props);
 
@@ -79,7 +50,7 @@ export default class AppDetailsScreen extends Component {
       appInstalled: false, // SET THIS BACK TO FALSE AFTER UI STYLING !
       progressRunning: false, // SET THIS BACK TO FALSE AFTER UI STYLING !
       received: 0,
-      total: 0
+      total: 0,
     };
   }
 
@@ -147,6 +118,15 @@ export default class AppDetailsScreen extends Component {
   copyText(text) {
     Clipboard.setString(text);
     ToastAndroid.show('Text copied to clipboard', 1000);
+  }
+
+  handleScroll(event) {
+    this.offsetY = event.nativeEvent.contentOffset.y;
+    if (this.offsetY < 140) {
+      this.props.navigation.setParams({ translucent: false });
+    } else {
+      this.props.navigation.setParams({ translucent: true });
+    }
   }
 
   render() {
@@ -229,21 +209,7 @@ export default class AppDetailsScreen extends Component {
           style={styles.container}
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={1}
-          onScroll={event => {
-            this.offsetY = event.nativeEvent.contentOffset.y;
-            if (this.offsetY < 120) {
-              this.props.navigation.setParams({ translucent: false });
-            } else {
-              this.props.navigation.setParams({ translucent: true });
-            }
-          }}
-          onScrollEndDrag={() => {
-            if (this.offsetY < 120) {
-              this.props.navigation.setParams({ translucent: false });
-            } else {
-              this.props.navigation.setParams({ translucent: true });
-            }
-          }}
+          onScroll={event => this.handleScroll(event)}
           onLayout={() => this.onLayout()}
         >
           <View
@@ -856,3 +822,39 @@ export default class AppDetailsScreen extends Component {
     );
   }
 }
+
+AppDetailsScreen.propTypes = {
+  navigation: PropTypes.any.isRequired
+};
+
+AppDetailsScreen.navigationOptions = ({ navigation }) => ({
+  headerTintColor: sharedStyles.HEADER_TEXT_COLOR,
+  headerStyle: {
+    backgroundColor:
+      navigation.state.params.app.featureGraphic && !navigation.state.params.translucent
+        ? 'rgba(0,0,0,0.01)'
+        : sharedStyles.HEADER_COLOR,
+    elevation:
+      navigation.state.params.app.featureGraphic && !navigation.state.params.translucent ? 0 : 6,
+  },
+  headerLeft: (
+    <MenuButton
+      navigation={navigation}
+      iconName={'arrow-back'}
+      color={sharedStyles.HEADER_TEXT_COLOR}
+      onPress={() => navigation.goBack()}
+    />
+  ),
+  headerRight: (
+    <MenuButton
+      navigation={navigation}
+      iconName={'search'}
+      color={sharedStyles.HEADER_TEXT_COLOR}
+      onPress={() =>
+        navigation.navigate('Search', { searchQuery: navigation.state.params.app.name || '' })
+      }
+    />
+  )
+});
+
+export default AppDetailsScreen;
