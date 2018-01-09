@@ -54,12 +54,13 @@ export default class ReposHomeScreen extends Component {
             refreshing={false}
             style={styles.flatlist}
             data={repos}
-            keyExtractor={item => item.pubkey + item.name}
+            keyExtractor={({ index }) => index}
             renderItem={({ item, index }) => {
               const icon = item.url + '/icons/' + item.icon;
               const isLatestRow = index == repos.length - 1;
               return (
                 <RepoListRow
+                  key={index}
                   name={item.name}
                   summary={item.description}
                   iconPath={icon}

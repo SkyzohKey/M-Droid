@@ -99,6 +99,7 @@ class AppsList extends Component {
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}
           data={uniqApps}
+          keyExtractor={({ item, index }) => index}
           renderItem={({ item, index }) => {
             // To deal with i18n
             const description =
@@ -114,7 +115,7 @@ class AppsList extends Component {
 
             return (
               <AppCard
-                key={item.id + index}
+                key={index}
                 isFirst={index === 0}
                 isLast={index === appsCount}
                 horizontal={this.props.horizontal}

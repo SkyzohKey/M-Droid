@@ -52,6 +52,13 @@ export default class SearchScreen extends Component {
         color={sharedStyles.HEADER_TEXT_COLOR}
         onPress={() => navigation.goBack()}
       />
+    ),
+    headerRight: (
+      <MenuButton
+        iconName={navigation.state.params.searchQuery === '' ? 'search' : 'close'}
+        color={sharedStyles.HEADER_TEXT_COLOR}
+        onPress={() => navigation.setParams({ searchQuery: '' })}
+      />
     )
   });
 
@@ -123,7 +130,7 @@ export default class SearchScreen extends Component {
           )}
           style={styles.results}
           showsVerticalScrollIndicator={false}
-          keyExtractor={item => item.packageName}
+          keyExtractor={item => item.id}
           data={uniqResults}
           renderItem={this.renderItem}
         />

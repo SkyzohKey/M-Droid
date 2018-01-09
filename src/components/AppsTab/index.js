@@ -86,15 +86,23 @@ export default class AppsTab extends Component {
               />
             }
             data={categories}
-            keyExtractor={item => item.name}
-            renderItem={({ item }) => {
+            keyExtractor={({ index }) => index}
+            renderItem={({ item, index }) => {
               if (item.type && item.type === 'slider') {
-                return <NewAppsSlider apps={newsApps} />;
+                return <NewAppsSlider key={index} apps={newsApps} />;
               }
 
               const sApps = apps.filter(app => app.category === item.name);
               const appsUniq = removeDuplicates(sApps, (k, t) => t.id === k.id);
-              return <AppsList apps={appsUniq} maxCount={15} title={item.name} icon={item.icon} />;
+              return (
+                <AppsList
+                  key={index}
+                  apps={appsUniq}
+                  maxCount={15}
+                  title={item.name}
+                  icon={item.icon}
+                />
+              );
             }}
           />
         ) : (

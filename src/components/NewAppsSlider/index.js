@@ -45,9 +45,9 @@ class NewAppsSlider extends Component {
           pagingEnabled
           onLayout={() => this.onLayout()}
           data={appsUniq}
-          keyExtractor={item => item.id}
+          keyExtractor={({ index }) => index}
           renderItem={({ item, index }) => (
-            <Touchable key={item.id} onPress={() => openDetails(item)} delayPressIn={0}>
+            <Touchable key={index} onPress={() => openDetails(item)} delayPressIn={0}>
               <View style={{ height: 160 }}>
                 <FastImage
                   fadeDuration={0}
@@ -59,15 +59,6 @@ class NewAppsSlider extends Component {
             </Touchable>
           )}
         />
-        {/* TODO: Make animated dots component */}
-        {/* <View style={styles.appInfos}>
-          {appsUniq.map((item, index) => {
-            const isActiveStyle = {
-              backgroundColor: index === 0 ? 'white' : 'rgba(255,255,255,.5)'
-            };
-            return <View style={[styles.dot, isActiveStyle]} />;
-          })}
-        </View>*/}
       </View>
     );
   }

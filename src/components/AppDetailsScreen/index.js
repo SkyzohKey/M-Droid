@@ -37,10 +37,15 @@ import styles from './styles';
 
 export default class AppDetailsScreen extends Component {
   static navigationOptions = ({ navigation, screenProps }) => ({
-    //title: navigation.state.params.app.name || navigation.state.params.app.localized['en-US'].name || 'lol',
+    // title: navigation.state.params.app.name || navigation.state.params.app.localized['en-US'].name || 'lol',
     headerTintColor: sharedStyles.HEADER_TEXT_COLOR,
     headerStyle: {
-      backgroundColor: sharedStyles.HEADER_COLOR
+      backgroundColor:
+        navigation.state.params.app.featureGraphic && !navigation.state.params.translucent
+          ? 'rgba(0,0,0,0.01)'
+          : sharedStyles.HEADER_COLOR,
+      elevation:
+        navigation.state.params.app.featureGraphic && !navigation.state.params.translucent ? 0 : 6
     },
     headerLeft: (
       <MenuButton
@@ -219,8 +224,28 @@ export default class AppDetailsScreen extends Component {
       categories.length > 0 ? app.category + ', ' + categories : app.category;
 
     return (
-      <View style={{ flex: 1 }}>
-        <ScrollView style={styles.container} onLayout={() => this.onLayout()}>
+      <View style={{ flex: 1, marginTop: app.featureGraphic ? -60 : 0 }}>
+        <ScrollView
+          style={styles.container}
+          showsVerticalScrollIndicator={false}
+          scrollEventThrottle={1}
+          onScroll={event => {
+            this.offsetY = event.nativeEvent.contentOffset.y;
+            if (this.offsetY < 120) {
+              this.props.navigation.setParams({ translucent: false });
+            } else {
+              this.props.navigation.setParams({ translucent: true });
+            }
+          }}
+          onScrollEndDrag={() => {
+            if (this.offsetY < 120) {
+              this.props.navigation.setParams({ translucent: false });
+            } else {
+              this.props.navigation.setParams({ translucent: true });
+            }
+          }}
+          onLayout={() => this.onLayout()}
+        >
           <View
             style={{
               width: this.state.width
@@ -416,6 +441,7 @@ export default class AppDetailsScreen extends Component {
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 data={app.screenshots}
+                keyExtractor={({ item, index }) => index}
                 renderItem={({ item, index }) => {
                   const isFirstImage = index === 0;
                   const isLastImage = index === app.screenshots.length - 1;

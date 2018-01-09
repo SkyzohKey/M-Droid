@@ -9,8 +9,8 @@ import sharedStyles from '../../bootstrap/sharedStyles';
 
 export default class SearchResultRow extends Component {
   static propTypes = {
-    appName: PropTypes.string.isRequired,
-    appSummary: PropTypes.string.isRequired,
+    appName: PropTypes.string,
+    appSummary: PropTypes.string,
     appIconPath: PropTypes.string.isRequired,
     onPress: PropTypes.func.isRequired
   };
