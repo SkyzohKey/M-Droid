@@ -93,6 +93,8 @@ class SearchScreen extends Component {
           )}
           style={styles.results}
           showsVerticalScrollIndicator={false}
+          keyboardDismissMode={'on-drag'}
+          keyboardShouldPersistTaps={'handled'}
           keyExtractor={item => item.id}
           data={uniqResults}
           renderItem={this.renderItem}
