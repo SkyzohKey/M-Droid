@@ -13,3 +13,35 @@ export const getPackageNameForUrl = url => {
 
   return packageName || null;
 };
+
+/**
+ * Given an application, returns localized meta.
+ *
+ * @param {Object} app - An Application object.
+ * @return {Object} Returns an object with fields
+ * `name`, `summary`, `description` & `screenshots` localized.
+ */
+export const getLocalized = app => {
+  // TODO: Fetch locale from settings, or LocaleManager.
+  const locale = 'en-US';
+
+  let name = null;
+  let summary = null;
+  let description = null;
+  let screenshots = null;
+
+  const localizedData = app.localized;
+  if (localizedData && localizedData.hasOwnProperty(locale)) {
+    name = localizedData[locale].name;
+    summary = localizedData[locale].summary;
+    description = localizedData[locale].description;
+    screenshots = localizedData[locale].phoneScreenshots;
+  }
+
+  return {
+    name: name || app.name || null,
+    summary: summary || app.summary || null,
+    description: description || app.description || null,
+    screenshots: screenshots || null
+  };
+};

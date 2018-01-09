@@ -14,74 +14,76 @@ import styles from './styles';
 import sharedStyles from '../../bootstrap/sharedStyles';
 import { removeDuplicates } from '../../utils';
 
-export default class ReposHomeScreen extends Component {
-  static navigationOptions = ({ navigation, screenProps }) => ({
-    title: 'Repositories',
-
-    drawerIcon: ({ tintColor }) => <Icon name={'package'} color={tintColor} size={20} />,
-    headerTintColor: sharedStyles.HEADER_TEXT_COLOR,
-    headerStyle: {
-      backgroundColor: sharedStyles.HEADER_COLOR
-    }
-  });
-
-  static propTypes = {
-    repos: PropTypes.object.isRequired,
-    refreshRepositories: PropTypes.func.isRequired,
-    toggleRepo: PropTypes.func.isRequired,
-    openDetails: PropTypes.func.isRequired
-  };
-
+class ReposHomeScreen extends Component {
   constructor(props) {
     super(props);
   }
 
   render() {
-    const reposByPubkey = this.props.repos;
-    const repos = removeDuplicates(
-      Object.keys(reposByPubkey).map(key => reposByPubkey[key]),
-      (item, t) => t.pubkey === item.pubkey && t.name === item.name
-    );
-
-    console.log(repos);
-
-    return (
-      <View style={styles.container}>
-        {repos.length > 0 ? (
-          <FlatList
-            showsVerticalScrollIndicator={false}
-            onRefresh={() => this.props.refreshRepositories()}
-            refreshing={false}
-            style={styles.flatlist}
-            data={repos}
-            keyExtractor={({ index }) => index}
-            renderItem={({ item, index }) => {
-              const icon = item.url + '/icons/' + item.icon;
-              const isLatestRow = index == repos.length - 1;
-              return (
-                <RepoListRow
-                  key={index}
-                  name={item.name}
-                  summary={item.description}
-                  iconPath={icon}
-                  enabled={item.enabled || false}
-                  onPress={() => this.props.openDetails(item)}
-                  onSwitch={() => this.props.toggleRepo(item)}
-                  isLatestRow={isLatestRow}
-                />
-              );
-            }}
-          />
-        ) : (
-          <View style={{ padding: 16, flex: 1 }}>
+    const { repos } = this.props;
+    if (repos.length <= 0) {
+      return (
+        <View style={styles.container}>
+          <View style={sharedStyles.emptyWrapper}>
             <EmptyPlaceholder
               icon={'package'}
               title={'No repositories yet...'}
               tagline={'Try adding a repository first by tapping the Plus button.'}
             />
           </View>
-        )}
+        </View>
+      );
+    }
+
+    const { refreshRepositories, openDetails, toggleRepo } = this.props;
+
+    return (
+      <View style={styles.container}>
+        <FlatList
+          showsVerticalScrollIndicator={false}
+          onRefresh={() => refreshRepositories()}
+          refreshing={false}
+          style={styles.flatlist}
+          data={repos}
+          keyExtractor={({ index }) => index}
+          renderItem={({ item, index }) => {
+            const icon = item.url + '/icons/' + item.icon;
+            const isLatestRow = index === repos.length - 1;
+            return (
+              <RepoListRow
+                key={index}
+                name={item.name}
+                summary={item.description}
+                iconPath={icon}
+                enabled={item.enabled || false}
+                onPress={() => openDetails(item)}
+                onSwitch={() => toggleRepo(item)}
+                isLatestRow={isLatestRow}
+              />
+            );
+          }}
+        />
       </View>
     );
   }
 }
+
+ReposHomeScreen.navigationOptions = () => ({
+  title: 'Repositories',
+  // eslint-disable-next-line react/prop-types
+  drawerIcon: ({ tintColor }) => <Icon name={'package'} color={tintColor} size={20} />,
+  headerTintColor: sharedStyles.HEADER_TEXT_COLOR,
+  headerStyle: {
+    backgroundColor: sharedStyles.HEADER_COLOR
+  }
+});
+
+ReposHomeScreen.propTypes = {
+  navigation: PropTypes.any.isRequired,
+  repos: PropTypes.object.isRequired,
+  refreshRepositories: PropTypes.func.isRequired,
+  toggleRepo: PropTypes.func.isRequired,
+  openDetails: PropTypes.func.isRequired
+};
+
+export default ReposHomeScreen;

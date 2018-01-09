@@ -1,12 +1,11 @@
-// import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { NavigationActions } from 'react-navigation';
 
+import { getFeaturedApps } from '../reducers/applications/selectors';
 import NewAppsSlider from '../components/NewAppsSlider';
 
-const mapStateToProps = (state, ownProps) => {
+const mapStateToProps = state => {
   return {
-    // apps: state.applications.apps
+    featuredApps: getFeaturedApps(state.applications.apps)
   };
 };
 

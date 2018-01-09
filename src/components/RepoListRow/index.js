@@ -7,30 +7,13 @@ import Touchable from '../Touchable';
 import styles from './styles';
 import sharedStyles from '../../bootstrap/sharedStyles';
 
-export default class RepoListRow extends Component {
-  static propTypes = {
-    name: PropTypes.string.isRequired,
-    summary: PropTypes.string.isRequired,
-    iconPath: PropTypes.string.isRequired,
-    enabled: PropTypes.bool.isRequired,
-    isLatestRow: PropTypes.bool.isRequired,
-    onPress: PropTypes.func.isRequired,
-    onSwitch: PropTypes.func.isRequired
-  };
-
+class RepoListRow extends Component {
   constructor(props) {
     super(props);
   }
 
   render() {
     const { iconPath, name, summary, enabled, isLatestRow, onPress, onSwitch } = this.props;
-
-    const lastRowStyle =
-      isLatestRow === false
-        ? null
-        : {
-            borderBottomWidth: 0
-          };
 
     return (
       <View style={styles.container}>
@@ -44,7 +27,7 @@ export default class RepoListRow extends Component {
                   style={styles.icon}
                 />
               </View>
-              <View style={[styles.borderWrapper, lastRowStyle]}>
+              <View style={[styles.borderWrapper, this.getRowStyle()]}>
                 <View style={styles.textsWrapper}>
                   <Text numberOfLines={1} style={styles.name}>
                     {name}
@@ -67,4 +50,27 @@ export default class RepoListRow extends Component {
       </View>
     );
   }
+
+  getRowStyle() {
+    const { isLatestRow } = this.props;
+    if (isLatestRow === false) {
+      return null;
+    }
+
+    return {
+      borderBottomWidth: 0
+    };
+  }
 }
+
+RepoListRow.propTypes = {
+  name: PropTypes.string.isRequired,
+  summary: PropTypes.string.isRequired,
+  iconPath: PropTypes.string.isRequired,
+  enabled: PropTypes.bool.isRequired,
+  isLatestRow: PropTypes.bool.isRequired,
+  onPress: PropTypes.func.isRequired,
+  onSwitch: PropTypes.func.isRequired
+};
+
+export default RepoListRow;

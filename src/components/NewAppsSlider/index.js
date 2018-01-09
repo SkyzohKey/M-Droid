@@ -1,20 +1,16 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, FlatList, Text, Dimensions } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { View, FlatList, Dimensions } from 'react-native';
 import FastImage from 'react-native-fast-image';
 
-import AppCard from '../AppCard';
 import Touchable from '../Touchable';
 import styles from './styles';
 import sharedStyles from '../../bootstrap/sharedStyles';
 import { removeDuplicates } from '../../utils';
 
+const SLIDER_HEIGHT = 160;
+
 class NewAppsSlider extends Component {
-  static propTypes = {};
-
-  static defaultProps = {};
-
   constructor(props) {
     super(props);
 
@@ -28,14 +24,7 @@ class NewAppsSlider extends Component {
   }
 
   render() {
-    const { apps, openDetails } = this.props;
-
-    /* if (apps === null || apps === []) {
-      return null;
-    }*/
-
-    const appsUniq = removeDuplicates(apps, (item, t) => t.id === item.id).slice(0, 16);
-
+    const { featuredApps, openDetails } = this.props;
     return (
       <View style={styles.container}>
         <FlatList
@@ -44,16 +33,16 @@ class NewAppsSlider extends Component {
           showsHorizontalScrollIndicator={false}
           pagingEnabled
           onLayout={() => this.onLayout()}
-          data={appsUniq}
+          data={featuredApps}
           keyExtractor={({ index }) => index}
           renderItem={({ item, index }) => (
             <Touchable key={index} onPress={() => openDetails(item)} delayPressIn={0}>
-              <View style={{ height: 160 }}>
+              <View style={this.getContainerStyle()}>
                 <FastImage
                   fadeDuration={0}
                   resizeMode={FastImage.resizeMode.stretch}
                   source={{ uri: item.featureGraphic }}
-                  style={[styles.appIcon, { height: 160, width: this.state.width }]}
+                  style={[styles.appIcon, this.getImageStyle()]}
                 />
               </View>
             </Touchable>
@@ -62,6 +51,24 @@ class NewAppsSlider extends Component {
       </View>
     );
   }
+
+  getContainerStyle() {
+    return {
+      height: SLIDER_HEIGHT
+    };
+  }
+
+  getImageStyle() {
+    return {
+      height: SLIDER_HEIGHT,
+      width: this.state.width
+    };
+  }
 }
+
+NewAppsSlider.propTypes = {
+  featuredApps: PropTypes.array.isRequired,
+  openDetails: PropTypes.func.isRequired
+};
 
 export default NewAppsSlider;

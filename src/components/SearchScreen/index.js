@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, FlatList } from 'react-native';
+import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import SearchInput, { createFilter } from 'react-native-search-filter';
 
@@ -12,56 +13,7 @@ import { removeDuplicates } from '../../utils';
 
 const KEYS_TO_FILTERS = ['name', 'summary', 'description', 'id', 'author'];
 
-export default class SearchScreen extends Component {
-  static navigationOptions = ({ navigation, screenProps }) => ({
-    title: 'Search',
-    headerTintColor: sharedStyles.HEADER_COLOR,
-    headerStyle: {
-      backgroundColor: sharedStyles.HEADER_COLOR
-    },
-    headerTitleStyle: styles.searchInput,
-    headerTitle: (
-      <View
-        style={{
-          elevation: 1,
-          margin: 2,
-          flex: 1,
-          width: '100%',
-          justifyContent: 'center'
-        }}
-      >
-        <SearchInput
-          autoFocus={true}
-          fuzzy={true}
-          sortResults={true}
-          inputViewStyles={styles.searchInput}
-          style={styles.searchInputText}
-          placeholder={'Search app...'}
-          placeholderTextColor={sharedStyles.HEADER_TEXT_COLOR}
-          onChangeText={term => {
-            navigation.setParams({ searchQuery: term });
-          }}
-          value={navigation.state.params.searchQuery && navigation.state.params.searchQuery}
-        />
-      </View>
-    ),
-    headerLeft: (
-      <MenuButton
-        navigation={navigation}
-        iconName={'arrow-back'}
-        color={sharedStyles.HEADER_TEXT_COLOR}
-        onPress={() => navigation.goBack()}
-      />
-    ),
-    headerRight: (
-      <MenuButton
-        iconName={navigation.state.params.searchQuery === '' ? 'search' : 'close'}
-        color={sharedStyles.HEADER_TEXT_COLOR}
-        onPress={() => navigation.setParams({ searchQuery: '' })}
-      />
-    )
-  });
-
+class SearchScreen extends Component {
   constructor(props) {
     super(props);
   }
@@ -75,17 +27,24 @@ export default class SearchScreen extends Component {
         ? null
         : apps.filter(createFilter(params.searchQuery, KEYS_TO_FILTERS));
 
-    return (
-      <View style={styles.container}>
-        {searchResults !== null
-          ? this.renderResults(searchResults)
-          : this.renderEmpty(
-              'regex',
-              'Type to search',
-              'We\'ll show you a list of results once you type something...'
-            )}
-      </View>
-    );
+    if (searchResults === null) {
+      return (
+        <View style={styles.container}>
+          <View style={sharedStyles.emptyWrapper}>
+            <EmptyPlaceholder
+              animate={true}
+              animType={'shake'}
+              animLoop={false}
+              icon={'regex'}
+              title={'Type to search'}
+              tagline={'We\'ll show you a list of results once you type something...'}
+            />
+          </View>
+        </View>
+      );
+    }
+
+    return <View style={styles.container}>{this.renderResults(searchResults)}</View>;
   }
 
   renderItem = ({ item }) => (
@@ -102,10 +61,17 @@ export default class SearchScreen extends Component {
     const { params } = this.props.navigation.state;
 
     if (results.length <= 0) {
-      return this.renderEmpty(
-        'emoticon-dead',
-        'Snap! No results!',
-        'Try with a different query or use differents keywords...'
+      return (
+        <View style={sharedStyles.emptyWrapper}>
+          <EmptyPlaceholder
+            animate={true}
+            animType={'shake'}
+            animLoop={false}
+            icon={'emoticon-dead'}
+            title={'Snap! No results!'}
+            tagline={'Try with a different query or use differents keywords...'}
+          />
+        </View>
       );
     }
 
@@ -115,16 +81,13 @@ export default class SearchScreen extends Component {
     );
 
     return (
-      <View>
+      <View style={styles.container}>
         <FlatList
           ListHeaderComponent={() => (
             <View style={styles.row}>
               <Icon name={'search'} size={22} color={'black'} />
               <Text style={styles.resultsTitle}>
-                Results for{' '}
-                <Text style={{ fontWeight: 'bold', color: sharedStyles.ACCENT_COLOR }}>
-                  {params.searchQuery}
-                </Text>
+                Results for <Text style={styles.resultHighlight}>{params.searchQuery}</Text>
               </Text>
             </View>
           )}
@@ -137,12 +100,53 @@ export default class SearchScreen extends Component {
       </View>
     );
   };
-
-  renderEmpty(icon, title, tagline) {
-    return (
-      <View style={{ paddingHorizontal: 32, flex: 1 }}>
-        <EmptyPlaceholder icon={icon} title={title} tagline={tagline} />
-      </View>
-    );
-  }
 }
+
+SearchScreen.propTypes = {
+  navigation: PropTypes.any.isRequired,
+  apps: PropTypes.array.isRequired,
+  openDetails: PropTypes.func.isRequired
+};
+
+SearchScreen.navigationOptions = ({ navigation }) => ({
+  title: 'Search',
+  headerTintColor: sharedStyles.HEADER_COLOR,
+  headerStyle: {
+    backgroundColor: sharedStyles.HEADER_COLOR
+  },
+  headerTitleStyle: styles.searchInput,
+  headerTitle: (
+    <View style={styles.headerWrapper}>
+      <SearchInput
+        autoFocus={true}
+        fuzzy={true}
+        sortResults={true}
+        inputViewStyles={styles.searchInput}
+        style={styles.searchInputText}
+        placeholder={'Search app...'}
+        placeholderTextColor={sharedStyles.HEADER_TEXT_COLOR}
+        onChangeText={term => {
+          navigation.setParams({ searchQuery: term });
+        }}
+        value={navigation.state.params.searchQuery && navigation.state.params.searchQuery}
+      />
+    </View>
+  ),
+  headerLeft: (
+    <MenuButton
+      navigation={navigation}
+      iconName={'arrow-back'}
+      color={sharedStyles.HEADER_TEXT_COLOR}
+      onPress={() => navigation.goBack()}
+    />
+  ),
+  headerRight: (
+    <MenuButton
+      iconName={navigation.state.params.searchQuery === '' ? 'search' : 'close'}
+      color={sharedStyles.HEADER_TEXT_COLOR}
+      onPress={() => navigation.setParams({ searchQuery: '' })}
+    />
+  )
+});
+
+export default SearchScreen;

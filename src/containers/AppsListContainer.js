@@ -1,13 +1,8 @@
-// import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { NavigationActions } from 'react-navigation';
-
 import AppsList from '../components/AppsList';
 
-const mapStateToProps = (state, ownProps) => {
-  return {
-    // apps: state.applications.apps
-  };
+const mapStateToProps = state => {
+  return {};
 };
 
 const mapDispatchToProps = dispatch => {

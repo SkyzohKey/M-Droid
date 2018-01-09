@@ -3,9 +3,8 @@ import { View, Image } from 'react-native';
 import { TabNavigator } from 'react-navigation';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import DeepLinkingProvider from '../../bootstrap/DeepLinkingProvider';
-
-import MenuButton from '../../components/MenuButton';
+import DeepLinkingProvider from '../DeepLinkingProvider';
+import MenuButton from '../MenuButton';
 import AppsTab from '../../containers/AppsTabContainer';
 import EntertainmentTab from '../../containers/EntertainmentTabContainer';
 
@@ -20,44 +19,25 @@ export const HomeTabs = TabNavigator(
   {
     tabBarPosition: 'top',
     tabBarOptions: {
-      // inactiveBackgroundColor: MaterialColors.indigo.shade_500,
-      // inactiveTintColor: MaterialColors.indigo.shade_500,
       showIcon: false,
       showLabel: true,
       inactiveTintColor: sharedStyles.TAB_INACTIVE_COLOR,
       activeTintColor: sharedStyles.TAB_ACTIVE_COLOR,
-      labelStyle: {
-        fontSize: 12,
-        fontWeight: 'bold'
-      },
-      tabStyle: {
-        padding: 8
-      },
-      style: {
-        padding: 0,
-        backgroundColor: sharedStyles.HEADER_COLOR
-      },
-      indicatorStyle: {
-        backgroundColor: sharedStyles.HEADER_TEXT_COLOR,
-        height: 3
-      },
-      iconStyle: {
-        padding: 0,
-        height: 50
-      }
+      labelStyle: sharedStyles.tabLabel,
+      tabStyle: sharedStyles.tabTab,
+      style: sharedStyles.tab,
+      indicatorStyle: sharedStyles.tabIndicator,
+      iconStyle: sharedStyles.tabIcon
     }
   }
 );
 
 class HomeScreen extends Component {
-  static navigationOptions = ({ navigation, screenProps }) => ({
+  static navigationOptions = ({ navigation }) => ({
     title: 'Home',
     drawerIcon: ({ tintColor }) => <Icon name={'home'} color={tintColor} size={20} />,
     headerTintColor: sharedStyles.HEADER_COLOR,
-    headerStyle: {
-      backgroundColor: sharedStyles.HEADER_COLOR,
-      elevation: 0 // remove shadow on Android
-    },
+    headerStyle: sharedStyles.header,
     header: (
       <View style={styles.header}>
         <MenuButton
@@ -87,7 +67,7 @@ class HomeScreen extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <DeepLinkingProvider>
+        <DeepLinkingProvider style={styles.full}>
           <HomeTabs {...this.props} />
         </DeepLinkingProvider>
       </View>

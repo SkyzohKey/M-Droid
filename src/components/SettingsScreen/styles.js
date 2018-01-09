@@ -3,11 +3,11 @@ import sharedStyles from '../../bootstrap/sharedStyles';
 const styles = {
   container: {
     ...sharedStyles.screenContainer,
-    backgroundColor: '#fafafa',
-    flex: 1
+    backgroundColor: '#FAFAFA'
   },
   flatlist: {
-    flex: 1
+    flex: 1,
+    paddingTop: 8
   }
 };
 

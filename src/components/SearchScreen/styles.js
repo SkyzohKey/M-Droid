@@ -6,10 +6,16 @@ const styles = {
     backgroundColor: '#FAFAFA',
     paddingTop: 8
   },
+  headerWrapper: {
+    elevation: 1,
+    margin: 2,
+    flex: 1,
+    width: '100%',
+    justifyContent: 'center'
+  },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    // backgroundColor: 'white',
     flex: 1,
     elevation: 3
   },
@@ -27,6 +33,10 @@ const styles = {
   resultsTitle: {
     color: 'black',
     marginLeft: 8
+  },
+  resultHighlight: {
+    fontWeight: 'bold',
+    color: sharedStyles.ACCENT_COLOR
   },
   row: {
     flexDirection: 'row',

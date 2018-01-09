@@ -1,10 +1,7 @@
-// import React, { Component } from 'react';
 import { connect } from 'react-redux';
-
-import { fetchRepositories } from '../reducers/repositories/actions';
 import SearchScreen from '../components/SearchScreen';
 
-const mapStateToProps = (state, ownProps) => {
+const mapStateToProps = state => {
   return {
     apps: state.applications.apps
   };

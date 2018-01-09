@@ -5,6 +5,9 @@ const styles = {
     ...sharedStyles.screenContainer,
     backgroundColor: '#FFFFFF'
   },
+  wrapper: {
+    flex: 1
+  },
   header: {
     backgroundColor: sharedStyles.HEADER_COLOR,
     height: 150

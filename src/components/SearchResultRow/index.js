@@ -5,16 +5,8 @@ import FastImage from 'react-native-fast-image';
 
 import Touchable from '../Touchable';
 import styles from './styles';
-import sharedStyles from '../../bootstrap/sharedStyles';
 
-export default class SearchResultRow extends Component {
-  static propTypes = {
-    appName: PropTypes.string,
-    appSummary: PropTypes.string,
-    appIconPath: PropTypes.string.isRequired,
-    onPress: PropTypes.func.isRequired
-  };
-
+class SearchResultRow extends Component {
   constructor(props) {
     super(props);
   }
@@ -48,3 +40,12 @@ export default class SearchResultRow extends Component {
     );
   }
 }
+
+SearchResultRow.propTypes = {
+  appName: PropTypes.string,
+  appSummary: PropTypes.string,
+  appIconPath: PropTypes.string.isRequired,
+  onPress: PropTypes.func.isRequired
+};
+
+export default SearchResultRow;

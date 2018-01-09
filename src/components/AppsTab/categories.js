@@ -1,0 +1,20 @@
+export const CATEGORIES = [
+  { type: 'slider', name: 'slider' },
+  { name: 'Internet', icon: 'web' },
+  { name: 'Phone & SMS', icon: 'phone' },
+  { name: 'Navigation', icon: 'navigation' },
+  { name: 'Security', icon: 'security' },
+  { name: 'Time', icon: 'calendar-clock' },
+  { name: 'Science & Education', icon: 'school' },
+  { name: 'Theming', icon: 'theme-light-dark' },
+  { name: 'Graphics', icon: 'image' },
+  { name: 'Multimedia', icon: 'shopping-music' },
+  { name: 'Money', icon: 'coin' },
+  { name: 'Sports & Health', icon: 'car-sports' },
+  { name: 'Reading', icon: 'book-open' },
+  { name: 'Writing', icon: 'pen' },
+  { name: 'Games', icon: 'gamepad-variant' },
+  { name: 'Connectivity', icon: 'access-point-network' },
+  { name: 'Development', icon: 'android-studio' },
+  { name: 'System', icon: 'android' }
+];

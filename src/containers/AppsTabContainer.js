@@ -1,16 +1,14 @@
-// import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { fetchRepositories } from '../reducers/repositories/actions';
+import { getAppsUniq } from '../reducers/applications/selectors';
 import AppsTab from '../components/AppsTab';
 
-const mapStateToProps = (state, ownProps) => {
+const mapStateToProps = state => {
+  const { reposFetched, reposCount } = state.repositories;
   return {
-    // appsByCategoryName: state.applications.appsByCategoryName
-    apps: state.applications.apps,
-    fetchComplete: state.repositories.fetchComplete,
-    reposCount: state.repositories.reposCount,
-    reposFetched: state.repositories.reposFetched
+    reposSynced: reposCount > 0 && reposFetched === reposCount,
+    apps: getAppsUniq(state.applications.apps)
   };
 };
 

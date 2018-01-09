@@ -1,29 +1,29 @@
 import React, { Component } from 'react';
 import { View, Image } from 'react-native';
+import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
+import styles from './styles';
 import Touchable from '../Touchable';
 
-export default class MenuButton extends Component {
+class MenuButton extends Component {
+  constructor(props) {
+    super(props);
+  }
+
   render() {
     return (
       <View>
         <Touchable
           onPress={() => {
-            this.props.onPress && this.props.onPress();
+            if (this.props.onPress) {
+              this.props.onPress();
+            }
           }}
           borderless={true}
           delayPressIn={0}
         >
-          <View
-            style={{
-              width: 50,
-              height: 50,
-              justifyContent: 'center',
-              alignItems: 'center',
-              borderRadius: 50
-            }}
-          >
+          <View style={styles.wrapper}>
             {this.props.iconName && (
               <Icon
                 style={{}}
@@ -34,12 +34,7 @@ export default class MenuButton extends Component {
             )}
             {this.props.image && (
               <Image
-                style={{
-                  width: 30,
-                  height: 30,
-                  margin: 8,
-                  borderRadius: 30
-                }}
+                style={styles.image}
                 source={
                   typeof this.props.image === 'string'
                     ? { uri: this.props.image }
@@ -53,3 +48,12 @@ export default class MenuButton extends Component {
     );
   }
 }
+
+MenuButton.propTypes = {
+  iconName: PropTypes.string,
+  image: PropTypes.any,
+  color: PropTypes.string.isRequired,
+  onPress: PropTypes.func.isRequired
+};
+
+export default MenuButton;

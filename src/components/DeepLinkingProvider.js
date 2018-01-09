@@ -34,24 +34,16 @@ const mapDispatchToProps = dispatch => {
 };
 
 class DeepLinkingProvider extends Component {
-  static propTypes = {
-    children: PropTypes.any.isRequired,
-    apps: PropTypes.array.isRequired,
-    appsLoaded: PropTypes.bool.isRequired,
-    openDetails: PropTypes.func.isRequired,
-    openListing: PropTypes.func.isRequired
-  };
-
   constructor(props) {
     super(props);
   }
 
   componentDidMount() {
-    console.log('DeepLinkingProvider mounted.');
-
     Linking.getInitialURL()
       .then(url => this.handleOpenURL(url))
-      .catch(err => console.log(err));
+      .catch(() => {
+        return;
+      });
 
     Linking.addEventListener('url', event => this.handleOpenURL(event.url));
   }
@@ -63,7 +55,6 @@ class DeepLinkingProvider extends Component {
   handleOpenURL = url => {
     const { appsLoaded } = this.props;
     if (url !== null) {
-      console.log('Initial URL is ' + url);
       if (appsLoaded) {
         this.navigate(url);
       } else {
@@ -86,10 +77,7 @@ class DeepLinkingProvider extends Component {
     const id = getPackageNameForUrl(url);
     const maybeAppsOrApp = this.props.apps.filter(item => item.id === id);
 
-    console.log(maybeAppsOrApp);
-
     if (maybeAppsOrApp.length <= 1) {
-      console.log('open details ' + id);
       openDetails(maybeAppsOrApp[0]);
     } else if (maybeAppsOrApp.length > 1) {
       openListing(maybeAppsOrApp, id);
@@ -107,5 +95,13 @@ class DeepLinkingProvider extends Component {
     return this.props.children;
   }
 }
+
+DeepLinkingProvider.propTypes = {
+  children: PropTypes.any.isRequired,
+  apps: PropTypes.array.isRequired,
+  appsLoaded: PropTypes.bool.isRequired,
+  openDetails: PropTypes.func.isRequired,
+  openListing: PropTypes.func.isRequired
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(DeepLinkingProvider);

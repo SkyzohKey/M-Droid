@@ -2,13 +2,14 @@
 import React from 'react';
 import { DrawerNavigator, StackNavigator } from 'react-navigation';
 
+import Drawer from '../components/Drawer';
 import HomeScreen from '../components/HomeScreen';
 import AppDetailsScreen from '../containers/AppDetailsContainer';
+import ListingScreen from '../components/ListingScreen';
 import SearchScreen from '../containers/SearchContainer';
 import MenuButton from '../components/MenuButton';
 import ReposHomeScreen from '../containers/ReposHomeContainer';
-import ListingScreen from '../components/ListingScreen';
-import Drawer from '../components/Drawer';
+import SettingsScreen from '../components/SettingsScreen';
 
 import sharedStyles from './sharedStyles';
 
@@ -42,10 +43,18 @@ export const ReposRoutes = StackNavigator(
   navOptions
 );
 
+export const SettingsRoutes = StackNavigator(
+  {
+    SettingsHome: { screen: SettingsScreen, path: 'settings/home' }
+  },
+  navOptions
+);
+
 export const primaryRoutes = DrawerNavigator(
   {
     App: { screen: AppRoutes, path: 'apps' },
-    Repos: { screen: ReposRoutes, path: 'repos' }
+    Repos: { screen: ReposRoutes, path: 'repos' },
+    Settings: { screen: SettingsRoutes, path: 'settings' }
   },
   {
     drawerOpenRoute: 'DrawerOpen',

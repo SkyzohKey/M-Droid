@@ -2,12 +2,11 @@ import sharedStyles from '../../bootstrap/sharedStyles';
 
 const styles = {
   container: {
-    marginBottom: 8
-    // marginHorizontal: 8
+    marginBottom: 4
   },
   result: {
-    elevation: 1,
-    margin: 2,
+    elevation: 2,
+    margin: 4,
     marginBottom: 3,
     backgroundColor: 'white'
   },

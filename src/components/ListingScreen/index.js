@@ -1,39 +1,14 @@
 import React, { Component } from 'react';
-import { View, Text, FlatList } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import { View } from 'react-native';
+import PropTypes from 'prop-types';
 
 import MenuButton from '../MenuButton';
 import EmptyPlaceholder from '../EmptyPlaceholder';
 import AppsList from '../../containers/AppsListContainer';
 import sharedStyles from '../../bootstrap/sharedStyles';
 import styles from './styles';
-// import { removeDuplicates } from '../../utils';
 
-export default class ListingScreen extends Component {
-  static navigationOptions = ({ navigation, screenProps }) => ({
-    title: navigation.state.params.name,
-    headerTintColor: sharedStyles.HEADER_TEXT_COLOR,
-    headerStyle: {
-      backgroundColor: sharedStyles.HEADER_COLOR
-    },
-    headerLeft: (
-      <MenuButton
-        navigation={navigation}
-        iconName={'arrow-back'}
-        color={sharedStyles.HEADER_TEXT_COLOR}
-        onPress={() => navigation.goBack()}
-      />
-    ),
-    headerRight: (
-      <MenuButton
-        navigation={navigation}
-        iconName={'search'}
-        color={sharedStyles.HEADER_TEXT_COLOR}
-        onPress={() => navigation.navigate('Search', { searchQuery: '' })}
-      />
-    )
-  });
-
+class ListingScreen extends Component {
   constructor(props) {
     super(props);
   }
@@ -53,7 +28,7 @@ export default class ListingScreen extends Component {
   }
 
   renderNoListing = () => (
-    <View style={{ paddingHorizontal: 32, flex: 1 }}>
+    <View style={sharedStyles.emptyWrapper}>
       <EmptyPlaceholder
         icon={'emoticon-dead'}
         title={'Snap! No apps in this listing!'}
@@ -62,3 +37,31 @@ export default class ListingScreen extends Component {
     </View>
   );
 }
+
+ListingScreen.navigationOptions = ({ navigation, screenProps }) => ({
+  title: navigation.state.params.name,
+  headerTintColor: sharedStyles.HEADER_TEXT_COLOR,
+  headerStyle: sharedStyles.header,
+  headerLeft: (
+    <MenuButton
+      navigation={navigation}
+      iconName={'arrow-back'}
+      color={sharedStyles.HEADER_TEXT_COLOR}
+      onPress={() => navigation.goBack()}
+    />
+  ),
+  headerRight: (
+    <MenuButton
+      navigation={navigation}
+      iconName={'search'}
+      color={sharedStyles.HEADER_TEXT_COLOR}
+      onPress={() => navigation.navigate('Search', { searchQuery: '' })}
+    />
+  )
+});
+
+ListingScreen.propTypes = {
+  navigation: PropTypes.any.isRequired
+};
+
+export default ListingScreen;

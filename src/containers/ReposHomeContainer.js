@@ -1,12 +1,15 @@
-// import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
+import { getReposUniq } from '../reducers/repositories/selectors';
 import { fetchRepositories, toggleRepository } from '../reducers/repositories/actions';
+
 import ReposHomeScreen from '../components/ReposHomeScreen';
 
-const mapStateToProps = (state, ownProps) => {
+const mapStateToProps = state => {
   return {
-    repos: state.repositories.reposByPubkey
+    repos: getReposUniq(
+      Object.keys(state.repositories.reposByPubkey).map(key => reposByPubkey[key])
+    )
   };
 };
 

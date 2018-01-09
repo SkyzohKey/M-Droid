@@ -14,6 +14,9 @@ const styles = {
   },
   container: {
     ...sharedStyles.screenContainer
+  },
+  full: {
+    flex: 1
   }
 };
 

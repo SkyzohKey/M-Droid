@@ -14,7 +14,7 @@ export default class Drawer extends Component {
       <ScrollView>
         <SafeAreaView style={styles.container} forceInset={{ top: 'always', horizontal: 'never' }}>
           <View style={styles.header}>
-            <View style={{ flex: 1 }}>
+            <View style={styles.wrapper}>
               <Image
                 style={styles.headerLogo}
                 source={require('../../assets/images/wordmarks/wordmark-dark.png')}
