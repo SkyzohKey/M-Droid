@@ -1,9 +1,10 @@
-import sharedStyles from '../../bootstrap/sharedStyles';
+import sharedStyles from '../../styles/sharedStyles';
 
 const styles = {
   container: {
     ...sharedStyles.screenContainer,
-    backgroundColor: '#FAFAFA'
+    backgroundColor: '#FAFAFA',
+    paddingVertical: 8
   },
   flatlist: {
     flex: 1,

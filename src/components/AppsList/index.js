@@ -8,7 +8,7 @@ import { getLocalized } from '../../utils/fdroid';
 import AppCard from '../AppCard';
 import Touchable from '../Touchable';
 import styles from './styles';
-import sharedStyles from '../../bootstrap/sharedStyles';
+import sharedStyles from '../../styles/sharedStyles';
 
 class AppsList extends Component {
   constructor(props) {

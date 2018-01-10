@@ -7,7 +7,7 @@ import SearchInput, { createFilter } from 'react-native-search-filter';
 import MenuButton from '../MenuButton';
 import SearchResultRow from '../SearchResultRow';
 import EmptyPlaceholder from '../EmptyPlaceholder';
-import sharedStyles from '../../bootstrap/sharedStyles';
+import sharedStyles from '../../styles/sharedStyles';
 import styles from './styles';
 import { removeDuplicates } from '../../utils';
 

@@ -11,7 +11,7 @@ import MenuButton from '../components/MenuButton';
 import ReposHomeScreen from '../containers/ReposHomeContainer';
 import SettingsScreen from '../components/SettingsScreen';
 
-import sharedStyles from './sharedStyles';
+import sharedStyles from '../styles/sharedStyles';
 
 const navOptions = {
   navigationOptions: ({ navigation }) => ({

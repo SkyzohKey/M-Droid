@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import MenuButton from '../MenuButton';
 import EmptyPlaceholder from '../EmptyPlaceholder';
 import AppsList from '../../containers/AppsListContainer';
-import sharedStyles from '../../bootstrap/sharedStyles';
+import sharedStyles from '../../styles/sharedStyles';
 import styles from './styles';
 
 class ListingScreen extends Component {

@@ -5,72 +5,83 @@
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, FlatList } from 'react-native';
+import { ScrollView, Settings } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import EIcon from 'react-native-vector-icons/Entypo';
 
-import RepoListRow from '../RepoListRow';
 import EmptyPlaceholder from '../EmptyPlaceholder';
+import ListItem from '../ListItem';
 import styles from './styles';
-import sharedStyles from '../../bootstrap/sharedStyles';
-import { removeDuplicates } from '../../utils';
+import sharedStyles from '../../styles/sharedStyles';
 
-export default class SettingsScreen extends Component {
-  static navigationOptions = ({ navigation, screenProps }) => ({
-    title: 'Settings',
-    drawerIcon: ({ tintColor }) => <Icon name={'settings'} color={tintColor} size={20} />,
-    headerTintColor: sharedStyles.HEADER_TEXT_COLOR,
-    headerStyle: {
-      backgroundColor: sharedStyles.HEADER_COLOR
-    }
-  });
-
-  static propTypes = {};
-
+class SettingsScreen extends Component {
   constructor(props) {
     super(props);
+
+    this.state = {
+      enabled: false
+    };
   }
 
   render() {
     return (
-      <View style={styles.container}>
-        {/* repos.length > 0 ? (
-          <FlatList
-            showsVerticalScrollIndicator={false}
-            onRefresh={() => this.props.refreshRepositories()}
-            refreshing={false}
-            style={styles.flatlist}
-            data={repos}
-            keyExtractor={({ index }) => index}
-            renderItem={({ item, index }) => {
-              const icon = item.url + '/icons/' + item.icon;
-              const isLatestRow = index == repos.length - 1;
-              return (
-                <RepoListRow
-                  key={index}
-                  name={item.name}
-                  summary={item.description}
-                  iconPath={icon}
-                  enabled={item.enabled || false}
-                  onPress={() => this.props.openDetails(item)}
-                  onSwitch={() => this.props.toggleRepo(item)}
-                  isLatestRow={isLatestRow}
-                />
-              );
-            }}
-          />
-        ) : (*/}
-        <View style={{ padding: 16, flex: 1 }}>
-          <EmptyPlaceholder
-            animate={true}
-            animationLoop={true}
-            animationFriction={0}
-            animationTension={0}
-            icon={'settings'}
-            title={'No settings yet...'}
-            tagline={'Be patient, you will enjoy customization!'}
-          />
-        </View>
-      </View>
+      <ScrollView style={styles.container}>
+        <ListItem
+          onPress={() => {}}
+          icon={<Icon name={'theme-light-dark'} size={24} />}
+          firstLine={'Interface'}
+          actionComponent={<Icon name={'chevron-right'} size={24} />}
+        />
+        <ListItem
+          onPress={() => {}}
+          icon={<Icon name={'update'} size={24} />}
+          firstLine={'Updates'}
+          actionComponent={<Icon name={'chevron-right'} size={24} />}
+        />
+        <ListItem
+          onPress={() => {}}
+          icon={<Icon name={'security-home'} size={24} />}
+          firstLine={'Privacy'}
+          actionComponent={<Icon name={'chevron-right'} size={24} />}
+        />
+        <ListItem
+          onPress={() => {}}
+          icon={<Icon name={'approval'} size={24} />}
+          firstLine={'Apps compatibility'}
+          actionComponent={<Icon name={'chevron-right'} size={24} />}
+        />
+        <ListItem
+          onPress={() => {}}
+          icon={<Icon name={'security-network'} size={24} />}
+          firstLine={'Proxy'}
+          actionComponent={<Icon name={'chevron-right'} size={24} />}
+        />
+        <ListItem
+          onPress={() => {}}
+          icon={<Icon name={'cached'} size={24} />}
+          firstLine={'Cache & logs'}
+          actionComponent={<Icon name={'chevron-right'} size={24} />}
+        />
+        <ListItem
+          onPress={() => {}}
+          icon={<EIcon name={'lab-flask'} size={24} />}
+          firstLine={'Experiments Zone'}
+          actionComponent={<Icon name={'chevron-right'} size={24} />}
+        />
+      </ScrollView>
     );
   }
 }
+
+SettingsScreen.navigationOptions = () => ({
+  title: 'Settings',
+  drawerIcon: ({ tintColor }) => <Icon name={'settings'} color={tintColor} size={20} />,
+  headerTintColor: sharedStyles.HEADER_TEXT_COLOR,
+  headerStyle: {
+    backgroundColor: sharedStyles.HEADER_COLOR
+  }
+});
+
+SettingsScreen.propTypes = {};
+
+export default SettingsScreen;

@@ -6,10 +6,9 @@ import { fetchRepositories, toggleRepository } from '../reducers/repositories/ac
 import ReposHomeScreen from '../components/ReposHomeScreen';
 
 const mapStateToProps = state => {
+  const { reposByPubkey } = state.repositories;
   return {
-    repos: getReposUniq(
-      Object.keys(state.repositories.reposByPubkey).map(key => reposByPubkey[key])
-    )
+    repos: getReposUniq(Object.keys(reposByPubkey).map(key => reposByPubkey[key]))
   };
 };
 

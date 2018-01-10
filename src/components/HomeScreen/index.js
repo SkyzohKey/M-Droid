@@ -8,7 +8,7 @@ import MenuButton from '../MenuButton';
 import AppsTab from '../../containers/AppsTabContainer';
 import EntertainmentTab from '../../containers/EntertainmentTabContainer';
 
-import sharedStyles from '../../bootstrap/sharedStyles';
+import sharedStyles from '../../styles/sharedStyles';
 import styles from './styles';
 
 export const HomeTabs = TabNavigator(

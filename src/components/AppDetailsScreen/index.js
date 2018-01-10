@@ -32,7 +32,7 @@ import MenuButton from '../MenuButton';
 import Touchable from '../Touchable';
 import AppsList from '../../containers/AppsListContainer';
 import { toFileSize, unixToDate } from '../../utils';
-import sharedStyles from '../../bootstrap/sharedStyles';
+import sharedStyles from '../../styles/sharedStyles';
 import styles from './styles';
 
 // import { downloadApp } from '../../services/RepositoryService';

@@ -1,4 +1,4 @@
-import sharedStyles from '../../bootstrap/sharedStyles';
+import sharedStyles from '../../styles/sharedStyles';
 
 const styles = {
   container: {
@@ -10,6 +10,9 @@ const styles = {
   flatlist: {
     flex: 1,
     paddingTop: 8
+  },
+  flatlistContainer: {
+    paddingVertical: 8
   }
 };
 

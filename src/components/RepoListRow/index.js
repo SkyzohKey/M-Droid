@@ -5,7 +5,7 @@ import FastImage from 'react-native-fast-image';
 
 import Touchable from '../Touchable';
 import styles from './styles';
-import sharedStyles from '../../bootstrap/sharedStyles';
+import sharedStyles from '../../styles/sharedStyles';
 
 class RepoListRow extends Component {
   constructor(props) {

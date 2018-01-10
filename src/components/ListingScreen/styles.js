@@ -1,4 +1,4 @@
-import sharedStyles from '../../bootstrap/sharedStyles';
+import sharedStyles from '../../styles/sharedStyles';
 
 const styles = {
   headerStyle: {

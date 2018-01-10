@@ -10,7 +10,7 @@ import EmptyPlaceholder from '../EmptyPlaceholder';
 import { getAppsForCategory } from '../../reducers/applications/selectors';
 
 import styles from './styles';
-import sharedStyles from '../../bootstrap/sharedStyles';
+import sharedStyles from '../../styles/sharedStyles';
 
 import { CATEGORIES } from './categories';
 const MAX_APPS_PER_LIST = 15;
@@ -44,7 +44,7 @@ class AppsTab extends Component {
           <EmptyPlaceholder
             animate={true}
             icon={'package'}
-            title={'Loading packages...'}
+            title={'Loading apps...'}
             tagline={'This operation may take seconds.'}
           />
         </View>

@@ -7,12 +7,13 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { View, FlatList } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import FastImage from 'react-native-fast-image';
 
 import RepoListRow from '../RepoListRow';
+import ListItem from '../ListItem';
 import EmptyPlaceholder from '../EmptyPlaceholder';
 import styles from './styles';
-import sharedStyles from '../../bootstrap/sharedStyles';
-import { removeDuplicates } from '../../utils';
+import sharedStyles from '../../styles/sharedStyles';
 
 class ReposHomeScreen extends Component {
   constructor(props) {
@@ -26,9 +27,11 @@ class ReposHomeScreen extends Component {
         <View style={styles.container}>
           <View style={sharedStyles.emptyWrapper}>
             <EmptyPlaceholder
+              animate={true}
+              animType={'shake'}
               icon={'package'}
               title={'No repositories yet...'}
-              tagline={'Try adding a repository first by tapping the Plus button.'}
+              tagline={'Try adding a repository first by tapping the (+) button.'}
             />
           </View>
         </View>
@@ -38,27 +41,32 @@ class ReposHomeScreen extends Component {
     const { refreshRepositories, openDetails, toggleRepo } = this.props;
 
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, { padding: 0 }]}>
         <FlatList
           showsVerticalScrollIndicator={false}
           onRefresh={() => refreshRepositories()}
           refreshing={false}
           style={styles.flatlist}
           data={repos}
+          contentContainerStyle={styles.flatlistContainer}
           keyExtractor={({ index }) => index}
-          renderItem={({ item, index }) => {
+          renderItem={({ item }) => {
             const icon = item.url + '/icons/' + item.icon;
-            const isLatestRow = index === repos.length - 1;
             return (
-              <RepoListRow
-                key={index}
-                name={item.name}
-                summary={item.description}
-                iconPath={icon}
-                enabled={item.enabled || false}
+              <ListItem
+                key={item.url + item.name}
+                icon={
+                  <FastImage
+                    source={{ uri: icon }}
+                    resizeMode={FastImage.resizeMode.contain}
+                    style={{ width: 24, height: 24 }}
+                  />
+                }
+                firstLine={item.name}
+                isSwitchable={true}
+                switchInitialValue={item.enabled || false}
+                onActionPress={() => toggleRepo(item)}
                 onPress={() => openDetails(item)}
-                onSwitch={() => toggleRepo(item)}
-                isLatestRow={isLatestRow}
               />
             );
           }}
@@ -80,7 +88,7 @@ ReposHomeScreen.navigationOptions = () => ({
 
 ReposHomeScreen.propTypes = {
   navigation: PropTypes.any.isRequired,
-  repos: PropTypes.object.isRequired,
+  repos: PropTypes.array.isRequired,
   refreshRepositories: PropTypes.func.isRequired,
   toggleRepo: PropTypes.func.isRequired,
   openDetails: PropTypes.func.isRequired
