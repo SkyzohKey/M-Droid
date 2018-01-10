@@ -28,6 +28,9 @@ const styles = {
     color: '#BABABA',
     fontSize: 12,
     fontWeight: 'bold'
+  },
+  horizontalFlatlistContainer: {
+    margin: 8
   }
 };
 

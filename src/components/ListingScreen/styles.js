@@ -6,7 +6,9 @@ const styles = {
   },
   container: {
     ...sharedStyles.screenContainer,
-    backgroundColor: '#FAFAFA'
+    backgroundColor: '#FAFAFA',
+    paddingHorizontal: 4,
+    paddingVertical: 8
   }
 };
 

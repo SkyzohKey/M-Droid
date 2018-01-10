@@ -41,7 +41,9 @@ class ListingScreen extends Component {
 ListingScreen.navigationOptions = ({ navigation, screenProps }) => ({
   title: navigation.state.params.name,
   headerTintColor: sharedStyles.HEADER_TEXT_COLOR,
-  headerStyle: sharedStyles.header,
+  headerStyle: {
+    backgroundColor: sharedStyles.HEADER_COLOR
+  },
   headerLeft: (
     <MenuButton
       navigation={navigation}

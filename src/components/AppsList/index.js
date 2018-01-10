@@ -55,6 +55,7 @@ class AppsList extends Component {
           initialNumToRender={colsCount + 1}
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}
+          contentContainerStyle={horizontal ? styles.horizontalFlatlistContainer : null}
           data={subset}
           keyExtractor={({ index }) => index}
           renderItem={({ item, index }) => (
