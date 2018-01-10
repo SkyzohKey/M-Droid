@@ -1,4 +1,4 @@
-# ![M-Droid logo](src/assets/images/logos/logo-light.png)
+# ![M-Droid logo](src/assets/images/logos/logo-light.png) [![Become a patron](https://i.imgur.com/oWouhEe.png)](https://www.patreon.com/bePatron?u=2330345)
 
 ### Unofficial Material Designed client for F-Droid!
 
@@ -90,7 +90,9 @@ I currently work on this project during my free-time, but also during my work-ti
 
 Anyway, if you consider support me, you can pay me a pack of Monster's cans for moore productive coding, :D.
 
-I accept donations in form of Monero, Bitcoin, Etherum & IntenseCoin (in that order).
+I accept donations in form of Monero, Bitcoin, Etherum & IntenseCoin (in that order). You can also Patreon me !
+
+[![Become a patron](https://i.imgur.com/oWouhEe.png)](https://www.patreon.com/bePatron?u=2330345)
 
 ```
 1. Monero (XMR): 47XpVhUHahViCZHuZPc2Z6ivLraidX7AxbM8b2StdPcQGwjDGY14eqj9ippW7Pdrqj9d2y4xvwChzePQAqG1NvqQ775FKxg
