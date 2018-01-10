@@ -1,4 +1,6 @@
-# ![M-Droid logo](src/assets/images/logos/logo-light.png) [![Become a patron](https://i.imgur.com/oWouhEe.png)](https://www.patreon.com/bePatron?u=2330345)
+# ![M-Droid logo](src/assets/images/logos/logo-light.png)
+
+[![Become a patron](https://i.imgur.com/oWouhEe.png)](https://www.patreon.com/bePatron?u=2330345)
 
 ### Unofficial Material Designed client for F-Droid!
 
