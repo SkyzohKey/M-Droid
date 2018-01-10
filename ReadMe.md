@@ -8,6 +8,8 @@ This is M-Droid, a drop-in replacement for the F-Droid client. It provides the s
 
 This project started because I hate the new F-Droid UI while still loving the actual software. And as I like React-Native, this is a good project for me.
 
+[See the Medium story](https://medium.com/@SkyzohKey/tl-dr-i-started-developing-mdroid-2-weeks-ago-as-a-side-project-when-i-saw-that-a-new-version-v1-d1f32a98ee0b) - [See the Patreon post](https://www.patreon.com/posts/mdroid-open-for-16329680)
+
 #### Table of Contents
 
 * [Features](#features)
