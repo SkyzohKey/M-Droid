@@ -1,12 +1,14 @@
 # ![M-Droid logo](src/assets/images/logos/logo-light.png)
 
-[![Become a patron](https://i.imgur.com/oWouhEe.png)](https://www.patreon.com/bePatron?u=2330345)
+[![Build Status](https://www.bitrise.io/app/ea52905e61d6d07c/status.svg?token=_Ya26yC8o5C93IMPhdTZkQ&branch=master)](https://www.bitrise.io/app/ea52905e61d6d07c)
 
 ### Unofficial Material Designed client for F-Droid!
 
 This is M-Droid, a drop-in replacement for the F-Droid client. It provides the same features but in a Material Design way that is both nice to see and easy to use.
 
 This project started because I hate the new F-Droid UI while still loving the actual software. And as I like React-Native, this is a good project for me.
+
+[![Become a patron](https://i.imgur.com/oWouhEe.png)](https://www.patreon.com/bePatron?u=2330345)
 
 [See the Medium story](https://medium.com/@SkyzohKey/tl-dr-i-started-developing-mdroid-2-weeks-ago-as-a-side-project-when-i-saw-that-a-new-version-v1-d1f32a98ee0b) - [See the Patreon post](https://www.patreon.com/posts/mdroid-open-for-16329680)
 
