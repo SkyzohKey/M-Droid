@@ -1,6 +1,7 @@
 # ![M-Droid logo](src/assets/images/logos/logo-light.png)
 
 [![Build Status](https://www.bitrise.io/app/ea52905e61d6d07c/status.svg?token=_Ya26yC8o5C93IMPhdTZkQ&branch=master)](https://www.bitrise.io/app/ea52905e61d6d07c)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FSkyzohKey%2FM-Droid.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FSkyzohKey%2FM-Droid?ref=badge_shield)
 
 ### Unofficial Material Designed client for F-Droid!
 
@@ -114,3 +115,6 @@ If you wish to support me, but doesn't have money for, you can still message me 
 ## License
 
 This project is licensed under [The MIT License](LICENSE).
+
+
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FSkyzohKey%2FM-Droid.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2FSkyzohKey%2FM-Droid?ref=badge_large)
