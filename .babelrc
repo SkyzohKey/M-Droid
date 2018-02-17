@@ -1,3 +1,13 @@
 {
-  "presets": ["react-native"]
+  "presets": [
+    "react-native",
+    [
+      "@babel/preset-env",
+      {
+        "targets": {
+          "node": "current"
+        }
+      }
+    ]
+  ]
 }

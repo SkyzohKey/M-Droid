@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
-    "test": "jest"
+    "test": "jest",
+    "test:watch": "npm test -- --watch"
   },
   "dependencies": {
     "buffer": "^5.0.8",
@@ -26,17 +27,21 @@
     "xmldom": "^0.1.27"
   },
   "devDependencies": {
+    "@babel/core": "^7.0.0-beta.37",
+    "@babel/preset-env": "^7.0.0-beta.37",
     "babel-eslint": "^8.1.2",
     "babel-jest": "^22.0.4",
     "babel-preset-react-native": "^4.0.0",
     "eslint": "^4.14.0",
     "eslint-plugin-react": "^7.5.1",
     "eslint-plugin-react-native": "^3.2.0",
+    "expect": "^22.0.6",
     "jest": "^22.0.4",
     "react-test-renderer": "^16.2.0",
     "reactotron-react-native": "^1.14.0",
     "reactotron-redux": "^1.13.0",
-    "redux-devtools-extension": "^2.13.2"
+    "redux-devtools-extension": "^2.13.2",
+    "redux-mock-store": "^1.4.0"
   },
   "resolutions": {
     "uglify-es": "3.2.2"
@@ -51,6 +56,8 @@
     "transform": {
       "^.+\\.js$": "babel-jest"
     },
-    "transformIgnorePatterns": ["node_modules/(?!react-native|react-navigation)/"]
+    "transformIgnorePatterns": [
+      "node_modules/(?!react-native|react-navigation)/"
+    ]
   }
 }
