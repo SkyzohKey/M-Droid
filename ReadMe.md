@@ -11,6 +11,10 @@ This project started because I hate the new F-Droid UI while still loving the ac
 
 [![Become a patron](https://i.imgur.com/oWouhEe.png)](https://www.patreon.com/bePatron?u=2330345)
 
+[<img src="https://f-droid.org/badge/get-it-on.png"
+     alt="Get it on F-Droid"
+     height="80">](https://f-droid.org/packages/com.mdroid/)
+
 [See the Medium story](https://medium.com/@SkyzohKey/tl-dr-i-started-developing-mdroid-2-weeks-ago-as-a-side-project-when-i-saw-that-a-new-version-v1-d1f32a98ee0b) - [See the Patreon post](https://www.patreon.com/posts/mdroid-open-for-16329680)
 
 #### Table of Contents
